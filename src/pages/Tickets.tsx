@@ -44,7 +44,7 @@ const Tickets = () => {
     deleteUser,
     isLoading,
     isFetching,
-    setRender,
+    setAllUsers,
   } = useServerUser();
 
   const handleSearch = (e: any) => {
@@ -264,7 +264,7 @@ const Tickets = () => {
     getAllUsers(filter);
     console.log('auxilio')
 
-  }, [filter, setAddTicketmodal]);
+  }, [filter, setAllUsers]);
 
   //@ts-ignore
   let totalItems = allTickets?.length
