@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   PaginateInterface,
-  TicketData,
+  AccountData,
   TicketsInterface,
   UserInterface,
 } from "../interfaces/ServerInterfaces";
@@ -17,12 +17,13 @@ import { BasicType } from "../interfaces/LocalInterfaces";
 
 const useServerUser = () => {
   const { manageErrors } = useServer();
+  const [render, setRender] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
   const [allUsers, setAllUsers] = useState<Array<TicketsInterface>>([]);
-  const [allTickets, setAllTickets] = useState<TicketData>();
-  const [user, setUser] = useState<TicketsInterface | null>(null);
+  const [allTickets, setAllTickets] = useState <AccountData>();
+  const [user, setUser] = useState<AccountData | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
   const [modalWaitingError, setModalWaitingError] = useState<string | null>(
     null
@@ -30,29 +31,38 @@ const useServerUser = () => {
   const [waiting, setWaiting] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
-  const addUser = async (data: BasicType, callback: Function) => {
-    setIsFetching(true);
-    await query
-      .post("/tickets", data)
-      .then(async (resp) => {
-        setAllUsers([resp.data, ...allUsers]);
-        callback && callback();
-      })
-      .catch((error) => manageErrors(error));
-    setIsFetching(false);
-  };
 
   const getAllUsers = async (filter: BasicType) => {
     setIsLoading(true);
     await query
-      .get(`/tickets${generateUrlParams(filter)}`)
+      .get(`/account/all${generateUrlParams(filter)}`)
       .then((resp) => {
         const data = resp.data;
-        dispatch(saveItems(data))
-        setAllTickets(data);
+        const data1 = data.data
+
+        dispatch(saveItems(data1))
+        setAllTickets(data1);
+
       })
       .catch((error) => manageErrors(error));
     setIsLoading(false);
+  };
+  const addUser = async (
+    data: any,
+    close: Function
+  ) => {
+    setIsFetching(true);
+    setIsLoading(true)
+    await query
+    .post("/account/register", data)
+      .then((resp) => {
+        //setAllTickets([resp.data, allTickets]);
+        
+        toast.success("Ticket agregado satisfactoriamente");
+      }).then(()=>close()).then(()=>window.location.reload())
+      .catch((e) => manageErrors(e));
+    setIsFetching(false);
+    setIsLoading(false)
   };
 
   const editUser = async (
@@ -62,15 +72,15 @@ const useServerUser = () => {
   ) => {
     setIsFetching(true);
     await query
-      .patch(`/tickets/${id}`, data)
+      .put(`/account/update/${id}`, data)
       .then((resp) => {
         const newUsers = [...allUsers];
         const idx = newUsers.findIndex((user) => user.id === id);
         newUsers.splice(idx, 1, resp.data);
         setAllUsers(newUsers);
-        console.log(newUsers, resp.data);
         toast.success("Cambios realizados con éxito");
         callback && callback();
+        window.location.reload()
       })
       .catch((e) => manageErrors(e));
     setIsFetching(false);
@@ -79,7 +89,7 @@ const useServerUser = () => {
   const getUser = async (id: any) => {
     setIsLoading(true);
     await query
-      .get(`/tickets/${id}`)
+      .get(`/account/findById/${id}`)
       .then((resp) => {
         setUser(resp.data);
         console.log(resp.data)
@@ -169,12 +179,13 @@ const useServerUser = () => {
   const deleteUser = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
-      .deleteAPI(`/tickets/${id}`, {})
+      .deleteAPI(`/account/delete/${id}`, {})
       .then(() => {
         toast.success("Usuario Eliminado con éxito");
         const newUsers = allUsers.filter((user) => user.id !== id);
         setAllUsers(newUsers);
         callback && callback();
+        window.location.reload()
       })
       .catch((error) => manageErrors(error));
     setIsFetching(false);
@@ -196,9 +207,12 @@ const useServerUser = () => {
     updateUser,
     updateMyUser,
     deleteUser,
+    setAllUsers,
     resetUserPsw,
     manageErrors,
     modalWaitingError,
+    setRender,
+    render
   };
 };
 export default useServerUser;

@@ -1,7 +1,7 @@
 export interface PaginateInterface {
-  totalItems: number;
-  totalPages: number;
-  currentPage: number;
+  totalItems: number | undefined;
+  totalPages: number | undefined;
+  currentPage: number | undefined;
 }
 
 export interface SocialNetworksInterface {
@@ -168,12 +168,24 @@ export interface AllTicketsInterface {
   createdById: number
   email: string;
 }
-export interface TicketData {
-  totalItems: number;
-  currentPage: number;
-  totalPages: number;
-  items: TicketsInterface[];
+export interface AccountData {
+  data: Array<{
+    id: number;
+    address: string;
+    name: string;
+    code: string;
+    description: string;
+    isActive: boolean;
+    isBlocked: boolean;
+    isPrivate: boolean;
+    currencyId: number;
+    ownerId: number;
+    issueEntityId: number;
+    createdAt: string;
+    updatedAt: string;
+  }>;
 }
+
 
 export interface TicketsInterface {
   id: number;

@@ -13,7 +13,7 @@ const AppRoute = () => {
     <Routes>
       <Route path="/" element={<AppContainer />}>
         <Route index element={<Dashboard />} />
-        <Route path="/tickets" element={<Tickets />} />
+        <Route path="/cuentas" element={<Tickets />} />
       </Route>
       <Route path="/*" element={<NotFoundpage />} />
     </Routes>

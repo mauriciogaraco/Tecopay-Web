@@ -95,7 +95,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
     await apiQuery
       .get(`${dataQuery.url}${generateUrlParams(params)}`)
       .then((resp) => {
-        const items: SelectInterface[] = resp.data.items.map(
+        const items: SelectInterface[] = resp.data.data.map(
           (elem: Record<string, string | number | boolean | null>) => {
             if (typeof normalizeData.name === "string") {
               return {
@@ -160,6 +160,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
         onChange={(e: SelectInterface) => {
           setSelectedData(e);
           field.onChange(e.id);
+          console.log(e.id)
         }}
         disabled={disabled}
         by={(current, rest) => current?.id === rest?.id}

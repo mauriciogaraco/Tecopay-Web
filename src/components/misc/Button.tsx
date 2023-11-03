@@ -30,7 +30,7 @@ const Button = ({
   colorHover,
   value,
   textColor="white",
-  type = "button",
+  type,
 }: ButtonProp) => {
   return (
     <button

@@ -16,11 +16,11 @@ interface UserWizzardInterface {
 const EditUserContainer = ({
   id,
   editUser,
-  deleteUser,
+
   isFetching,
   closeModal,
 }: UserWizzardInterface) => {
-  const { getUser, user, isLoading } = useServerUser();
+  const { getUser, user, deleteUser, isLoading } = useServerUser();
 
   useEffect(() => {
     id && getUser(id);
@@ -29,8 +29,7 @@ const EditUserContainer = ({
   //Tabs data --------------------------------------------------------------------------------------------
   const [currentTab, setCurrentTab] = useState("details");
   const tabs = [
-    { name: "Detalles", href: "details", current: currentTab === "details" },
-    { name: "estatus", href: "estatus", current: currentTab === "estatus" },
+    { name: `Editar cuenta ${id}`, href: "details", current: currentTab === "details" },
   ];
 
   const action = (href: string) => setCurrentTab(href);
@@ -56,9 +55,7 @@ const EditUserContainer = ({
           isFetching={isFetching}
         />
       )}
-      {currentTab === "estatus" && (
-        <div>hello</div>
-      )}
+
     </div>
   );
 };

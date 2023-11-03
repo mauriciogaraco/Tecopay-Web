@@ -1,4 +1,4 @@
-import { PlusIcon, TicketIcon, UsersIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, TicketIcon, UsersIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 //import useServerClients from "../../api/useServerClients";
 import GenericTable, {
   DataTableInterface,
@@ -29,7 +29,7 @@ const Tickets = () => {
   const [query, setQuery] = useState<string>("");
   const [queryText, setQueryText] = useState("");
   const [post, setPost] = useState(null)
-  
+
 
   const {
     allUsers,
@@ -44,7 +44,7 @@ const Tickets = () => {
     deleteUser,
     isLoading,
     isFetching,
-    user,
+    setRender,
   } = useServerUser();
 
   const handleSearch = (e: any) => {
@@ -56,26 +56,26 @@ const Tickets = () => {
     query === ""
       ? data
       : data.filter(
-          ({
-            cliente,
-            no,
-            fecha,
-            description,
-            prioridad,
-            clasificacion,
-            email,
-          }) => {
-            return (
-              cliente.toLowerCase().includes(query.toLowerCase()) ||
-              no.toLowerCase().includes(query.toLowerCase()) ||
-              prioridad.toLowerCase().includes(query.toLowerCase()) ||
-              clasificacion.toLowerCase().includes(query.toLowerCase()) ||
-              email.toLowerCase().includes(query.toLowerCase()) ||
-              fecha.toLowerCase().includes(query.toLowerCase()) ||
-              cliente.toLowerCase().includes(query.toLowerCase())
-            );
-          }
-        );
+        ({
+          cliente,
+          no,
+          fecha,
+          description,
+          prioridad,
+          clasificacion,
+          email,
+        }) => {
+          return (
+            cliente.toLowerCase().includes(query.toLowerCase()) ||
+            no.toLowerCase().includes(query.toLowerCase()) ||
+            prioridad.toLowerCase().includes(query.toLowerCase()) ||
+            clasificacion.toLowerCase().includes(query.toLowerCase()) ||
+            email.toLowerCase().includes(query.toLowerCase()) ||
+            fecha.toLowerCase().includes(query.toLowerCase()) ||
+            cliente.toLowerCase().includes(query.toLowerCase())
+          );
+        }
+      );
 
   /*const {
               getAllClients,
@@ -103,25 +103,25 @@ const Tickets = () => {
     "Entidad",
     "Propietario",
     "Moneda",
-    "Creado por",
+    "Direccion",
     "Descripcion",
   ];
   const tableData: DataTableInterface[] = [];
-  // eslint-disable-next-line array-callback-return
+  // eslint-disable-next-line array-callback-return 
 
-  
-  allTickets?.items.map((item) => {
+  // @ts-ignore
+  allTickets?.map((item: any) => {
     tableData.push({
       rowId: item.id,
       payload: {
         "No.": item.id,
-        Codigo: `${item?.name}`,
-        Nombre: item?.id,
-        Entidad: item?.classification,
-        Propietario: item.priority,
-        Moneda: item.description,
-        'Creado por': item.createdById,
-        Descripcion: item.description
+        Codigo: `${item?.code}`,
+        Nombre: item?.name,
+        Entidad: item?.issueEntityId,
+        Propietario: item.ownerId,
+        Moneda: item.currencyId,
+        Descripcion: item.description,
+        Direccion: item.address
       },
     });
   });
@@ -130,7 +130,7 @@ const Tickets = () => {
     action: (search: string) => setFilter({ ...filter, search }),
     placeholder: "Buscar ticket",
   };
-
+  const close = () => setEditTicketModal({ state: false, id: null })
   const actions = [
     {
       icon: <PlusIcon className="h-5" />,
@@ -239,7 +239,7 @@ const Tickets = () => {
     },
   ];
 
-  const filterAction = (data: BasicType) => setFilter(data);
+  //const filterAction = (data: BasicType) => setFilter(data);
   //----------------------------------------------------------------------------------
 
   //Breadcrumb-----------------------------------------------------------------------------------
@@ -255,32 +255,39 @@ const Tickets = () => {
     state: boolean;
     id: number | null;
   }>({ state: false, id: null });
-  const navigate = useNavigate();
 
+
+  const closeAddAccount = () => setAddTicketmodal(false)
 
   useEffect(() => {
-    
-    getAllUsers(filter).then();
-    
-  }, [filter]);
+
+    getAllUsers(filter);
+    console.log('auxilio')
+
+  }, [filter, setAddTicketmodal]);
+
+  //@ts-ignore
+  let totalItems = allTickets?.length
+  let totalPages = 1
+  let currentPage = 1
   return (
     <div>
       <Breadcrumb
-        icon={<TicketIcon className="h-6 text-gray-500" />}
+        icon={<UserCircleIcon className="h-6 text-gray-500" />}
         paths={paths}
       />
       <GenericTable
         tableData={tableData}
         tableTitles={tableTitles}
-        //loading={isLoading}
+        loading={isLoading}
         searching={searching}
         actions={actions}
         rowAction={rowAction}
-        filterComponent={{ availableFilters, filterAction }}
+        //filterComponent={{ availableFilters, filterAction }}
         paginateComponent={
           <Paginate
             action={(page: number) => setFilter({ ...filter, page })}
-            data={allTickets}
+            data={{ totalItems, currentPage, totalPages }}
           />
         }
       />
@@ -288,7 +295,9 @@ const Tickets = () => {
       {addTicketmodal && (
         <Modal state={addTicketmodal} close={setAddTicketmodal}>
           <NuevoTicketModal
+            
             setContactModal={setContactModal}
+            close={closeAddAccount}
             contactModal={contactModal}
             setNuevoTicketModal={setNuevoTicketModal}
             nuevoTicketModal={nuevoTicketModal}
@@ -298,7 +307,7 @@ const Tickets = () => {
       {editTicketModal.state && (
         <Modal
           state={editTicketModal.state}
-          close={() => setEditTicketModal({ state: false, id: null })}
+          close={close}
           size="m"
         >
           <EditUserContainer
@@ -306,7 +315,7 @@ const Tickets = () => {
             editUser={editUser}
             deleteUser={deleteUser}
             isFetching={isFetching}
-            closeModal={() => setEditTicketModal({ state: false, id: null })}
+            closeModal={close}
           />
         </Modal>)}
 
@@ -318,7 +327,7 @@ const Tickets = () => {
       //              />
       //            </Modal>
       //          */}
-      
+
     </div>
   );
 

@@ -8,22 +8,36 @@ import {
 import Toggle from "../../../components/forms/Toggle";
 import { SubmitHandler, useForm } from "react-hook-form";
 import useServerUser from "../../../api/userServerUser";
-import { TicketsInterface, UserInterface } from "../../../interfaces/ServerInterfaces";
+import { AccountData, UserInterface } from "../../../interfaces/ServerInterfaces";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import Modal from "../../../components/modals/GenericModal";
 import AlertContainer from "../../../components/misc/AlertContainer";
-import { BasicType } from "../../../interfaces/InterfacesLocal";
+import { BasicType, SelectInterface } from "../../../interfaces/InterfacesLocal";
 import TextArea from "../../../components/forms/TextArea";
 import Select from "../../../components/forms/Select";
+import ComboBox from "../../../components/forms/Combobox";
+import AsyncComboBox from "../../../components/forms/AsyncCombobox";
 
 interface EditInterface {
-  user: TicketsInterface | null;
+  user: any
   editUser: Function;
   deleteUser: Function;
   closeModal: Function;
   isFetching: boolean;
 }
-const selectData = [{ id: 1, name:'abierto' }, { id: 2, name: 'cerrado' }]
+const selectData = [{ id: 1, name: true }, { id: 2, name: 'cerrado' }]
+const prioridad: SelectInterface[] = [
+  { id: "1", name: "baja" },
+  { id: "2", name: "media" },
+  { id: "3", name: "alta" },
+];
+
+const clasificacion: SelectInterface[] = [
+  { id: "1", name: "Conectividad" },
+  { id: "2", name: "Plataforma Web" },
+  { id: "3", name: "Aplicaciones Móviles" },
+  { id: "4", name: "Servidores" },
+];
 
 const DetailUserEditComponent = ({
   editUser,
@@ -42,12 +56,12 @@ const DetailUserEditComponent = ({
   const { isFetching: fetchingUser } = useServerUser();
   const { isFetching: fetchingMail } = useServerUser();
   const [delAction, setDelAction] = useState(false);
+  const {getAllUsers} = useServerUser()
 
   const onSubmit: SubmitHandler<BasicType> = (data) => {
-    editUser(user?.id, deleteUndefinedAttr(data), reset());
+    const WholeData = Object.assign(data, {code: '123456', ownerId:251})
+    editUser(user?.data.id, deleteUndefinedAttr(WholeData), reset()).then(()=>closeModal());
   };
-
-  const email = watch("email") ?? user?.email ?? null;
 
   return (
     <>
@@ -57,6 +71,7 @@ const DetailUserEditComponent = ({
             <div className="bg-red-200 hover:bg-red-300 transition-all duration-200 ease-in-out  rounded-lg"><Button
               icon={<TrashIcon className="h-5 text-gray-700" />}
               color="gray-500"
+              type="button"
               action={() => setDelAction(true)}
               outline
             /></div>
@@ -64,8 +79,8 @@ const DetailUserEditComponent = ({
           <div className="grid grid-cols-2 gap-5">
             <Input
               name="name"
-              defaultValue={user?.name}
-              label="Cliente"
+              defaultValue={user?.data.name}
+              label="Nombre"
               control={control}
               rules={{
                 required: "Campo requerido",
@@ -78,54 +93,46 @@ const DetailUserEditComponent = ({
               }}
             />
 
-            <Input
-              defaultValue={user?.contact_id}
-              name="contact_id"
-              label="Contacto"
+            <AsyncComboBox
+              name="issueEntityId"
+              defaultItem={user ? { id: user?.data.issueEntityId, name: user?.data.issueEntityId } : undefined}
+              defaultValue= {user?.data.issueEntityId}
               control={control}
               rules={{ required: "Campo requerido" }}
-            />
-            <Input
-              name="classification"
-              label="classification"
-              defaultValue={user?.classification}
-              control={control}
-              rules={{
-                required: 'Campo requerido'
-                //validate: {
-                //validateEmail: (value) =>
-                //validateEmail(value) || "Dirección de correo inválida",
-                //checkEmail: async (value) => {
-                //if (formState.dirtyFields.email) {
-
-
-                //} else {
-                //return true;
-                //}
-                //},
-                // },
-              }}
-
-            />
-            <Input
-              defaultValue={user?.priority}
-              name="priority"
-              label="Prioridad"
+              label="Entidad"
+              dataQuery={{ url: "/entity/all" }}
+              normalizeData={{ id: 'id', name: "name" }}
+            ></AsyncComboBox>
+            <AsyncComboBox
+              name="currencyId"
+              defaultItem={user ? { id: user?.data.id, name: user?.data.currencyId } : undefined}
+              defaultValue={user?.data.currencyId}
               control={control}
               rules={{ required: "Campo requerido" }}
-            />
+              label="Moneda"
+              dataQuery={{ url: "/currency/all" }}
+              normalizeData={{ id: 'id', name: "code" }}
+            ></AsyncComboBox>
+
+
           </div>
-          <Select
-          name="status"
-            label="Estado"
-            data={selectData}
-            control={control}></Select>
+          <div className="flex py-5 justify-around gap-5"><Toggle name="isPrivate" defaultValue={user?.data.isPrivate} title="Cuenta privada" control={control}></Toggle>
+            <Toggle name="isActive" title="Cuenta activa" defaultValue={user?.data.isActive} control={control}></Toggle>
+            <Toggle name="isBlocked" defaultValue={user?.data.isBlocked} title="Cuenta Bloqueada" control={control}></Toggle>
+          </div>
           <TextArea
 
-            defaultValue={user?.description}
+            defaultValue={user?.data.address}
+            name="address"
+            control={control}
+            label="Direccion"
+          ></TextArea>
+          <TextArea
+
+            defaultValue={user?.data.description}
             name="description"
             control={control}
-            label="descripcion"
+            label="Descripcion"
           ></TextArea>
 
           <div className="flex justify-end mt-5">
@@ -143,9 +150,9 @@ const DetailUserEditComponent = ({
       {delAction && (
         <Modal state={delAction} close={setDelAction}>
           <AlertContainer
-            onAction={() => deleteUser(user?.id, closeModal)}
+            onAction={() => deleteUser(user?.data.id, closeModal)}
             onCancel={setDelAction}
-            title={`Eliminar ${user?.name}`}
+            title={`Eliminar ${user?.data.name}`}
             text="¿Seguro que desea eliminar este usuario del sistema?"
             loading={isFetching}
           />

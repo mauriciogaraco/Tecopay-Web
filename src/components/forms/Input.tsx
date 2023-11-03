@@ -49,7 +49,7 @@ const Input = (props: UseControllerProps & InputProps) => {
   
 
   return (
-    <div className="py-2 w-full">
+    <div className="w-full">
       {label && (
         <label
           htmlFor={label}

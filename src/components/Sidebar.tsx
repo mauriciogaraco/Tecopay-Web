@@ -9,6 +9,7 @@ import {
   BanknotesIcon,
   UserGroupIcon,
   TicketIcon,
+  UserCircleIcon
 } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
 import useServer from "../api/useServer";
@@ -41,10 +42,10 @@ export default function SideBar({ state, switchSidebar }: Sidebar) {
     },
 
     {
-      name: "Tickets",
-      href: "tickets",
-      icon: TicketIcon,
-      current: currentLocation === "tickets",
+      name: "cuentas",
+      href: "cuentas",
+      icon: UserCircleIcon,
+      current: currentLocation === "cuentas",
     },
     /*{
       name: "Configuración",

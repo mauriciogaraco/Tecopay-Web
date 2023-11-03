@@ -1,7 +1,7 @@
 import axios from "axios";
 import { setKeys } from "../store/slices/sessionSlice";
 
-const baseUrl = `${process.env.REACT_APP_API_HOST_TICKET}`;
+const baseUrl = `${process.env.REACT_APP_API_HOST_TICKET}${process.env.REACT_APP_VERSION_API}`;
 const baseAuthUrl = `${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_VERSION_API}`;
 
 const baseUrlTest = `${"https://jsonplaceholder.typicode.com/"}`; //Test URL
@@ -100,14 +100,6 @@ const get = async (path: string) => {
 };
 
 
-const getTestJson = async (path: string) => {
-    const request = {
-        url: `${baseUrlTest + path}`,
-        method: "GET",
-    };
-
-    return axiosApiInstance.get(request.url);
-};
 
 const post = async (path: string, body: object, config = {}) => {
     const request = {
@@ -129,7 +121,7 @@ const postAuth = async (path: string, body: object, config = {}) => {
 
 const put = async (path: string, body: object) => {
     const request = {
-        url: `${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_VERSION_API}${path}`,
+        url: `${baseUrl}${path}`,
         method: "PUT",
     };
 
@@ -160,6 +152,5 @@ export default {
     put,
     patch,
     deleteAPI,
-    getTestJson,
     postAuth
 };
