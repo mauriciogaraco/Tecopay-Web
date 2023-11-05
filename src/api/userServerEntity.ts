@@ -9,13 +9,13 @@ import query from "./APIServices";
 import useServer from "./useServer";
 import { Flip, toast } from "react-toastify";
 import { updateUserState } from "../store/slices/initSlice";
-import { saveItems } from "../store/slices/ticketSlice";
+import { saveEntity } from "../store/slices/EntitySlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateUrlParams } from "../utils/helpers";
 import { BasicType } from "../interfaces/LocalInterfaces";
 
-const useServerUser = () => {
+const useServerEntity = () => {
   const { manageErrors } = useServer();
   const [render, setRender] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
@@ -23,85 +23,86 @@ const useServerUser = () => {
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
   const [allUsers, setAllUsers] = useState<Array<TicketsInterface>>([]);
   const [allTickets, setAllTickets] = useState <AccountData>();
-  const [user, setUser] = useState<AccountData | null>(null);
+  const [entity, setEntity] = useState<AccountData | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
   const [modalWaitingError, setModalWaitingError] = useState<string | null>(
     null
   );
   const [waiting, setWaiting] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const items = useAppSelector((state)=> state.ticket.items)
+  const items = useAppSelector((state)=> state.Entity.Entity)
 
 
-  const getAllUsers = async (filter: BasicType) => {
+  const getAllEntity = async (filter: BasicType) => {
     setIsLoading(true);
     await query
-      .get(`/account/all${generateUrlParams(filter)}`)
+      .get(`/entity/all${generateUrlParams(filter)}`)
       .then((resp) => {
         const data = resp.data;
         const data1 = data.data
-        dispatch(saveItems(data1))
+        dispatch(saveEntity(data1))
         setAllTickets(data1);
 
       })
       .catch((error) => manageErrors(error));
     setIsLoading(false);
   };
-  const addUser = async (
+  const addEntity = async (
     data: any,
     close: Function
   ) => {
     setIsFetching(true);
     setIsLoading(true)
     await query
-    .post("/account/register", data)
+    .post("/entity/register", data)
       .then((resp) => {
         
         console.log(resp.data.data)
         console.log(items)
-        dispatch(saveItems([...items, resp.data.data]))
+        dispatch(saveEntity([...items, resp.data.data]))
         //setAllTickets();
         
-        toast.success("Ticket agregado satisfactoriamente");
-      }).then(()=>close())
+        toast.success("Entidad agregada satisfactoriamente");
+      })
       .catch((e) => manageErrors(e));
     setIsFetching(false);
     setIsLoading(false)
   };
 
-  const editUser = async (
+  const editEntity = async (
     id: number,
     data: Record<string, string | number | boolean | string[]>,
     callback?: Function
   ) => {
     setIsFetching(true);
     await query
-      .put(`/account/update/${id}`, data)
+      .put(`/entity/update/${id}`, data)
       .then((resp) => {
         const newUsers:any = [...items];
         const idx = newUsers.findIndex((user:any) => user.id === id);
         newUsers.splice(idx, 1, data);
         console.log(newUsers)
-        dispatch(saveItems(newUsers))
+        dispatch(saveEntity(newUsers))
         callback && callback();
+        toast.success("Entidad editada satisfactoriamente");
       })
       .catch((e) => manageErrors(e));
     setIsFetching(false);
   };
 
-  const getUser = async (id: any) => {
+  const getEntity = async (id: any) => {
     setIsLoading(true);
     await query
-      .get(`/account/findById/${id}`)
+      .get(`/entity/findById/${id}`)
       .then((resp) => {
-        setUser(resp.data);
+        setEntity(resp.data);
         console.log(resp.data)
       })
       .catch((error) => manageErrors(error));
     setIsLoading(false);
   };
 
-  const updateUser = async (
+  const updateEntity = async (
     userId: number,
     data: BasicType,
     callback?: Function
@@ -110,7 +111,7 @@ const useServerUser = () => {
     await query
       .patch(`/control/user/${userId}`, data)
       .then(async (resp) => {
-        setUser(resp.data);
+        setEntity(resp.data);
         const newUsers = [...allUsers];
         const idx = newUsers.findIndex((user) => user.id === userId);
         newUsers.splice(idx, 1, resp.data);
@@ -122,7 +123,7 @@ const useServerUser = () => {
     setIsFetching(false);
   };
 
-  const updateMyUser = (
+  const updateMyEntity = (
     data: Partial<UserInterface>,
     closeModal?: Function
   ) => {
@@ -167,26 +168,14 @@ const useServerUser = () => {
       });
   };
 
-  const resetUserPsw = async (email: string, callback?: Function) => {
+  const deleteEntity = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
-      .post(`/control/user/request-password`, { email })
-      .then(() => {
-        toast.success("Operación completada con éxito");
-        callback && callback();
-      })
-      .catch((error) => manageErrors(error));
-    setIsFetching(false);
-  };
-
-  const deleteUser = async (id: number, callback?: Function) => {
-    setIsFetching(true);
-    await query
-      .deleteAPI(`/account/delete/${id}`, {})
+      .deleteAPI(`/entity/delete/${id}`, {})
       .then(() => {
         toast.success("Usuario Eliminado con éxito");
         const newUsers = items.filter((item:any) => item.id !== id);
-        dispatch(saveItems(newUsers))
+        dispatch(saveEntity(newUsers))
         callback && callback();
       })
       .catch((error) => manageErrors(error));
@@ -199,22 +188,19 @@ const useServerUser = () => {
     waiting,
     modalWaiting,
     allUsers,
-    user,
+    entity,
     setAllTickets,
     allTickets,
-    getAllUsers,
-    addUser,
-    getUser,
-    editUser,
-    updateUser,
-    updateMyUser,
-    deleteUser,
+    getAllEntity,
+    addEntity,
+    getEntity,
+    editEntity,
+    updateEntity,
+    updateMyEntity,
+    deleteEntity,
     setAllUsers,
-    resetUserPsw,
     manageErrors,
     modalWaitingError,
-    setRender,
-    render
   };
 };
-export default useServerUser;
+export default useServerEntity;

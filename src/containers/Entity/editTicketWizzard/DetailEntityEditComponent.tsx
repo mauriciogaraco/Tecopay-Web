@@ -40,7 +40,7 @@ const clasificacion: SelectInterface[] = [
   { id: "4", name: "Servidores" },
 ];
 
-const DetailUserEditComponent = ({
+const DetailEntityEditComponent = ({
   editUser,
   deleteUser,
   user,
@@ -164,4 +164,4 @@ const DetailUserEditComponent = ({
   );
 };
 
-export default DetailUserEditComponent;
+export default DetailEntityEditComponent;

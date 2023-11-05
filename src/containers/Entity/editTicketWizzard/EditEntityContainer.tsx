@@ -1,5 +1,5 @@
 import { useState, createContext, useEffect } from "react";
-import DetailUserEditComponent from "./DetailUserEditComponent";
+import DetailUserEditComponent from "./DetailEntityEditComponent";
 import Fetching from "../../../components/misc/Fetching";
 import TabNav from "../../../components/navigation/TabNav";
 import useServerUser from "../../../api/userServerUser";
@@ -15,7 +15,7 @@ interface UserWizzardInterface {
   closeModal: Function;
 }
 
-const EditUserContainer = ({
+const EditEntityContainer = ({
   id,
   editUser,
 
@@ -71,4 +71,4 @@ const EditUserContainer = ({
   );
 };
 
-export default EditUserContainer;
+export default EditEntityContainer;

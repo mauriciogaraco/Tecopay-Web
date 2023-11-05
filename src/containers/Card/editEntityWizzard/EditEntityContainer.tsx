@@ -1,31 +1,32 @@
 import { useState, createContext, useEffect } from "react";
-import DetailUserEditComponent from "./DetailUserEditComponent";
+import DetailUserEditComponent from "./DetailUserEntityComponent";
 import Fetching from "../../../components/misc/Fetching";
 import TabNav from "../../../components/navigation/TabNav";
 import useServerUser from "../../../api/userServerUser";
 import { redirect, useNavigate } from "react-router-dom";
+import useServerEntity from "../../../api/userServerEntity";
 
 
 
 interface UserWizzardInterface {
   id: number | null;
-  editUser: Function;
+  editEntity: Function;
   deleteUser: Function;
   isFetching: boolean;
   closeModal: Function;
 }
 
-const EditUserContainer = ({
+const EditEntityContainer = ({
   id,
-  editUser,
+  editEntity,
 
   isFetching,
   closeModal,
 }: UserWizzardInterface) => {
-  const { getUser, user, deleteUser, isLoading } = useServerUser();
+  const { getEntity, entity, deleteEntity, isLoading } = useServerEntity();
 
   useEffect(() => {
-    id && getUser(id);
+    id && getEntity(id);
   }, []);
 
   //Tabs data --------------------------------------------------------------------------------------------
@@ -52,15 +53,15 @@ const EditUserContainer = ({
     );
   return (
     <div className="">
-      <div className="flex items-center justify-around"><h1 className="ml-2 text-lg">Editar cuenta {id}</h1> <button onClick={()=>navigate('Detalles')} className=" hover:bg-blue-500 transition-all ease-in-out duration-200 bg-blue-400 p-2 rounded-md">Detalles</button></div>
+      <div className="flex items-center justify-around"><h1 className="ml-2 text-lg">Editar Entidad {id}</h1></div>
       {/*isFetching && <Fetching />}
       <TabNav tabs={tabs} action={action} />*/}
       {currentTab === "edit" && (
         <DetailUserEditComponent
           id={id}
-          editUser={editUser}
-          deleteUser={deleteUser}
-          user={user}
+          editEntity={editEntity}
+          deleteUser={deleteEntity}
+          Entity={entity}
           closeModal={closeModal}
           isFetching={isFetching}
         />
@@ -71,4 +72,4 @@ const EditUserContainer = ({
   );
 };
 
-export default EditUserContainer;
+export default EditEntityContainer;

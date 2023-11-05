@@ -1,29 +1,25 @@
 import { PlusIcon, TicketIcon, UsersIcon, UserCircleIcon } from "@heroicons/react/24/outline";
-//import useServerClients from "../../api/useServerClients";
+
 import GenericTable, {
   DataTableInterface,
   FilterOpts,
-} from "../components/misc/GenericTable";
-import useServerUser from "../api/userServerUser";
+} from "../../components/misc/GenericTable";
+import useServerUser from "../../api/userServerUser";
 
-import Paginate from "../components/misc/Paginate";
-import Modal from "../components/modals/GenericModal";
-import Breadcrumb, { PathInterface } from "../components/navigation/Breadcrumb";
-//import AddClientWizzard from "./addClient/AddClientWizzard";
+import Paginate from "../../components/misc/Paginate";
+import Modal from "../../components/modals/GenericModal";
+import Breadcrumb, { PathInterface } from "../../components/navigation/Breadcrumb";
+
 import { useNavigate } from "react-router-dom";
-//import { BsFiletypeXlsx } from "react-icons/bs";
-//import { SubmitHandler, useForm } from "react-hook-form";
-//import Input from "../../components/forms/Input";
-//import Button from "../../components/misc/Button";
-import { BasicType, SelectInterface } from "../interfaces/InterfacesLocal";
-//import useServerOnlineClients from "../../api/useServerOnlineClients";
-//import { formatCalendar } from "../../utils/helpers";
-//import { translateRegWay } from "../../utils/translate";
+
+import { BasicType, SelectInterface } from "../../interfaces/InterfacesLocal";
+
 import { useEffect, useState } from "react";
-import NuevoTicketModal from "../components/modals/NuevoTicketModal";
-import { data } from "../utils/TemporaryArrayData";
+import NuevoTicketModal from "./NewTicket/NuevoTicketModal";
+import { data } from "../../utils/TemporaryArrayData";
 import axios from "axios";
-import EditUserContainer from "../containers/tickets/editTicketWizzard/EditUserContainer";
+import EditUserContainer from "./editTicketWizzard/EditUserContainer";
+import { useAppSelector } from "../../store/hooks";
 
 const Tickets = () => {
   const [query, setQuery] = useState<string>("");
@@ -109,8 +105,10 @@ const Tickets = () => {
   const tableData: DataTableInterface[] = [];
   // eslint-disable-next-line array-callback-return 
 
+  const items = useAppSelector((state)=> state.ticket.items)
+
   // @ts-ignore
-  allTickets?.map((item: any) => {
+  items?.map((item: any) => {
     tableData.push({
       rowId: item.id,
       payload: {
@@ -261,10 +259,10 @@ const Tickets = () => {
 
   useEffect(() => {
 
-    getAllUsers(filter);
-    console.log('auxilio')
+    getAllUsers(filter).then(allTickets? ()=>console.log(allTickets): ()=>console.log('moee'))
 
-  }, [filter, setAllUsers]);
+
+  }, [filter]);
 
   //@ts-ignore
   let totalItems = allTickets?.length
@@ -295,7 +293,7 @@ const Tickets = () => {
       {addTicketmodal && (
         <Modal state={addTicketmodal} close={setAddTicketmodal}>
           <NuevoTicketModal
-            
+
             setContactModal={setContactModal}
             close={closeAddAccount}
             contactModal={contactModal}
@@ -319,51 +317,9 @@ const Tickets = () => {
           />
         </Modal>)}
 
-      {/*exportModal && (
-      //            <Modal state={exportModal} close={setExportModal}>
-      //              <ExcelFileExport
-      //                filter={filter}
-      //                closeModal={() => setExportModal(false)}
-      //              />
-      //            </Modal>
-      //          */}
-
     </div>
-  );
 
-  /*interface ExportContainer {
-            filter: BasicType;
-            closeModal: Function;
-          }*/
+  )};
 
-  /*const ExcelFileExport = ({ filter, closeModal }: ExportContainer) => {
-            const { handleSubmit, control } = useForm();
-            const { exportClients, isLoading } = useServerClients();
-          
-            const onSubmit: SubmitHandler<Record<string, string>> = (data) => {
-              exportClients(filter, data.name, closeModal());
-            };
-          
-            return (
-              <form onSubmit={handleSubmit(onSubmit)}>
-                <Input
-                  name="name"
-                  label="Nombre del archivo"
-                  placeholder="Nombre del archivo .xlsx"
-                  control={control}
-                  rules={{ required: "Debe indicar un nombre para el archivo" }}
-                />
-                <div className="flex py-2 justify-end">
-                  <Button
-                    type="submit"
-                    name="Exportar"
-                    color="slate-600"
-                    loading={isLoading}
-                    disabled={isLoading}
-                  />
-                </div>
-              </form>
-            );*/
-};
 
-export default Tickets;
+export default Tickets

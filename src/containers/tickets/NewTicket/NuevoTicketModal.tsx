@@ -1,20 +1,20 @@
-import CreateContactModal from "./CreateContactModal";
-import useServerUser from '../../api/userServerUser'
+import CreateContactModal from "../../../components/modals/CreateContactModal";
+import useServerUser from '../../../api/userServerUser'
 import { SubmitHandler, useForm } from "react-hook-form";
-import ComboBox from "../forms/Combobox";
-import TextArea from "../forms/TextArea";
-import { SelectInterface } from "../../interfaces/LocalInterfaces";
-import { useAppSelector } from "../../store/hooks";
+import ComboBox from "../../../components/forms/Combobox";
+import TextArea from "../../../components/forms/TextArea";
+import { SelectInterface } from "../../../interfaces/LocalInterfaces";
+import { useAppSelector } from "../../../store/hooks";
 import { useEffect } from "react";
-import Modal from "../misc/GenericModal";
-import { saveContactoSelection } from "../../store/slices/ticketSlice";
-import { useAppDispatch } from "../../store/hooks";
-import { deleteUndefinedAttr } from "../../utils/helpers";
-import Input from "../forms/Input";
-import Select from "../forms/Select";
-import Toggle from "../forms/Toggle";
-import AsyncComboBox from "../forms/AsyncCombobox";
-import Button from "../misc/Button";
+import Modal from "../../../components/misc/GenericModal";
+import { saveContactoSelection } from "../../../store/slices/ticketSlice";
+import { useAppDispatch } from "../../../store/hooks";
+import { deleteUndefinedAttr } from "../../../utils/helpers";
+import Input from "../../../components/forms/Input";
+import Select from "../../../components/forms/Select";
+import Toggle from "../../../components/forms/Toggle";
+import AsyncComboBox from "../../../components/forms/AsyncCombobox";
+import Button from "../../../components/misc/Button";
 
 interface propsDestructured {
   setContactModal: (contactModal: boolean) => void;

@@ -9,7 +9,10 @@ import {
   BanknotesIcon,
   UserGroupIcon,
   TicketIcon,
-  UserCircleIcon
+  UserCircleIcon,
+  Cog6ToothIcon,
+  HomeModernIcon
+  
 } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
 import useServer from "../api/useServer";
@@ -42,17 +45,29 @@ export default function SideBar({ state, switchSidebar }: Sidebar) {
     },
 
     {
-      name: "cuentas",
+      name: "Cuentas",
       href: "cuentas",
       icon: UserCircleIcon,
       current: currentLocation === "cuentas",
     },
-    /*{
+    {
+      name: "Tarjetas",
+      href: "tarjetas",
+      icon: CreditCardIcon,
+      current: currentLocation === "tarjetas",
+    },
+    {
+      name: "Entidades",
+      href: "Entidades",
+      icon: HomeModernIcon,
+      current: currentLocation === "Entidad",
+    },
+    {
       name: "Configuración",
       href: "configuration",
       icon: Cog6ToothIcon,
       current: currentLocation === "configuration",
-    },*/
+    },
   ];
 
   {

@@ -15,6 +15,8 @@ import nomenclatorSlice from "./slices/nomenclatorSlice";
 import configurationsKeySlice from "./slices/configurationsKeySlice";
 import initSlice from "./slices/initSlice";
 import ticketReducer from "./slices/ticketSlice";
+import CardReducer from "./slices/cardsSlice"
+import EntityReducer from './slices/EntitySlice'
 const persistConfig = { key: "root", storage, whitelist: ["session"] };
 
 const rootReducer = combineReducers({
@@ -22,7 +24,9 @@ const rootReducer = combineReducers({
   init:initSlice,
   nomenclator: nomenclatorSlice,
   configurationsKey:configurationsKeySlice,
-  ticket: ticketReducer
+  ticket: ticketReducer,
+  cards: CardReducer,
+  Entity: EntityReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

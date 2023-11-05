@@ -24,7 +24,7 @@ export default function Select(props: UseControllerProps & InputProps) {
 
 
   useEffect(() => {
-    const current = data.findIndex(item=>item.id === defaultValue || field.value === item.id)
+    const current = data.findIndex(item=>item.name === defaultValue || field.value === item.name)
   if(current !== -1){
     setSelected(data[current]);
     field.onChange(data[current].id)
@@ -33,12 +33,12 @@ export default function Select(props: UseControllerProps & InputProps) {
 
 
   return (
-    <div className="py-2">
+    <div className="">
       <Listbox
         value={selected}
         onChange={(e) => {
           setSelected(e);
-          field.onChange(e.id);
+          field.onChange(e.name);
         }}
         disabled={disabled}
         defaultValue={field.value}

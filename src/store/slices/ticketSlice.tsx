@@ -31,3 +31,5 @@ export const { saveClasificacionSelection, saveContactoSelection, saveItems } =
   ticketSlice.actions;
 
 export default ticketSlice.reducer;
+
+export const selectItems = (state: any) => state.ticketState.items

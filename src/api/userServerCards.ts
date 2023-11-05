@@ -9,7 +9,7 @@ import query from "./APIServices";
 import useServer from "./useServer";
 import { Flip, toast } from "react-toastify";
 import { updateUserState } from "../store/slices/initSlice";
-import { saveItems } from "../store/slices/ticketSlice";
+import { saveCards } from "../store/slices/cardsSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateUrlParams } from "../utils/helpers";
@@ -33,21 +33,21 @@ const useServerUser = () => {
   const items = useAppSelector((state)=> state.ticket.items)
 
 
-  const getAllUsers = async (filter: BasicType) => {
+  const getAllCards = async (filter: BasicType) => {
     setIsLoading(true);
     await query
-      .get(`/account/all${generateUrlParams(filter)}`)
+      .get(`/card/all${generateUrlParams(filter)}`)
       .then((resp) => {
         const data = resp.data;
         const data1 = data.data
-        dispatch(saveItems(data1))
+        dispatch(saveCards(data1))
         setAllTickets(data1);
 
       })
       .catch((error) => manageErrors(error));
     setIsLoading(false);
   };
-  const addUser = async (
+  const addCard = async (
     data: any,
     close: Function
   ) => {
@@ -59,7 +59,7 @@ const useServerUser = () => {
         
         console.log(resp.data.data)
         console.log(items)
-        dispatch(saveItems([...items, resp.data.data]))
+        dispatch(saveCards([...items, resp.data.data]))
         //setAllTickets();
         
         toast.success("Ticket agregado satisfactoriamente");
@@ -69,7 +69,7 @@ const useServerUser = () => {
     setIsLoading(false)
   };
 
-  const editUser = async (
+  const editCard = async (
     id: number,
     data: Record<string, string | number | boolean | string[]>,
     callback?: Function
@@ -82,14 +82,14 @@ const useServerUser = () => {
         const idx = newUsers.findIndex((user:any) => user.id === id);
         newUsers.splice(idx, 1, data);
         console.log(newUsers)
-        dispatch(saveItems(newUsers))
+        dispatch(saveCards(newUsers))
         callback && callback();
       })
       .catch((e) => manageErrors(e));
     setIsFetching(false);
   };
 
-  const getUser = async (id: any) => {
+  const getCard = async (id: any) => {
     setIsLoading(true);
     await query
       .get(`/account/findById/${id}`)
@@ -101,7 +101,7 @@ const useServerUser = () => {
     setIsLoading(false);
   };
 
-  const updateUser = async (
+  const updateCard = async (
     userId: number,
     data: BasicType,
     callback?: Function
@@ -122,7 +122,7 @@ const useServerUser = () => {
     setIsFetching(false);
   };
 
-  const updateMyUser = (
+  const updateMyCard = (
     data: Partial<UserInterface>,
     closeModal?: Function
   ) => {
@@ -167,26 +167,14 @@ const useServerUser = () => {
       });
   };
 
-  const resetUserPsw = async (email: string, callback?: Function) => {
-    setIsFetching(true);
-    await query
-      .post(`/control/user/request-password`, { email })
-      .then(() => {
-        toast.success("Operación completada con éxito");
-        callback && callback();
-      })
-      .catch((error) => manageErrors(error));
-    setIsFetching(false);
-  };
-
-  const deleteUser = async (id: number, callback?: Function) => {
+  const deleteCard = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
       .deleteAPI(`/account/delete/${id}`, {})
       .then(() => {
         toast.success("Usuario Eliminado con éxito");
         const newUsers = items.filter((item:any) => item.id !== id);
-        dispatch(saveItems(newUsers))
+        dispatch(saveCards(newUsers))
         callback && callback();
       })
       .catch((error) => manageErrors(error));
@@ -202,15 +190,14 @@ const useServerUser = () => {
     user,
     setAllTickets,
     allTickets,
-    getAllUsers,
-    addUser,
-    getUser,
-    editUser,
-    updateUser,
-    updateMyUser,
-    deleteUser,
+    getAllCards,
+    addCard,
+    getCard,
+    editCard,
+    updateCard,
+    updateMyCard,
+    deleteCard,
     setAllUsers,
-    resetUserPsw,
     manageErrors,
     modalWaitingError,
     setRender,

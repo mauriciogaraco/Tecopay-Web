@@ -19,8 +19,8 @@ import ComboBox from "../../../components/forms/Combobox";
 import AsyncComboBox from "../../../components/forms/AsyncCombobox";
 
 interface EditInterface {
-  user: any
-  editUser: Function;
+  Entity: any
+  editEntity: Function;
   deleteUser: Function;
   closeModal: Function;
   isFetching: boolean;
@@ -40,10 +40,10 @@ const clasificacion: SelectInterface[] = [
   { id: "4", name: "Servidores" },
 ];
 
-const DetailUserEditComponent = ({
-  editUser,
+const DetailEntityEditComponent = ({
+  editEntity,
   deleteUser,
-  user,
+  Entity,
   closeModal,
   isFetching,
   id
@@ -54,15 +54,14 @@ const DetailUserEditComponent = ({
 
     }
   );
-  const { isFetching: loadingPsw } = useServerUser();
-  const { isFetching: fetchingUser } = useServerUser();
-  const { isFetching: fetchingMail } = useServerUser();
   const [delAction, setDelAction] = useState(false);
-  const {getAllUsers} = useServerUser()
+
 
   const onSubmit: SubmitHandler<BasicType> = (data) => {
-    const WholeData = Object.assign(data, {code: '123456', ownerId:251, id:user?.data.id})
-    editUser(user?.data.id, deleteUndefinedAttr(WholeData), reset()).then(()=>closeModal());
+    const date = Entity?.data.createdAt
+    const WholeData = Object.assign(data, { userId: 1, id:id, createdAt:date })
+    console.log(id)
+    editEntity(Entity?.data.id, deleteUndefinedAttr(WholeData), reset()).then(() => closeModal());
   };
 
   return (
@@ -81,7 +80,7 @@ const DetailUserEditComponent = ({
           <div className="grid grid-cols-2 gap-5">
             <Input
               name="name"
-              defaultValue={user?.data.name}
+              defaultValue={Entity?.data.name}
               label="Nombre"
               control={control}
               rules={{
@@ -95,55 +94,47 @@ const DetailUserEditComponent = ({
               }}
             />
 
-            <AsyncComboBox
-              name="issueEntityId"
-              defaultItem={user ? { id: user?.data.issueEntityId, name: user?.data.issueEntityId } : undefined}
-              defaultValue= {user?.data.issueEntityId}
+            <Input
+              name="phone"
+              label="Telefono"
+              defaultValue={Entity?.data.phone}
+              placeholder="Telefono"
               control={control}
-              rules={{ required: "Campo requerido" }}
-              label="Entidad"
-              dataQuery={{ url: "/entity/all" }}
-              normalizeData={{ id: 'id', name: "name" }}
-            ></AsyncComboBox>
+              rules={{ required: "Campo requerido" }}></Input>
+
             <AsyncComboBox
               name="currencyId"
-              defaultItem={user ? { id: user?.data.id, name: user?.data.currencyId } : undefined}
-              defaultValue={user?.data.currencyId}
+              defaultItem={Entity ? { id: Entity?.data.id, name: Entity?.data.currencyId } : undefined}
+              defaultValue={Entity?.data.currencyId}
               control={control}
               rules={{ required: "Campo requerido" }}
               label="Moneda"
               dataQuery={{ url: "/currency/all" }}
               normalizeData={{ id: 'id', name: "code" }}
             ></AsyncComboBox>
+            <Select name="status" control={control} defaultValue={Entity?.data.status} default={Entity?.data.status} label="Estado de la entidad" data={[{id:1, name:'ACTIVA'},{id:2, name:'INACTIVA'}]} ></Select>
 
 
           </div>
-          <div className="flex py-5 justify-around gap-5"><Toggle name="isPrivate" defaultValue={user?.data.isPrivate} title="Cuenta privada" control={control}></Toggle>
-            <Toggle name="isActive" title="Cuenta activa" defaultValue={user?.data.isActive} control={control}></Toggle>
-            <Toggle name="isBlocked" defaultValue={user?.data.isBlocked} title="Cuenta Bloqueada" control={control}></Toggle>
+          <div className="flex py-5 justify-around gap-5">
+
           </div>
           <TextArea
 
-            defaultValue={user?.data.address}
+            defaultValue={Entity?.data.address}
             name="address"
             control={control}
             label="Direccion"
           ></TextArea>
-          <TextArea
 
-            defaultValue={user?.data.description}
-            name="description"
-            control={control}
-            label="Descripcion"
-          ></TextArea>
-
+          
           <div className="flex justify-end mt-5">
             <Button
               name="Actualizar"
               color="slate-600"
               type="submit"
               loading={isFetching}
-              disabled={isFetching || loadingPsw}
+              disabled={isFetching}
             />
           </div>
         </div>
@@ -152,9 +143,9 @@ const DetailUserEditComponent = ({
       {delAction && (
         <Modal state={delAction} close={setDelAction}>
           <AlertContainer
-            onAction={() => deleteUser(user?.data.id, closeModal)}
+            onAction={() => deleteUser(Entity?.data.id, closeModal)}
             onCancel={setDelAction}
-            title={`Eliminar ${user?.data.name}`}
+            title={`Eliminar ${Entity?.data.name}`}
             text="¿Seguro que desea eliminar este usuario del sistema?"
             loading={isFetching}
           />
@@ -164,4 +155,4 @@ const DetailUserEditComponent = ({
   );
 };
 
-export default DetailUserEditComponent;
+export default DetailEntityEditComponent;
