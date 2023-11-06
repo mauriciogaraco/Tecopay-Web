@@ -1,9 +1,9 @@
 import { useState } from "react";
 import {
-  PaginateInterface,
-  AccountData,
-  TicketsInterface,
-  UserInterface,
+  type PaginateInterface,
+  type AccountData,
+  type TicketsInterface,
+  type UserInterface,
 } from "../interfaces/ServerInterfaces";
 import query from "./APIServices";
 import useServer from "./useServer";
@@ -13,15 +13,14 @@ import { saveCards } from "../store/slices/cardsSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateUrlParams } from "../utils/helpers";
-import { BasicType } from "../interfaces/LocalInterfaces";
+import { type BasicType } from "../interfaces/LocalInterfaces";
 
-const useServerUser = () => {
+const useServerCards = () => {
   const { manageErrors } = useServer();
-  const [render, setRender] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
-  const [allUsers, setAllUsers] = useState<Array<TicketsInterface>>([]);
+  const [allUsers, setAllUsers] = useState<TicketsInterface[]>([]);
   const [allTickets, setAllTickets] = useState <AccountData>();
   const [user, setUser] = useState<AccountData | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
@@ -30,7 +29,8 @@ const useServerUser = () => {
   );
   const [waiting, setWaiting] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const items = useAppSelector((state)=> state.ticket.items)
+  const items = useAppSelector((state)=> state.account.items)
+
 
 
   const getAllCards = async (filter: BasicType) => {
@@ -38,13 +38,18 @@ const useServerUser = () => {
     await query
       .get(`/card/all${generateUrlParams(filter)}`)
       .then((resp) => {
-        const data = resp.data;
-        const data1 = data.data
-        dispatch(saveCards(data1))
-        setAllTickets(data1);
+        setPaginate({
+          totalItems: resp.data.totalItems,
+          totalPages: resp.data.totalPages,
+          currentPage: resp.data.currentPage,
+        });
+        console.log(resp.data)
+        dispatch(saveCards(resp.data.items))
+        console.log(resp.data.items)
+
 
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
   const addCard = async (
@@ -60,11 +65,11 @@ const useServerUser = () => {
         console.log(resp.data.data)
         console.log(items)
         dispatch(saveCards([...items, resp.data.data]))
-        //setAllTickets();
+        // setAllTickets();
         
         toast.success("Ticket agregado satisfactoriamente");
       }).then(()=>close())
-      .catch((e) => manageErrors(e));
+      .catch((e) => { manageErrors(e); });
     setIsFetching(false);
     setIsLoading(false)
   };
@@ -83,9 +88,9 @@ const useServerUser = () => {
         newUsers.splice(idx, 1, data);
         console.log(newUsers)
         dispatch(saveCards(newUsers))
-        callback && callback();
+        callback?.();
       })
-      .catch((e) => manageErrors(e));
+      .catch((e) => { manageErrors(e); });
     setIsFetching(false);
   };
 
@@ -97,7 +102,7 @@ const useServerUser = () => {
         setUser(resp.data);
         console.log(resp.data)
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
 
@@ -115,10 +120,10 @@ const useServerUser = () => {
         const idx = newUsers.findIndex((user) => user.id === userId);
         newUsers.splice(idx, 1, resp.data);
         setAllUsers(newUsers);
-        callback && callback();
+        callback?.();
         toast.success("Actualización exitosa");
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
 
@@ -175,9 +180,9 @@ const useServerUser = () => {
         toast.success("Usuario Eliminado con éxito");
         const newUsers = items.filter((item:any) => item.id !== id);
         dispatch(saveCards(newUsers))
-        callback && callback();
+        callback?.();
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
   return {
@@ -200,8 +205,6 @@ const useServerUser = () => {
     setAllUsers,
     manageErrors,
     modalWaitingError,
-    setRender,
-    render
   };
 };
-export default useServerUser;
+export default useServerCards;

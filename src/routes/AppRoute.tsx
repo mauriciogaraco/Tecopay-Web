@@ -1,17 +1,16 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes } from 'react-router-dom';
 
-import NotFoundpage from "../pages/NotFoundPage";
-import Dashboard from "../pages/DashboardPage";
-import "react-toastify/dist/ReactToastify.css";
+import NotFoundpage from '../pages/NotFoundPage';
+import Dashboard from '../pages/DashboardPage';
+import 'react-toastify/dist/ReactToastify.css';
 
-import AppContainer from "../containers/AppContainer";
+import AppContainer from '../containers/AppContainer';
 
-import Tickets from "../containers/tickets/Tickets";
-import { Suspense, lazy } from "react";
-import Loading from "../components/misc/Loading";
-import Entity from "../containers/Entity/Entity";
-import Card from "../containers/Card/Card";
-
+import Tickets from '../containers/accounts/Accounts';
+import { Suspense, lazy } from 'react';
+import Loading from '../components/misc/Loading';
+import Entity from '../containers/entity/Entity';
+import Card from '../containers/card/Card';
 
 //Almacenes
 /*const ListStocks = lazy(() => import("../containers/areas/ListStocks"));
@@ -29,17 +28,17 @@ const ReportContainer = lazy(
 );*/
 
 const AppRoute = () => {
-  return (
-    <Routes>
-      <Route path="/" element={<AppContainer />}>
-        <Route index element={<Dashboard />} />
-        <Route path="/cuentas" element={<Tickets />} />
-        <Route path="/tarjetas" element={<Card />} />
-        <Route path="/cuentas/Detalles" element={<Tickets />} />
-        <Route path="/entidades" element={<Entity />} />
-        {/**Stocks */}
-        <>
-          {/*<Route
+	return (
+		<Routes>
+			<Route path='/' element={<AppContainer />}>
+				<Route index element={<Dashboard />} />
+				<Route path='/cuentas' element={<Tickets />} />
+				<Route path='/tarjetas' element={<Card />} />
+				<Route path='/cuentas/Detalles' element={<Tickets />} />
+				<Route path='/entidades' element={<Entity />} />
+				{/**Stocks */}
+				<>
+					{/*<Route
               //index={roles.isManagerArea}
               path="/stocks"
               element={
@@ -73,11 +72,11 @@ const AppRoute = () => {
               }
             />
           </>*/}
-
-        </></Route>
-      <Route path="/*" element={<NotFoundpage />} />
-    </Routes>
-  );
+				</>
+			</Route>
+			<Route path='/*' element={<NotFoundpage />} />
+		</Routes>
+	);
 };
 
 export default AppRoute;

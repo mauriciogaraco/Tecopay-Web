@@ -1,9 +1,9 @@
 import { useState } from "react";
 import {
-  UserInterface,
-  SumaryInterface,
-  TotalSubscripion,
-  TotalType,
+  type UserInterface,
+  type SumaryInterface,
+  type TotalSubscripion,
+  type TotalType,
 } from "../interfaces/ServerInterfaces";
 import { useAppDispatch } from "../store/hooks";
 import query from "../api/APIServices";
@@ -21,9 +21,7 @@ export interface PaginateInterface {
   totalItems: number;
 }
 
-export interface CheckFieldInterface {
-  [field: string]: boolean;
-}
+export type CheckFieldInterface = Record<string, boolean>;
 
 export interface ImageLoad {
   id: number;
@@ -54,12 +52,12 @@ const useServer = () => {
     console.log(error);
     if (error.response?.data?.message) {
       toast.error(error.response?.data?.message);
-      return;
+      
     } else {
       toast.error(
         "Upss, ha ocurrido un error inesperado. \n Intente de nuevo o consulte con su administrador..."
       );
-      return;
+      
     }
   };
 
@@ -87,7 +85,7 @@ const useServer = () => {
           ]);
         }
       })
-      .catch((e) => manageErrors(e));
+      .catch((e) => { manageErrors(e); });
     setIsFetching(false);
   };
 
@@ -103,7 +101,7 @@ const useServer = () => {
         console.log(resp)
         dispatch(setKeys(resp.data));
       })
-      .catch((e) => manageErrors(e));
+      .catch((e) => { manageErrors(e); });
     setIsFetching(false);
   };
 
@@ -157,13 +155,13 @@ const useServer = () => {
                 return { ...item, type: "PRODUCCIÓN" };
 
               default:
-                return;
+                
             }
           }
         );
         setSumaryData({ ...resp.data, totalBySubscriptionPlan, totalByType });
       })
-      .catch((e) => manageErrors(e));
+      .catch((e) => { manageErrors(e); });
     setIsLoading(false);
   };
 
@@ -210,11 +208,11 @@ const useServer = () => {
       });
   };
 
-  const getAllUsers = async (/*page: number = 1, offset: number = 6*/) => {
+  const getAllUsers = async (/* page: number = 1, offset: number = 6 */) => {
     setWaiting(true);
     await query
       .get(
-        `/tickets`
+        `/accounts`
       )
       .then((resp) => {
         const { currentPage, totalItems, totalPages, items } = resp.data;
@@ -279,7 +277,7 @@ const useServer = () => {
     setWaiting(false);
   };
 
-  /*const updateUser = (data: Partial<UserInterface>, closeModal?: Function) => {
+  /* const updateUser = (data: Partial<UserInterface>, closeModal?: Function) => {
     setIsFetching(true);
     query
       .patch(`/control/user/${data.id}`, data)
@@ -404,9 +402,9 @@ const useServer = () => {
         });
       });
     setIsFetching(false);
-  };*/
+  }; */
 
-  /*const deleteUser = async (userId: number, closeModal: Function) => {
+  /* const deleteUser = async (userId: number, closeModal: Function) => {
     setModalWaiting(true);
     await query
       .deleteAPI(`/control/user/${userId}`, {})
@@ -446,7 +444,7 @@ const useServer = () => {
         });
         setModalWaiting(false);
       });
-  };*/
+  }; */
 
 
 
@@ -471,10 +469,10 @@ const useServer = () => {
     addUser,
     getUser,
     findUser,
-    //updateUser,
-    //updateMyUser,
-    //deleteUser,
-    //resetUserPsw,
+    // updateUser,
+    // updateMyUser,
+    // deleteUser,
+    // resetUserPsw,
     manageErrors,
     uploadImg,
     updateImgLocal

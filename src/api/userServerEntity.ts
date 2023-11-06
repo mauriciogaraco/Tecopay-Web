@@ -1,9 +1,9 @@
 import { useState } from "react";
 import {
-  PaginateInterface,
-  AccountData,
-  TicketsInterface,
-  UserInterface,
+  type PaginateInterface,
+  type AccountData,
+  type TicketsInterface,
+  type UserInterface,
 } from "../interfaces/ServerInterfaces";
 import query from "./APIServices";
 import useServer from "./useServer";
@@ -13,7 +13,7 @@ import { saveEntity } from "../store/slices/EntitySlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateUrlParams } from "../utils/helpers";
-import { BasicType } from "../interfaces/LocalInterfaces";
+import { type BasicType } from "../interfaces/LocalInterfaces";
 
 const useServerEntity = () => {
   const { manageErrors } = useServer();
@@ -21,7 +21,7 @@ const useServerEntity = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
-  const [allUsers, setAllUsers] = useState<Array<TicketsInterface>>([]);
+  const [allUsers, setAllUsers] = useState<TicketsInterface[]>([]);
   const [allTickets, setAllTickets] = useState <AccountData>();
   const [entity, setEntity] = useState<AccountData | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
@@ -38,13 +38,18 @@ const useServerEntity = () => {
     await query
       .get(`/entity/all${generateUrlParams(filter)}`)
       .then((resp) => {
-        const data = resp.data;
-        const data1 = data.data
-        dispatch(saveEntity(data1))
-        setAllTickets(data1);
+        setPaginate({
+          totalItems: resp.data.totalItems,
+          totalPages: resp.data.totalPages,
+          currentPage: resp.data.currentPage,
+        });
+        console.log(resp.data)
+        dispatch(saveEntity(resp.data.items))
+        console.log(resp.data.items)
+
 
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
   const addEntity = async (
@@ -60,11 +65,11 @@ const useServerEntity = () => {
         console.log(resp.data.data)
         console.log(items)
         dispatch(saveEntity([...items, resp.data.data]))
-        //setAllTickets();
+        // setAllTickets();
         
         toast.success("Entidad agregada satisfactoriamente");
       })
-      .catch((e) => manageErrors(e));
+      .catch((e) => { manageErrors(e); });
     setIsFetching(false);
     setIsLoading(false)
   };
@@ -83,10 +88,10 @@ const useServerEntity = () => {
         newUsers.splice(idx, 1, data);
         console.log(newUsers)
         dispatch(saveEntity(newUsers))
-        callback && callback();
+        callback?.();
         toast.success("Entidad editada satisfactoriamente");
       })
-      .catch((e) => manageErrors(e));
+      .catch((e) => { manageErrors(e); });
     setIsFetching(false);
   };
 
@@ -98,7 +103,7 @@ const useServerEntity = () => {
         setEntity(resp.data);
         console.log(resp.data)
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
 
@@ -116,10 +121,10 @@ const useServerEntity = () => {
         const idx = newUsers.findIndex((user) => user.id === userId);
         newUsers.splice(idx, 1, resp.data);
         setAllUsers(newUsers);
-        callback && callback();
+        callback?.();
         toast.success("Actualización exitosa");
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
 
@@ -176,9 +181,9 @@ const useServerEntity = () => {
         toast.success("Usuario Eliminado con éxito");
         const newUsers = items.filter((item:any) => item.id !== id);
         dispatch(saveEntity(newUsers))
-        callback && callback();
+        callback?.();
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
   return {

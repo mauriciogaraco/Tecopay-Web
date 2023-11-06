@@ -1,19 +1,19 @@
 import { useState } from "react";
 import {
-  PaginateInterface,
-  AccountData,
-  TicketsInterface,
-  UserInterface,
+  type PaginateInterface,
+  type AccountData,
+  type TicketsInterface,
+  type UserInterface,
 } from "../interfaces/ServerInterfaces";
 import query from "./APIServices";
 import useServer from "./useServer";
 import { Flip, toast } from "react-toastify";
 import { updateUserState } from "../store/slices/initSlice";
-import { saveItems } from "../store/slices/ticketSlice";
+import { saveItems } from "../store/slices/accountSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateUrlParams } from "../utils/helpers";
-import { BasicType } from "../interfaces/LocalInterfaces";
+import { type BasicType } from "../interfaces/LocalInterfaces";
 
 const useServerUser = () => {
   const { manageErrors } = useServer();
@@ -21,7 +21,7 @@ const useServerUser = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
-  const [allUsers, setAllUsers] = useState<Array<TicketsInterface>>([]);
+  const [allUsers, setAllUsers] = useState<TicketsInterface[]>([]);
   const [allTickets, setAllTickets] = useState <AccountData>();
   const [user, setUser] = useState<AccountData | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
@@ -30,7 +30,7 @@ const useServerUser = () => {
   );
   const [waiting, setWaiting] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const items = useAppSelector((state)=> state.ticket.items)
+  const items = useAppSelector((state)=> state.account.items)
 
 
   const getAllUsers = async (filter: BasicType) => {
@@ -44,7 +44,7 @@ const useServerUser = () => {
         setAllTickets(data1);
 
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
   const addUser = async (
@@ -60,11 +60,11 @@ const useServerUser = () => {
         console.log(resp.data.data)
         console.log(items)
         dispatch(saveItems([...items, resp.data.data]))
-        //setAllTickets();
+        // setAllTickets();
         
         toast.success("Ticket agregado satisfactoriamente");
       }).then(()=>close())
-      .catch((e) => manageErrors(e));
+      .catch((e) => { manageErrors(e); });
     setIsFetching(false);
     setIsLoading(false)
   };
@@ -83,9 +83,9 @@ const useServerUser = () => {
         newUsers.splice(idx, 1, data);
         console.log(newUsers)
         dispatch(saveItems(newUsers))
-        callback && callback();
+        callback?.();
       })
-      .catch((e) => manageErrors(e));
+      .catch((e) => { manageErrors(e); });
     setIsFetching(false);
   };
 
@@ -97,7 +97,7 @@ const useServerUser = () => {
         setUser(resp.data);
         console.log(resp.data)
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
 
@@ -115,10 +115,10 @@ const useServerUser = () => {
         const idx = newUsers.findIndex((user) => user.id === userId);
         newUsers.splice(idx, 1, resp.data);
         setAllUsers(newUsers);
-        callback && callback();
+        callback?.();
         toast.success("Actualización exitosa");
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
 
@@ -173,9 +173,9 @@ const useServerUser = () => {
       .post(`/control/user/request-password`, { email })
       .then(() => {
         toast.success("Operación completada con éxito");
-        callback && callback();
+        callback?.();
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
 
@@ -187,9 +187,9 @@ const useServerUser = () => {
         toast.success("Usuario Eliminado con éxito");
         const newUsers = items.filter((item:any) => item.id !== id);
         dispatch(saveItems(newUsers))
-        callback && callback();
+        callback?.();
       })
-      .catch((error) => manageErrors(error));
+      .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
   return {
