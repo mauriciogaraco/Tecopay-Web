@@ -1,15 +1,9 @@
-import {
-	PlusIcon,
-	TicketIcon,
-	UsersIcon,
-	UserCircleIcon,
-} from '@heroicons/react/24/outline';
+import { PlusIcon, CreditCardIcon } from '@heroicons/react/24/outline';
 
 import GenericTable, {
 	DataTableInterface,
 	FilterOpts,
 } from '../../components/misc/GenericTable';
-import useServerUser from '../../api/userServerAccounts';
 
 import Paginate from '../../components/misc/Paginate';
 import Modal from '../../components/modals/GenericModal';
@@ -17,22 +11,18 @@ import Breadcrumb, {
 	PathInterface,
 } from '../../components/navigation/Breadcrumb';
 
-import { useNavigate } from 'react-router-dom';
-
 import { BasicType, SelectInterface } from '../../interfaces/InterfacesLocal';
 
 import { useEffect, useState } from 'react';
-import NuevoTicketModal from '../accounts/NewTicket/NuevoTicketModal';
-import { data } from '../../utils/TemporaryArrayData';
-import axios from 'axios';
+import NuevoTicketModal from '../accounts/NewAccount/NewAccountModal';
 
 import { useAppSelector } from '../../store/hooks';
 import useServerCards from '../../api/userServerCards';
-import EditCardContainer from './editEntityWizzard/EditEntityContainer';
+import { formatCalendar } from '../../utils/helpers';
+import EditCardContainer from './editCardWizzard/EditCardContainer';
 
 const Card = () => {
 	const [query, setQuery] = useState<string>('');
-	const [queryText, setQueryText] = useState('');
 	const [post, setPost] = useState(null);
 
 	const {
@@ -41,66 +31,22 @@ const Card = () => {
 		isFetching,
 		waiting,
 		modalWaiting,
-		allUsers,
-		user,
-		setAllTickets,
-		allTickets,
+		card,
+		allCards,
 		getAllCards,
 		addCard,
 		getCard,
 		editCard,
-		updateCard,
-		updateMyCard,
 		deleteCard,
-		setAllUsers,
+		setAllCards,
 		manageErrors,
 		modalWaitingError,
 	} = useServerCards();
-
-	const handleSearch = (e: any) => {
-		e.preventDefault();
-		setQuery(queryText);
-	};
-
-	const filteredOptions =
-		query === ''
-			? data
-			: data.filter(
-					({
-						cliente,
-						no,
-						fecha,
-						description,
-						prioridad,
-						clasificacion,
-						email,
-					}) => {
-						return (
-							cliente.toLowerCase().includes(query.toLowerCase()) ||
-							no.toLowerCase().includes(query.toLowerCase()) ||
-							prioridad.toLowerCase().includes(query.toLowerCase()) ||
-							clasificacion.toLowerCase().includes(query.toLowerCase()) ||
-							email.toLowerCase().includes(query.toLowerCase()) ||
-							fecha.toLowerCase().includes(query.toLowerCase()) ||
-							cliente.toLowerCase().includes(query.toLowerCase())
-						);
-					},
-			  );
-
-	/*const {
-              getAllClients,
-              addClient,
-              allClients,
-              paginate,
-              isLoading,
-              isFetching,
-            } = useServerOnlineClients();*/
 
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
-	//const [exportModal, setExportModal] = useState(false);
 
 	/*useEffect(() => {
               getAllClients(filter);
@@ -108,9 +54,8 @@ const Card = () => {
 
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [
-		'Codigo',
-		'Nombre',
-		'Entidad',
+		'id',
+		'Expiracion',
 		'Propietario',
 		'Moneda',
 		'Direccion',
@@ -119,19 +64,18 @@ const Card = () => {
 	const tableData: DataTableInterface[] = [];
 	// eslint-disable-next-line array-callback-return
 
-	const items = useAppSelector((state) => state.account.items);
+	const items = useAppSelector((state) => state.cards.Cards);
 
 	// @ts-ignore
 	items?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				'No.': item.id,
+				id: item.id,
 				Codigo: `${item?.code}`,
-				Nombre: item?.name,
-				Entidad: item?.issueEntityId,
-				Propietario: item.ownerId,
-				Moneda: item.currencyId,
+				Expiracion: formatCalendar(item?.expiratedAt),
+				Propietario: item.holder?.fullName,
+				Moneda: item.currency.code,
 				Descripcion: item.description,
 				Direccion: item.address,
 			},
@@ -257,7 +201,7 @@ const Card = () => {
 	//Breadcrumb-----------------------------------------------------------------------------------
 	const paths: PathInterface[] = [
 		{
-			name: 'Cuentas',
+			name: 'Tarjetas',
 		},
 	];
 	//------------------------------------------------------------------------------------
@@ -271,19 +215,13 @@ const Card = () => {
 	const closeAddAccount = () => setAddTicketmodal(false);
 
 	useEffect(() => {
-		getAllCards(filter).then(
-			allTickets ? () => console.log(allTickets) : () => console.log('moee'),
-		);
+		getAllCards(filter);
 	}, [filter]);
 
-	//@ts-ignore
-	let totalItems = allTickets?.length;
-	let totalPages = 1;
-	let currentPage = 1;
 	return (
 		<div>
 			<Breadcrumb
-				icon={<UserCircleIcon className='h-6 text-gray-500' />}
+				icon={<CreditCardIcon className='h-6 text-gray-500' />}
 				paths={paths}
 			/>
 			<GenericTable
@@ -297,7 +235,7 @@ const Card = () => {
 				paginateComponent={
 					<Paginate
 						action={(page: number) => setFilter({ ...filter, page })}
-						data={{ totalItems, currentPage, totalPages }}
+						data={paginate}
 					/>
 				}
 			/>

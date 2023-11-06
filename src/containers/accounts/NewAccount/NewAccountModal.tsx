@@ -22,7 +22,7 @@ interface propsDestructured {
 	close: Function;
 }
 
-const NuevoTicketModal = ({ setContactModal, close }: propsDestructured) => {
+const NewAccountModal = ({ setContactModal, close }: propsDestructured) => {
 	const { control, handleSubmit } = useForm();
 
 	const onSubmit: SubmitHandler<
@@ -80,7 +80,7 @@ const NuevoTicketModal = ({ setContactModal, close }: propsDestructured) => {
 						control={control}
 						rules={{ required: 'Campo requerido' }}
 						label='Propietario'
-						dataQuery={{ url: '/account/all' }}
+						dataQuery={{ url: '/user/all' }}
 						normalizeData={{ id: 'id', name: 'fullName' }}
 					></AsyncComboBox>
 
@@ -127,4 +127,4 @@ const NuevoTicketModal = ({ setContactModal, close }: propsDestructured) => {
 	);
 };
 
-export default NuevoTicketModal;
+export default NewAccountModal;

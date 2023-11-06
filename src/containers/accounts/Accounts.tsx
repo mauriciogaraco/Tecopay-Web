@@ -16,18 +16,14 @@ import Modal from '../../components/modals/GenericModal';
 import Breadcrumb, {
 	type PathInterface,
 } from '../../components/navigation/Breadcrumb';
-
-import { useNavigate } from 'react-router-dom';
-
 import {
 	BasicType,
 	type SelectInterface,
 } from '../../interfaces/InterfacesLocal';
 
 import { useEffect, useState } from 'react';
-import NuevoTicketModal from './NewTicket/NuevoTicketModal';
+import NewAccountModal from './NewAccount/NewAccountModal';
 import { data } from '../../utils/TemporaryArrayData';
-import axios from 'axios';
 import { useAppSelector } from '../../store/hooks';
 import EditAccountContainer from './editAccountWizzard/EditUserContainer';
 
@@ -118,7 +114,6 @@ const Accounts = () => {
 
 	const items = useAppSelector((state) => state.account.items);
 
-	// @ts-expect-error
 	items?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
@@ -127,7 +122,7 @@ const Accounts = () => {
 				Codigo: `${item?.code}`,
 				Nombre: item?.name,
 				Entidad: item?.issueEntity?.name,
-				Propietario: item.owner?.fullname,
+				Propietario: item.owner?.fullName,
 				Moneda: item.currency?.code,
 				Direccion: item.address,
 			},
@@ -306,7 +301,7 @@ const Accounts = () => {
 
 			{addTicketmodal && (
 				<Modal state={addTicketmodal} close={setAddTicketmodal}>
-					<NuevoTicketModal
+					<NewAccountModal
 						setContactModal={setContactModal}
 						close={closeAddAccount}
 						contactModal={contactModal}

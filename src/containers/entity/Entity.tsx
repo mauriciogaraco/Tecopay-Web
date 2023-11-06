@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { BasicType, SelectInterface } from '../../interfaces/InterfacesLocal';
 
 import { useEffect, useState } from 'react';
-import NuevoTicketModal from '../accounts/NewTicket/NuevoTicketModal';
+import NuevoTicketModal from '../accounts/NewAccount/NewAccountModal';
 import { data } from '../../utils/TemporaryArrayData';
 import axios from 'axios';
 import EditUserContainer from '../accounts/editAccountWizzard/EditUserContainer';

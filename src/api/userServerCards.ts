@@ -8,7 +8,6 @@ import {
 import query from "./APIServices";
 import useServer from "./useServer";
 import { Flip, toast } from "react-toastify";
-import { updateUserState } from "../store/slices/initSlice";
 import { saveCards } from "../store/slices/cardsSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate, useParams } from "react-router-dom";
@@ -20,9 +19,8 @@ const useServerCards = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
-  const [allUsers, setAllUsers] = useState<TicketsInterface[]>([]);
-  const [allTickets, setAllTickets] = useState <AccountData>();
-  const [user, setUser] = useState<AccountData | null>(null);
+  const [allCards, setAllCards] = useState<TicketsInterface[]>([]);
+  const [card, setCard] = useState<AccountData | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
   const [modalWaitingError, setModalWaitingError] = useState<string | null>(
     null
@@ -59,7 +57,7 @@ const useServerCards = () => {
     setIsFetching(true);
     setIsLoading(true)
     await query
-    .post("/account/register", data)
+    .post("/card/create", data)
       .then((resp) => {
         
         console.log(resp.data.data)
@@ -81,7 +79,7 @@ const useServerCards = () => {
   ) => {
     setIsFetching(true);
     await query
-      .put(`/account/update/${id}`, data)
+      .put(`/card/update/${id}`, data)
       .then((resp) => {
         const newUsers:any = [...items];
         const idx = newUsers.findIndex((user:any) => user.id === id);
@@ -97,89 +95,24 @@ const useServerCards = () => {
   const getCard = async (id: any) => {
     setIsLoading(true);
     await query
-      .get(`/account/findById/${id}`)
+      .get(`/card/findById/${id}`)
       .then((resp) => {
-        setUser(resp.data);
+        setCard(resp.data);
         console.log(resp.data)
       })
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
 
-  const updateCard = async (
-    userId: number,
-    data: BasicType,
-    callback?: Function
-  ) => {
-    setIsFetching(true);
-    await query
-      .patch(`/control/user/${userId}`, data)
-      .then(async (resp) => {
-        setUser(resp.data);
-        const newUsers = [...allUsers];
-        const idx = newUsers.findIndex((user) => user.id === userId);
-        newUsers.splice(idx, 1, resp.data);
-        setAllUsers(newUsers);
-        callback?.();
-        toast.success("Actualización exitosa");
-      })
-      .catch((error) => { manageErrors(error); });
-    setIsFetching(false);
-  };
-
-  const updateMyCard = (
-    data: Partial<UserInterface>,
-    closeModal?: Function
-  ) => {
-    setModalWaiting(true);
-    const userID = data.id;
-    delete data.id;
-    query
-      .patch(`/control/user/${userID}`, data)
-      .then(async (resp) => {
-        dispatch(updateUserState(resp.data));
-        setWaiting(false);
-        toast.success("Actualización exitosa", {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      })
-      .catch((error) => {
-        let errorMsg = "";
-        if (error.response?.data?.message) {
-          errorMsg = error.response?.data?.message;
-        } else {
-          errorMsg = "Ha ocurrido un error. Contacte al administrador";
-        }
-        toast.error(errorMsg, {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Flip,
-        });
-        setIsLoading(false);
-      });
-  };
 
   const deleteCard = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
-      .deleteAPI(`/account/delete/${id}`, {})
+      .deleteAPI(`/card/delete/${id}`, {})
       .then(() => {
-        toast.success("Usuario Eliminado con éxito");
-        const newUsers = items.filter((item:any) => item.id !== id);
-        dispatch(saveCards(newUsers))
+        toast.success("Tarjeta Eliminada con éxito");
+        const newCard = items.filter((item:any) => item.id !== id);
+        dispatch(saveCards(newCard))
         callback?.();
       })
       .catch((error) => { manageErrors(error); });
@@ -191,20 +124,16 @@ const useServerCards = () => {
     isFetching,
     waiting,
     modalWaiting,
-    allUsers,
-    user,
-    setAllTickets,
-    allTickets,
+    card,
     getAllCards,
     addCard,
     getCard,
     editCard,
-    updateCard,
-    updateMyCard,
     deleteCard,
-    setAllUsers,
     manageErrors,
     modalWaitingError,
+    allCards,
+    setAllCards,
   };
 };
 export default useServerCards;

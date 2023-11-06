@@ -25,7 +25,7 @@ import {
 } from '../../../interfaces/InterfacesLocal';
 
 import { useEffect, useState } from 'react';
-import NuevoTicketModal from '../NewTicket/NuevoTicketModal';
+import NuevoTicketModal from '../NewAccount/NewAccountModal';
 import { data } from '../../../utils/TemporaryArrayData';
 import axios from 'axios';
 import { useAppSelector } from '../../../store/hooks';
@@ -120,7 +120,6 @@ const AssociatedCards = () => {
 
 	const items = useAppSelector((state) => state.account.items);
 
-	// @ts-expect-error
 	items?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,

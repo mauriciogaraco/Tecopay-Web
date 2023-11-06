@@ -166,7 +166,7 @@ const DetailUserEditComponent = ({
 							color='slate-600'
 							type='submit'
 							loading={isFetching}
-							disabled={isFetching || loadingPsw}
+							disabled={isFetching}
 						/>
 					</div>
 				</div>

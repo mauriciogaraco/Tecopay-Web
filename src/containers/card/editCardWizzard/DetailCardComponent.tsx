@@ -22,7 +22,7 @@ import ComboBox from '../../../components/forms/Combobox';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 
 interface EditInterface {
-	Entity: any;
+	Card: any;
 	editCard: Function;
 	deleteCard: Function;
 	closeModal: Function;
@@ -49,7 +49,7 @@ const clasificacion: SelectInterface[] = [
 const DetailCardEditComponent = ({
 	editCard,
 	deleteCard,
-	Entity,
+	Card,
 	closeModal,
 	isFetching,
 	id,
@@ -62,15 +62,15 @@ const DetailCardEditComponent = ({
 	const [delAction, setDelAction] = useState(false);
 
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
-		const date = Entity?.data.createdAt;
+		const date = Card?.data.createdAt;
 		const WholeData = Object.assign(data, {
 			userId: 1,
 			id,
 			createdAt: date,
 		});
 		console.log(id);
-		editCard(Entity?.data.id, deleteUndefinedAttr(WholeData), reset()).then(
-			() => closeModal(),
+		editCard(Card?.data.id, deleteUndefinedAttr(WholeData), reset()).then(() =>
+			closeModal(),
 		);
 	};
 
@@ -93,59 +93,32 @@ const DetailCardEditComponent = ({
 					</div>
 					<div className='grid grid-cols-2 gap-5'>
 						<Input
-							name='name'
-							defaultValue={Entity?.data.name}
-							label='Nombre'
-							control={control}
-							rules={{
-								required: 'Campo requerido',
-								//         validate: {
-								//           validateChar: (value) =>
-								//             validateUserChar(value) ||
-								//             "El usuario no puede contener espacios ni caracteres especiales excepto - _ .",
-								//
-								//             },
-							}}
-						/>
-
-						<Input
-							name='phone'
-							label='Telefono'
-							defaultValue={Entity?.data.phone}
+							name='securityPin'
+							label='Pin'
+							defaultValue={Card?.data.securityPin}
 							placeholder='Telefono'
 							control={control}
 							rules={{ required: 'Campo requerido' }}
 						></Input>
-
-						<AsyncComboBox
-							name='currencyId'
-							defaultItem={
-								Entity
-									? { id: Entity?.data.id, name: Entity?.data.currencyId }
-									: undefined
-							}
-							defaultValue={Entity?.data.currencyId}
+						<Input
+							name='minAmountWithoutConfirmation'
+							label='Cantidad sin confirmar'
+							defaultValue={Card?.data.minAmountWithoutConfirmation}
+							placeholder='Telefono'
 							control={control}
 							rules={{ required: 'Campo requerido' }}
-							label='Moneda'
-							dataQuery={{ url: '/currency/all' }}
-							normalizeData={{ id: 'id', name: 'code' }}
-						></AsyncComboBox>
-						<Select
-							name='status'
-							control={control}
-							defaultValue={Entity?.data.status}
-							default={Entity?.data.status}
-							label='Estado de la entidad'
-							data={[
-								{ id: 1, name: 'ACTIVA' },
-								{ id: 2, name: 'INACTIVA' },
-							]}
-						></Select>
+						></Input>
 					</div>
 					<div className='flex py-5 justify-around gap-5'></div>
+
 					<TextArea
-						defaultValue={Entity?.data.address}
+						defaultValue={Card?.data.address}
+						name='address'
+						control={control}
+						label='Direccion'
+					></TextArea>
+					<TextArea
+						defaultValue={Card?.data.description}
 						name='address'
 						control={control}
 						label='Direccion'
@@ -166,9 +139,9 @@ const DetailCardEditComponent = ({
 			{delAction && (
 				<Modal state={delAction} close={setDelAction}>
 					<AlertContainer
-						onAction={() => deleteCard(Entity?.data.id, closeModal)}
+						onAction={() => deleteCard(Card?.data.id, closeModal)}
 						onCancel={setDelAction}
-						title={`Eliminar ${Entity?.data.name}`}
+						title={`Eliminar ${Card?.data.name}`}
 						text='¿Seguro que desea eliminar este usuario del sistema?'
 						loading={isFetching}
 					/>

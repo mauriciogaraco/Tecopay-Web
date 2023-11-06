@@ -4,6 +4,7 @@ import Fetching from '../../../components/misc/Fetching';
 import TabNav from '../../../components/navigation/TabNav';
 import useServerAccounts from '../../../api/userServerAccounts';
 import { redirect, useNavigate } from 'react-router-dom';
+import useServerCards from '../../../api/userServerCards';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -20,10 +21,10 @@ const EditAccountContainer = ({
 	isFetching,
 	closeModal,
 }: UserWizzardInterface) => {
-	const { getAccount, account, deleteAccount, isLoading } = useServerAccounts();
+	const { getCard, card, deleteCard, isLoading } = useServerCards();
 
 	useEffect(() => {
-		id && getAccount(id);
+		id && getCard(id);
 	}, []);
 
 	//Tabs data --------------------------------------------------------------------------------------------
@@ -74,8 +75,8 @@ const EditAccountContainer = ({
 				<DetailUserEditComponent
 					id={id}
 					editAccount={editAccount}
-					deleteAccount={deleteAccount}
-					account={account}
+					deleteAccount={deleteCard}
+					account={card}
 					closeModal={closeModal}
 					isFetching={isFetching}
 				/>

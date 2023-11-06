@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { generateUrlParams } from "../utils/helpers";
 import type { BasicType } from "../interfaces/LocalInterfaces";
 
-const useServerAccounts = (): void => {
+const useServerAccounts = () => {
   const { manageErrors } = useServer();
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);

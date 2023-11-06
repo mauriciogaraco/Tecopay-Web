@@ -4,7 +4,8 @@ import TabNav from '../../../components/navigation/TabNav';
 import useServerUser from '../../../api/userServerAccounts';
 import { redirect, useNavigate } from 'react-router-dom';
 import useServerEntity from '../../../api/userServerEntity';
-import DetailCardEditComponent from './DetailCardComponent';
+import DetailCardComponent from './DetailCardComponent';
+import useServerCards from '../../../api/userServerCards';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -21,10 +22,10 @@ const EditCardContainer = ({
 	isFetching,
 	closeModal,
 }: UserWizzardInterface) => {
-	const { getEntity, entity, isLoading } = useServerEntity();
+	const { getCard, card, isLoading } = useServerCards();
 
 	useEffect(() => {
-		id && getEntity(id);
+		id && getCard(id);
 	}, []);
 
 	// Tabs data --------------------------------------------------------------------------------------------
@@ -36,24 +37,15 @@ const EditCardContainer = ({
 			current: currentTab === 'edit',
 		},
 		{
-			name: `Detalles de cuenta ${id}`,
-			href: 'details',
-			current: currentTab === 'details',
+			name: `Detalles de tarjeta ${id}`,
+			href: 'tarjetas',
+			current: currentTab === 'tarjetas',
 		},
 	];
 
 	const action = (href: string) => {
 		setCurrentTab(href);
 	};
-
-	const navigate = useNavigate();
-
-	{
-		currentTab === 'details' &&
-			(() => {
-				navigate('/Detalles');
-			});
-	}
 
 	// ------------------------------------------------------------------------------------------------------
 
@@ -71,11 +63,11 @@ const EditCardContainer = ({
 			{/* isFetching && <Fetching />}
       <TabNav tabs={tabs} action={action} /> */}
 			{currentTab === 'edit' && (
-				<DetailCardEditComponent
+				<DetailCardComponent
 					id={id}
 					editCard={editCard}
 					deleteCard={deleteCard}
-					Entity={entity}
+					Card={card}
 					closeModal={closeModal}
 					isFetching={isFetching}
 				/>
