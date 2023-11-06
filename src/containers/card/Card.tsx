@@ -90,7 +90,7 @@ const Card = () => {
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
-			title: 'Agregar cuenta',
+			title: 'Agregar tarjeta',
 			action: () => setAddTicketmodal(true),
 		},
 		/*{
