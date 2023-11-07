@@ -8,7 +8,6 @@ import {
 import query from "./APIServices";
 import useServer from "./useServer";
 import { Flip, toast } from "react-toastify";
-import { updateUserState } from "../store/slices/initSlice";
 import { saveEntity } from "../store/slices/EntitySlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate, useParams } from "react-router-dom";
@@ -84,9 +83,11 @@ const useServerEntity = () => {
       .put(`/entity/update/${id}`, data)
       .then((resp) => {
         const newUsers:any = [...items];
+        const dataWithId = Object.assign(data, {id:id})
         const idx = newUsers.findIndex((user:any) => user.id === id);
-        newUsers.splice(idx, 1, data);
+        newUsers.splice(idx, 1, dataWithId);
         console.log(newUsers)
+        
         dispatch(saveEntity(newUsers))
         callback?.();
         toast.success("Entidad editada satisfactoriamente");
@@ -128,50 +129,7 @@ const useServerEntity = () => {
     setIsFetching(false);
   };
 
-  const updateMyEntity = (
-    data: Partial<UserInterface>,
-    closeModal?: Function
-  ) => {
-    setModalWaiting(true);
-    const userID = data.id;
-    delete data.id;
-    query
-      .patch(`/control/user/${userID}`, data)
-      .then(async (resp) => {
-        dispatch(updateUserState(resp.data));
-        setWaiting(false);
-        toast.success("Actualización exitosa", {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      })
-      .catch((error) => {
-        let errorMsg = "";
-        if (error.response?.data?.message) {
-          errorMsg = error.response?.data?.message;
-        } else {
-          errorMsg = "Ha ocurrido un error. Contacte al administrador";
-        }
-        toast.error(errorMsg, {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Flip,
-        });
-        setIsLoading(false);
-      });
-  };
+  
 
   const deleteEntity = async (id: number, callback?: Function) => {
     setIsFetching(true);
@@ -201,7 +159,6 @@ const useServerEntity = () => {
     getEntity,
     editEntity,
     updateEntity,
-    updateMyEntity,
     deleteEntity,
     setAllUsers,
     manageErrors,

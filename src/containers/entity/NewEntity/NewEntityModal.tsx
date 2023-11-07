@@ -40,27 +40,7 @@ const NewEntityModal = ({ setContactModal, close }: propsDestructured) => {
 		} catch (error) {}
 	};
 
-	const {
-		paginate,
-		isLoading,
-		isFetching,
-		waiting,
-		modalWaiting,
-		allUsers,
-		entity,
-		setAllTickets,
-		allTickets,
-		getAllEntity,
-		addEntity,
-		getEntity,
-		editEntity,
-		updateEntity,
-		updateMyEntity,
-		deleteEntity,
-		setAllUsers,
-		manageErrors,
-		modalWaitingError,
-	} = useServerEntity();
+	const { isLoading, addEntity } = useServerEntity();
 
 	return (
 		<main>

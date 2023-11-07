@@ -1,6 +1,6 @@
 import useServer from '../api/useServer';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import LogoComponent from '../components/misc/LogoComponent';
+import Logo from '../assets/png/logo-tecopay.png';
 import Input from '../components/forms/Input';
 
 export default function Login() {
@@ -18,8 +18,14 @@ export default function Login() {
 				<div className='w-full max-w-md'>
 					<div>
 						<div className='flex justify-center'>
-							<div className='h-16 w-16'>
-								<LogoComponent />
+							<div className=' relative bottom-7'>
+								<img
+									width={'100px'}
+									height={'100px'}
+									className=''
+									src={Logo}
+									alt='Logo de Tecopay'
+								/>
 							</div>
 						</div>
 
@@ -36,13 +42,13 @@ export default function Login() {
 							<Input
 								name='email'
 								control={control}
-								inputClass='border border-gray-500 rounded-md text-center w-full placeholder:text-center focus:ring-orange-600 focus:border-orange-600'
+								inputClass='border border-gray-500 rounded-md text-center w-full placeholder:text-center focus:ring-tecopay-600 focus:border-tecopay-600'
 								placeholder='Nombre de usuario'
 							/>
 							<Input
 								name='password'
 								type='password'
-								inputClass='border border-gray-500 rounded-md text-center w-full placeholder:text-center focus:ring-orange-600 focus:border-orange-600'
+								inputClass='border border-gray-500 rounded-md text-center w-full placeholder:text-center focus:ring-tecopay-600 focus:border-tecopay-600'
 								control={control}
 								placeholder='Contraseña'
 							/>
@@ -52,7 +58,7 @@ export default function Login() {
 							<div className='text-sm'>
 								<a
 									href='#'
-									className='font-medium text-black hover:text-[#efa384]'
+									className='font-medium text-black hover:text-tecopay-400'
 								>
 									¿Olvidó su contraseña?
 								</a>
@@ -62,7 +68,7 @@ export default function Login() {
 						<div>
 							<button
 								type='submit'
-								className='group relative flex w-full justify-center rounded-md border border-transparent bg-primary py-2 px-4 text-sm font-medium text-white hover:bg-[#f08c65] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:bg-[#f69c79]'
+								className='group relative flex w-full justify-center rounded-md border border-transparent  py-2 px-4 text-sm font-medium bg-tecopay-600 text-white hover:bg-tecopay-500 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:bg-tecopay-500'
 								disabled={isFetching}
 							>
 								{isFetching && (

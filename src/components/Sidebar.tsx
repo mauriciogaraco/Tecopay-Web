@@ -167,7 +167,7 @@ export default function SideBar({ state, switchSidebar }: Sidebar) {
 										))}
 									</nav>
 								</div>
-								<div className='flex flex-shrink-0 p-3 bg-gray-400'>
+								<div className='flex flex-shrink-0 p-3 bg-gray-900'>
 									<div
 										className='group block w-full flex-shrink-0'
 										onClick={() => {
@@ -215,7 +215,7 @@ export default function SideBar({ state, switchSidebar }: Sidebar) {
 			{/* Static sidebar for desktop */}
 			<div className='hidden md:fixed md:inset-y-0 md:flex md:w-64 md:flex-col'>
 				{/* Sidebar component, swap this element with another sidebar if you like */}
-				<div className='flex min-h-0 flex-1 flex-col bg-gray-300 shadow-[5px_0_10px_rgba(0,0,0,0.3)]'>
+				<div className='flex min-h-0 flex-1 flex-col bg-tecopay-100 bg-opacity-20 shadow-[5px_0_10px_rgba(0,0,0,0.3)]'>
 					<div className='flex flex-1 flex-col overflow-y-auto pt-5 pb-4'>
 						<div className='flex flex-shrink-0 items-center px-4'>
 							<div className='h-7 w-7'>
@@ -229,8 +229,8 @@ export default function SideBar({ state, switchSidebar }: Sidebar) {
 									key={item.name}
 									className={classNames(
 										item.current
-											? 'bg-[#ea5e27] text-white'
-											: 'text-gray-900 hover:bg-[#f69c78] hover:text-gray-100',
+											? 'bg-tecopay-600 text-white'
+											: 'text-gray-900 hover:bg-tecopay-500 hover:text-gray-100',
 										'group flex items-center px-2 py-2 text-md font-medium rounded-md',
 									)}
 								>
@@ -248,61 +248,8 @@ export default function SideBar({ state, switchSidebar }: Sidebar) {
 							))}
 						</nav>
 					</div>
-					<div className='flex flex-shrink-0 p-3 bg-gray-400'>
-						<button
-							className='group block w-full flex-shrink-0'
-							onClick={() => switchEditModal()}
-						>
-							<div className='flex items-center'>
-								<div>
-									{user?.avatar?.src ? (
-										<img
-											className='inline-block h-9 w-9 rounded-full'
-											src={user.avatar.src}
-										/>
-									) : (
-										<div className='h-6 w-6 flex-shrink-0'>
-											<NoAvatar />
-										</div>
-									)}
-								</div>
-								<div className='ml-3'>
-									<p className='text-md font-medium text-white first-letter:uppercase'>
-										{user?.displayName ?? user?.username}
-									</p>
-								</div>
-							</div>
-						</button>
-					</div>
-					<div className='flex flex-shrink-0 bg-gray-400 p-2'>
-						<button
-							className='flex gap-2 text-md font-medium text-white'
-							onClick={() => logOut()}
-						>
-							<ArrowRightOnRectangleIcon className='h-6' />
-							Cerrar Sesión
-						</button>
-					</div>
 				</div>
 			</div>
-
-			{editModal && (
-				<FormModal
-					state={editModal}
-					component={
-						<MyUserForm
-							closeModal={switchEditModal}
-							action={() => console.log('user')}
-							isFetching={modalWaiting}
-							initialValues={{
-								displayName: user?.displayName,
-								username: user?.username,
-								id: user?.id,
-							}}
-						/>
-					}
-				/>
-			)}
 		</>
 	);
 }

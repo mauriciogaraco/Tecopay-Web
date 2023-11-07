@@ -93,110 +93,11 @@ const Card = () => {
 			title: 'Agregar tarjeta',
 			action: () => setAddTicketmodal(true),
 		},
-		/*{
-                title: "Exportar a excel",
-                action: () => setExportModal(true),
-                icon: <BsFiletypeXlsx />,
-              },*/
 	];
 
 	const rowAction = (id: number) => {
 		setEditTicketModal({ state: true, id });
 	};
-
-	//Filters-----------------------------------
-	const registrationSelector: SelectInterface[] = [
-		{
-			id: 'WOO',
-			name: 'WOO',
-		},
-		{
-			id: 'ONLINE',
-			name: 'ONLINE',
-		},
-		{
-			id: 'POS',
-			name: 'POS',
-		},
-	];
-
-	const sexSelector: SelectInterface[] = [
-		{
-			id: 'female',
-			name: 'Femenino',
-		},
-		{
-			id: 'male',
-			name: 'Masculino',
-		},
-	];
-
-	const availableFilters: FilterOpts[] = [
-		//País
-		{
-			format: 'select',
-			filterCode: 'countryId',
-			name: 'País',
-			asyncData: {
-				url: '/public/countries',
-				idCode: 'id',
-				dataCode: 'name',
-			},
-		},
-		//Provincia
-		{
-			format: 'select',
-			filterCode: 'provinceId',
-			name: 'Provincia',
-			dependentOn: 'countryId',
-			asyncData: {
-				url: '/public/provinces',
-				idCode: 'id',
-				dataCode: 'name',
-			},
-		},
-		//Municipio
-		{
-			format: 'select',
-			filterCode: 'municipalityId',
-			name: 'Municipio',
-			dependentOn: 'provinceId',
-			asyncData: {
-				url: '/public/municipalities',
-				idCode: 'id',
-				dataCode: 'name',
-			},
-		},
-		//Forma de registro
-		{
-			format: 'select',
-			filterCode: 'registrationWay',
-			name: 'Forma de registro',
-			data: registrationSelector,
-		},
-		//Nacimiento desde
-		{
-			format: 'datepicker',
-			filterCode: 'birthFrom',
-			name: 'Fecha de nacimiento desde',
-		},
-		//Nacimiento hasta
-		{
-			format: 'datepicker',
-			filterCode: 'birthTo',
-			name: 'Fecha de nacimiento hasta',
-		},
-		//Forma de registro
-		{
-			format: 'select',
-			filterCode: 'sex',
-			name: 'Sexo',
-			data: sexSelector,
-		},
-	];
-
-	//const filterAction = (data: BasicType) => setFilter(data);
-	//----------------------------------------------------------------------------------
 
 	//Breadcrumb-----------------------------------------------------------------------------------
 	const paths: PathInterface[] = [

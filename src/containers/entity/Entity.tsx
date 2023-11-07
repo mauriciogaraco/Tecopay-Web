@@ -32,6 +32,7 @@ import { formatCalendar } from '../../utils/helpers';
 import NewEntityModal from './NewEntity/NewEntityModal';
 import { HomeModernIcon } from '@heroicons/react/24/outline';
 import EditEntityContainer from './editEntityWizzard/EditEntityContainer';
+import StateSpanForTable from '../../components/misc/StateSpanForTable';
 
 const Entity = () => {
 	const [query, setQuery] = useState<string>('');
@@ -53,7 +54,7 @@ const Entity = () => {
 		getEntity,
 		editEntity,
 		updateEntity,
-		updateMyEntity,
+
 		deleteEntity,
 		setAllUsers,
 		manageErrors,
@@ -110,7 +111,7 @@ const Entity = () => {
             }, [filter]);*/
 
 	//Data for table ------------------------------------------------------------------------
-	const tableTitles = ['ID', 'Nombre', 'Direccion', 'Telefono'];
+	const tableTitles = ['ID', 'Nombre', 'Direccion', 'Estado', 'Telefono'];
 	const tableData: DataTableInterface[] = [];
 	// eslint-disable-next-line array-callback-return
 
@@ -124,6 +125,13 @@ const Entity = () => {
 				ID: item.id,
 				Nombre: item?.name,
 				Telefono: item.phone,
+				Estado: (
+					<StateSpanForTable
+						currentState={item.status}
+						greenState='Activa'
+						redState='Inactiva'
+					/>
+				),
 				Direccion: item.address,
 			},
 		});

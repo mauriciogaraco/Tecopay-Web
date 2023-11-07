@@ -20,6 +20,7 @@ import Select from '../../../components/forms/Select';
 import ComboBox from '../../../components/forms/Combobox';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 import useServerEntity from '../../../api/userServerEntity';
+import { useAppSelector } from '../../../store/hooks';
 
 interface EditInterface {
 	entity: any;
@@ -29,23 +30,11 @@ interface EditInterface {
 	isFetching: boolean;
 	id: number | null;
 }
-const selectData = [
-	{ id: 1, name: true },
-	{ id: 2, name: 'cerrado' },
-];
-const prioridad: SelectInterface[] = [
-	{ id: '1', name: 'baja' },
-	{ id: '2', name: 'media' },
-	{ id: '3', name: 'alta' },
-];
 
-const clasificacion: SelectInterface[] = [
-	{ id: '1', name: 'Conectividad' },
-	{ id: '2', name: 'Plataforma Web' },
-	{ id: '3', name: 'Aplicaciones Móviles' },
-	{ id: '4', name: 'Servidores' },
+const statusData = [
+	{ id: 1, name: 'Inactiva' },
+	{ id: 2, name: 'Activa' },
 ];
-
 const DetailEntityEditComponent = ({
 	editEntity,
 	deleteEntity,
@@ -62,11 +51,15 @@ const DetailEntityEditComponent = ({
 	const [delAction, setDelAction] = useState(false);
 	const { getAllEntity } = useServerEntity();
 
+	const items = useAppSelector((state) => state.Entity.Entity);
+
+	const desiredCurrencyCodeEntityObject: any = items.find(
+		(item: any) => item.id === id,
+	);
+
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
 		const WholeData = Object.assign(data, {
-			code: '123456',
-			ownerId: 251,
-			id: entity?.data.id,
+			userId: 1,
 		});
 		editEntity(entity?.data.id, deleteUndefinedAttr(WholeData), reset()).then(
 			() => closeModal(),
@@ -96,39 +89,24 @@ const DetailEntityEditComponent = ({
 							control={control}
 							rules={{
 								required: 'Campo requerido',
-								//         validate: {
-								//           validateChar: (value) =>
-								//             validateUserChar(value) ||
-								//             "El usuario no puede contener espacios ni caracteres especiales excepto - _ .",
-								//
-								//             },
+							}}
+						/>
+						<Input
+							name='phone'
+							defaultValue={entity?.data.phone}
+							label='Telefono'
+							control={control}
+							rules={{
+								required: 'Campo requerido',
 							}}
 						/>
 
 						<AsyncComboBox
-							name='issueEntityId'
-							defaultItem={
-								entity
-									? {
-											id: entity?.data.issueEntityId,
-											name: entity?.data.issueEntityId,
-									  }
-									: undefined
-							}
-							defaultValue={entity?.data.issueEntityId}
-							control={control}
-							rules={{ required: 'Campo requerido' }}
-							label='Entidad'
-							dataQuery={{ url: '/entity/all' }}
-							normalizeData={{ id: 'id', name: 'name' }}
-						></AsyncComboBox>
-						<AsyncComboBox
 							name='currencyId'
-							defaultItem={
-								entity
-									? { id: entity?.data.id, name: entity?.data.currencyId }
-									: undefined
-							}
+							defaultItem={{
+								id: entity?.data.currencyId,
+								name: desiredCurrencyCodeEntityObject?.currency?.code,
+							}}
 							defaultValue={entity?.data.currencyId}
 							control={control}
 							rules={{ required: 'Campo requerido' }}
@@ -136,38 +114,21 @@ const DetailEntityEditComponent = ({
 							dataQuery={{ url: '/currency/all' }}
 							normalizeData={{ id: 'id', name: 'code' }}
 						></AsyncComboBox>
+						<Select
+							name='status'
+							default={entity?.data.status}
+							defaultValue={entity?.data.status}
+							label='Estado de la entidad'
+							control={control}
+							data={statusData}
+						></Select>
 					</div>
-					<div className='flex py-5 justify-around gap-5'>
-						<Toggle
-							name='isPrivate'
-							defaultValue={entity?.data.isPrivate}
-							title='Cuenta privada'
-							control={control}
-						></Toggle>
-						<Toggle
-							name='isActive'
-							title='Cuenta activa'
-							defaultValue={entity?.data.isActive}
-							control={control}
-						></Toggle>
-						<Toggle
-							name='isBlocked'
-							defaultValue={entity?.data.isBlocked}
-							title='Cuenta Bloqueada'
-							control={control}
-						></Toggle>
-					</div>
+
 					<TextArea
 						defaultValue={entity?.data.address}
 						name='address'
 						control={control}
 						label='Direccion'
-					></TextArea>
-					<TextArea
-						defaultValue={entity?.data.description}
-						name='description'
-						control={control}
-						label='Descripcion'
 					></TextArea>
 
 					<div className='flex justify-end mt-5'>

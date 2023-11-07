@@ -8,7 +8,6 @@ import {
 import query from "./APIServices";
 import useServer from "./useServer";
 import { Flip, toast } from "react-toastify";
-import { updateUserState } from "../store/slices/initSlice";
 import { saveItems } from "../store/slices/accountSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate, useParams } from "react-router-dom";
@@ -122,76 +121,6 @@ const useServerUser = () => {
     setIsFetching(false);
   };
 
-  const updateMyUser = (
-    data: Partial<UserInterface>,
-    closeModal?: Function
-  ) => {
-    setModalWaiting(true);
-    const userID = data.id;
-    delete data.id;
-    query
-      .patch(`/control/user/${userID}`, data)
-      .then(async (resp) => {
-        dispatch(updateUserState(resp.data));
-        setWaiting(false);
-        toast.success("Actualización exitosa", {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-        });
-      })
-      .catch((error) => {
-        let errorMsg = "";
-        if (error.response?.data?.message) {
-          errorMsg = error.response?.data?.message;
-        } else {
-          errorMsg = "Ha ocurrido un error. Contacte al administrador";
-        }
-        toast.error(errorMsg, {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
-          transition: Flip,
-        });
-        setIsLoading(false);
-      });
-  };
-
-  const resetUserPsw = async (email: string, callback?: Function) => {
-    setIsFetching(true);
-    await query
-      .post(`/control/user/request-password`, { email })
-      .then(() => {
-        toast.success("Operación completada con éxito");
-        callback?.();
-      })
-      .catch((error) => { manageErrors(error); });
-    setIsFetching(false);
-  };
-
-  const deleteUser = async (id: number, callback?: Function) => {
-    setIsFetching(true);
-    await query
-      .deleteAPI(`/account/delete/${id}`, {})
-      .then(() => {
-        toast.success("Usuario Eliminado con éxito");
-        const newUsers = items.filter((item:any) => item.id !== id);
-        dispatch(saveItems(newUsers))
-        callback?.();
-      })
-      .catch((error) => { manageErrors(error); });
-    setIsFetching(false);
-  };
   return {
     paginate,
     isLoading,
@@ -207,10 +136,8 @@ const useServerUser = () => {
     getUser,
     editUser,
     updateUser,
-    updateMyUser,
-    deleteUser,
     setAllUsers,
-    resetUserPsw,
+
     manageErrors,
     modalWaitingError,
     setRender,
