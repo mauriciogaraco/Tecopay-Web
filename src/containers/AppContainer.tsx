@@ -13,6 +13,9 @@ moment.updateLocale('es', {
 
 const AppContainer = () => {
 	const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
+	const switchSideBar = () => {
+		setSidebarOpen(!sidebarOpen);
+	};
 	/*//const { init, isLoading } = useInitialLoad();
 
   useEffect(() => {
@@ -28,7 +31,7 @@ const AppContainer = () => {
 	return (
 		<div className='relative h-screen w-screen'>
 			<Navbar />
-			<SideBar state={sidebarOpen} switchSidebar={setSidebarOpen} />
+			<SideBar barState={sidebarOpen} switchSideBar={switchSideBar} />
 			<div className={`md:pl-64 h-full`}>
 				<main className='sm:px-2 md:px-4 lg:px-8 py-5 h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300'>
 					<Outlet />
