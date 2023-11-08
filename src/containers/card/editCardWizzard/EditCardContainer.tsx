@@ -1,11 +1,8 @@
 import { useState, createContext, useEffect } from 'react';
 import Fetching from '../../../components/misc/Fetching';
-import TabNav from '../../../components/navigation/TabNav';
-import useServerUser from '../../../api/userServerAccounts';
-import { redirect, useNavigate } from 'react-router-dom';
-import useServerEntity from '../../../api/userServerEntity';
+import EditDetailCardComponent from './EditDetailCardComponent';
 import DetailCardComponent from './DetailCardComponent';
-import useServerCards from '../../../api/userServerCards';
+import Button from '../../../components/misc/Button';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -13,6 +10,10 @@ interface UserWizzardInterface {
 	deleteCard: Function;
 	isFetching: boolean;
 	closeModal: Function;
+	allCards: any;
+	card: any;
+	getCard: Function;
+	isLoading: Boolean;
 }
 
 const EditCardContainer = ({
@@ -21,33 +22,15 @@ const EditCardContainer = ({
 	deleteCard,
 	isFetching,
 	closeModal,
+	allCards,
+	card,
+	getCard,
+	isLoading,
 }: UserWizzardInterface) => {
-	const { getCard, card, isLoading } = useServerCards();
-
 	useEffect(() => {
 		id && getCard(id);
 	}, []);
-
-	// Tabs data --------------------------------------------------------------------------------------------
-	const [currentTab, setCurrentTab] = useState('edit');
-	const tabs = [
-		{
-			name: `Editar cuenta ${id}`,
-			href: 'edit',
-			current: currentTab === 'edit',
-		},
-		{
-			name: `Detalles de tarjeta ${id}`,
-			href: 'tarjetas',
-			current: currentTab === 'tarjetas',
-		},
-	];
-
-	const action = (href: string) => {
-		setCurrentTab(href);
-	};
-
-	// ------------------------------------------------------------------------------------------------------
+	const [editModal, setEditModal] = useState(false);
 
 	if (isLoading)
 		return (
@@ -55,25 +38,41 @@ const EditCardContainer = ({
 				<Fetching />
 			</div>
 		);
-	return (
-		<div className=''>
-			<div className='flex items-center justify-around'>
-				<h1 className='ml-2 text-lg'>Editar Entidad {id}</h1>
+	else if (!editModal)
+		return (
+			<div className=''>
+				<div className='flex items-center justify-around'>
+					<h1 className='ml-2 text-lg'>Detalles de tarjeta {id}</h1>
+					<Button
+						action={() => setEditModal(!editModal)}
+						name='Editar'
+						outline={true}
+						color='tecopay-400'
+						textColor='black'
+						value='Editar'
+					></Button>
+				</div>
+				<DetailCardComponent Card={card} />
 			</div>
-			{/* isFetching && <Fetching />}
-      <TabNav tabs={tabs} action={action} /> */}
-			{currentTab === 'edit' && (
-				<DetailCardComponent
+		);
+	else
+		return (
+			<div className=''>
+				<div className='flex items-center justify-around'>
+					<h1 className='ml-2 text-lg'>Editar tarjeta {id}</h1>
+				</div>
+
+				<EditDetailCardComponent
 					id={id}
 					editCard={editCard}
 					deleteCard={deleteCard}
 					Card={card}
 					closeModal={closeModal}
 					isFetching={isFetching}
+					allCards={allCards}
 				/>
-			)}
-		</div>
-	);
+			</div>
+		);
 };
 
 export default EditCardContainer;

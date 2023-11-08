@@ -12,6 +12,11 @@ interface UserWizzardInterface {
 	deleteEntity: Function;
 	isFetching: boolean;
 	closeModal: Function;
+	getEntity: Function;
+	setAllEntity: Function;
+	isLoading: boolean;
+	entity: any;
+	allEntity: any;
 }
 
 const EditEntityContainer = ({
@@ -20,9 +25,12 @@ const EditEntityContainer = ({
 	deleteEntity,
 	isFetching,
 	closeModal,
+	getEntity,
+	setAllEntity,
+	isLoading,
+	entity,
+	allEntity,
 }: UserWizzardInterface) => {
-	const { getEntity, entity, isLoading } = useServerEntity();
-
 	useEffect(() => {
 		id && getEntity(id);
 	}, []);
@@ -48,6 +56,8 @@ const EditEntityContainer = ({
 				entity={entity}
 				closeModal={closeModal}
 				isFetching={isFetching}
+				setAllEntity={setAllEntity}
+				allEntity={allEntity}
 			/>
 		</div>
 	);

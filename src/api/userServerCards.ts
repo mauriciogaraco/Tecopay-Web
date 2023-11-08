@@ -19,7 +19,7 @@ const useServerCards = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
-  const [allCards, setAllCards] = useState<TicketsInterface[]>([]);
+  const [allCards, setAllCards] = useState<any>([]);
   const [card, setCard] = useState<AccountData | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
   const [modalWaitingError, setModalWaitingError] = useState<string | null>(
@@ -42,7 +42,7 @@ const useServerCards = () => {
           currentPage: resp.data.currentPage,
         });
         console.log(resp.data)
-        dispatch(saveCards(resp.data.items))
+        setAllCards(resp.data.items)
         console.log(resp.data.items)
 
 
@@ -62,8 +62,8 @@ const useServerCards = () => {
         
         console.log(resp.data.data)
         console.log(items)
-        dispatch(saveCards([...items, resp.data.data]))
-        // setAllTickets();
+        setAllCards([...items, resp.data.data])
+
         
         toast.success("Ticket agregado satisfactoriamente");
       }).then(()=>close())
@@ -81,11 +81,13 @@ const useServerCards = () => {
     await query
       .put(`/card/update/${id}`, data)
       .then((resp) => {
-        const newUsers:any = [...items];
-        const idx = newUsers.findIndex((user:any) => user.id === id);
-        newUsers.splice(idx, 1, data);
-        console.log(newUsers)
-        dispatch(saveCards(newUsers))
+        const newCards:any = [...allCards];
+        const idx = newCards.findIndex((card:any) => card.id === id);
+        const cardWithId = allCards.find((card:any) => card.id == id);
+        const wholeData = Object.assign(data, {id, holder:{fullName:cardWithId.holder.fullName}, currency: {code: cardWithId.currency.code}} )
+        newCards.splice(idx, 1, wholeData);
+        
+        setAllCards(newCards)
         callback?.();
       })
       .catch((e) => { manageErrors(e); });
@@ -111,8 +113,8 @@ const useServerCards = () => {
       .deleteAPI(`/card/delete/${id}`, {})
       .then(() => {
         toast.success("Tarjeta Eliminada con éxito");
-        const newCard = items.filter((item:any) => item.id !== id);
-        dispatch(saveCards(newCard))
+        const newCard = allCards.filter((item:any) => item.id !== id);
+        setAllCards(newCard)
         callback?.();
       })
       .catch((error) => { manageErrors(error); });

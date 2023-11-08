@@ -159,7 +159,6 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 				onChange={(e: SelectInterface) => {
 					setSelectedData(e);
 					field.onChange(e.id);
-					console.log(e.id);
 				}}
 				disabled={disabled}
 				by={(current, rest) => current?.id === rest?.id}

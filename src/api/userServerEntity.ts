@@ -28,6 +28,7 @@ const useServerEntity = () => {
     null
   );
   const [waiting, setWaiting] = useState<boolean>(false);
+  const [allEntity, setAllEntity] = useState([])
   const dispatch = useAppDispatch();
   const items = useAppSelector((state)=> state.Entity.Entity)
 
@@ -43,7 +44,8 @@ const useServerEntity = () => {
           currentPage: resp.data.currentPage,
         });
         console.log(resp.data)
-        dispatch(saveEntity(resp.data.items))
+        setAllEntity(resp.data.items)
+        //dispatch(saveEntity(resp.data.items))
         console.log(resp.data.items)
 
 
@@ -82,13 +84,13 @@ const useServerEntity = () => {
     await query
       .put(`/entity/update/${id}`, data)
       .then((resp) => {
-        const newUsers:any = [...items];
+        const newUsers:any = [...allEntity];
         const dataWithId = Object.assign(data, {id:id})
         const idx = newUsers.findIndex((user:any) => user.id === id);
         newUsers.splice(idx, 1, dataWithId);
         console.log(newUsers)
-        
-        dispatch(saveEntity(newUsers))
+        setAllEntity(newUsers)
+        //dispatch(saveEntity(newUsers))
         callback?.();
         toast.success("Entidad editada satisfactoriamente");
       })
@@ -102,7 +104,6 @@ const useServerEntity = () => {
       .get(`/entity/findById/${id}`)
       .then((resp) => {
         setEntity(resp.data);
-        console.log(resp.data)
       })
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);
@@ -163,6 +164,8 @@ const useServerEntity = () => {
     setAllUsers,
     manageErrors,
     modalWaitingError,
+    allEntity,
+    setAllEntity
   };
 };
 export default useServerEntity;

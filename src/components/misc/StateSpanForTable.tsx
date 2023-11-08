@@ -12,7 +12,7 @@ const StateSpanForTable = ({
 	redState,
 }: StateSpanProp) => {
 	return currentState == 'Activa' ? (
-		<span className='py-1 px-2 rounded-full bg-green-200 text-green-700 font-semibold text-center'>
+		<span className='py-1 px-2 rounded-full h-10 bg-green-200 text-green-700 font-semibold text-center'>
 			{greenState}
 		</span>
 	) : (

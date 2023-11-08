@@ -3,7 +3,8 @@ import Input from '../../../components/forms/Input';
 import Button from '../../../components/misc/Button';
 import { deleteUndefinedAttr, validateEmail } from '../../../utils/helpers';
 import Toggle from '../../../components/forms/Toggle';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { type SubmitHandler, useForm } from 'react-hook-form';
+import useServerUser from '../../../api/userServerAccounts';
 import {
 	AccountData,
 	UserInterface,
@@ -12,40 +13,48 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import Modal from '../../../components/modals/GenericModal';
 import AlertContainer from '../../../components/misc/AlertContainer';
 import {
-	BasicType,
-	SelectInterface,
+	type BasicType,
+	type SelectInterface,
 } from '../../../interfaces/InterfacesLocal';
 import TextArea from '../../../components/forms/TextArea';
 import Select from '../../../components/forms/Select';
 import ComboBox from '../../../components/forms/Combobox';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
-import useServerEntity from '../../../api/userServerEntity';
-import { useAppSelector } from '../../../store/hooks';
 
 interface EditInterface {
-	entity: any;
-	editEntity: Function;
-	deleteEntity: Function;
+	Card: any;
+	editCard: Function;
+	deleteCard: Function;
 	closeModal: Function;
 	isFetching: boolean;
 	id: number | null;
-	setAllEntity: Function;
-	allEntity: any;
+	allCards: any;
 }
-
-const statusData = [
-	{ id: 1, name: 'Inactiva' },
-	{ id: 2, name: 'Activa' },
+const selectData = [
+	{ id: 1, name: true },
+	{ id: 2, name: 'cerrado' },
 ];
-const DetailEntityEditComponent = ({
-	editEntity,
-	deleteEntity,
-	entity,
+const prioridad: SelectInterface[] = [
+	{ id: '1', name: 'baja' },
+	{ id: '2', name: 'media' },
+	{ id: '3', name: 'alta' },
+];
+
+const clasificacion: SelectInterface[] = [
+	{ id: '1', name: 'Conectividad' },
+	{ id: '2', name: 'Plataforma Web' },
+	{ id: '3', name: 'Aplicaciones Móviles' },
+	{ id: '4', name: 'Servidores' },
+];
+
+const DetailCardEditComponent = ({
+	editCard,
+	deleteCard,
+	Card,
 	closeModal,
 	isFetching,
 	id,
-	setAllEntity,
-	allEntity,
+	allCards,
 }: EditInterface) => {
 	const { control, handleSubmit, watch, reset, formState } = useForm<BasicType>(
 		{
@@ -54,20 +63,21 @@ const DetailEntityEditComponent = ({
 	);
 	const [delAction, setDelAction] = useState(false);
 
-	//const items = useAppSelector((state) => state.Entity.Entity);
-
-	const desiredCurrencyCodeEntityObject: any = allEntity.find(
-		(item: any) => item.id === id,
-	);
-
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
+		const date = Card?.data.expiratedAt;
 		const WholeData = Object.assign(data, {
-			userId: 1,
+			holderId: 251,
+			expiratedAt: date,
+			code: Card?.data.code,
 		});
-		editEntity(entity?.data.id, deleteUndefinedAttr(WholeData), reset()).then(
-			() => closeModal(),
+		editCard(Card?.data.id, deleteUndefinedAttr(WholeData), reset()).then(() =>
+			closeModal(),
 		);
 	};
+
+	const desiredCurrencyCodeEntityObject: any = allCards.find(
+		(item: any) => item.id === id,
+	);
 
 	return (
 		<>
@@ -79,61 +89,64 @@ const DetailEntityEditComponent = ({
 								icon={<TrashIcon className='h-5 text-gray-700' />}
 								color='gray-500'
 								type='button'
-								action={() => setDelAction(true)}
+								action={() => {
+									setDelAction(true);
+								}}
 								outline
 							/>
 						</div>
 					</div>
 					<div className='grid grid-cols-2 gap-5'>
 						<Input
-							name='name'
-							defaultValue={entity?.data.name}
-							label='Nombre'
+							name='securityPin'
+							label='Pin'
+							defaultValue={Card?.data.securityPin}
+							placeholder='Telefono'
 							control={control}
-							rules={{
-								required: 'Campo requerido',
-							}}
-						/>
+							rules={{ required: 'Campo requerido' }}
+						></Input>
 						<Input
-							name='phone'
-							defaultValue={entity?.data.phone}
-							label='Telefono'
+							name='minAmountWithoutConfirmation'
+							label='Cantidad sin confirmar'
+							defaultValue={Card?.data.minAmountWithoutConfirmation}
+							placeholder='Telefono'
 							control={control}
-							rules={{
-								required: 'Campo requerido',
-							}}
-						/>
-
+							rules={{ required: 'Campo requerido' }}
+						></Input>
 						<AsyncComboBox
 							name='currencyId'
 							defaultItem={{
-								id: entity?.data.currencyId,
+								id: Card?.data.currencyId,
 								name: desiredCurrencyCodeEntityObject?.currency?.code,
 							}}
-							defaultValue={entity?.data.currencyId}
+							defaultValue={Card?.data.currencyId}
 							control={control}
 							rules={{ required: 'Campo requerido' }}
 							label='Moneda'
 							dataQuery={{ url: '/currency/all' }}
 							normalizeData={{ id: 'id', name: 'code' }}
 						></AsyncComboBox>
-						<Select
-							name='status'
-							default={entity?.data.status}
-							defaultValue={entity?.data.status}
-							label='Estado de la entidad'
-							control={control}
-							data={statusData}
-						></Select>
 					</div>
+					<div className='flex py-5 justify-around gap-5'></div>
 
 					<TextArea
-						defaultValue={entity?.data.address}
+						defaultValue={Card?.data.address}
 						name='address'
 						control={control}
 						label='Direccion'
 					></TextArea>
-
+					<TextArea
+						defaultValue={Card?.data.description}
+						name='description'
+						control={control}
+						label='description'
+					></TextArea>
+					<Toggle
+						title='Tarjeta bloqueada'
+						control={control}
+						defaultValue={Card?.data.isBlocked}
+						name='isBlocked'
+					></Toggle>
 					<div className='flex justify-end mt-5'>
 						<Button
 							name='Actualizar'
@@ -149,9 +162,9 @@ const DetailEntityEditComponent = ({
 			{delAction && (
 				<Modal state={delAction} close={setDelAction}>
 					<AlertContainer
-						onAction={() => deleteEntity(entity?.data.id, closeModal)}
+						onAction={() => deleteCard(Card?.data.id, closeModal)}
 						onCancel={setDelAction}
-						title={`Eliminar ${entity?.data.name}`}
+						title={`Eliminar ${Card?.data.name}`}
 						text='¿Seguro que desea eliminar este usuario del sistema?'
 						loading={isFetching}
 					/>
@@ -161,4 +174,4 @@ const DetailEntityEditComponent = ({
 	);
 };
 
-export default DetailEntityEditComponent;
+export default DetailCardEditComponent;

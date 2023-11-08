@@ -40,25 +40,16 @@ const Entity = () => {
 	const [post, setPost] = useState(null);
 
 	const {
+		getAllEntity,
+		editEntity,
+		deleteEntity,
+		getEntity,
+		setAllEntity,
 		paginate,
 		isLoading,
 		isFetching,
-		waiting,
-		modalWaiting,
-		allUsers,
+		allEntity,
 		entity,
-		setAllTickets,
-		allTickets,
-		getAllEntity,
-		addEntity,
-		getEntity,
-		editEntity,
-		updateEntity,
-
-		deleteEntity,
-		setAllUsers,
-		manageErrors,
-		modalWaitingError,
 	} = useServerEntity();
 
 	const handleSearch = (e: any) => {
@@ -91,15 +82,6 @@ const Entity = () => {
 					},
 			  );
 
-	/*const {
-              getAllClients,
-              addClient,
-              allClients,
-              paginate,
-              isLoading,
-              isFetching,
-            } = useServerOnlineClients();*/
-
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
@@ -115,10 +97,10 @@ const Entity = () => {
 	const tableData: DataTableInterface[] = [];
 	// eslint-disable-next-line array-callback-return
 
-	const items = useAppSelector((state) => state.Entity.Entity);
+	//const items = useAppSelector((state) => state.Entity.Entity);
 
 	// @ts-ignore
-	items?.map((item: any) => {
+	allEntity?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
@@ -270,9 +252,7 @@ const Entity = () => {
 	const closeAddAccount = () => setAddTicketmodal(false);
 
 	useEffect(() => {
-		getAllEntity(filter).then(
-			allTickets ? () => console.log(allTickets) : () => console.log('moee'),
-		);
+		getAllEntity(filter);
 	}, [filter]);
 
 	return (
@@ -316,6 +296,11 @@ const Entity = () => {
 						deleteEntity={deleteEntity}
 						isFetching={isFetching}
 						closeModal={close}
+						getEntity={getEntity}
+						setAllEntity={setAllEntity}
+						isLoading={isLoading}
+						entity={entity}
+						allEntity={allEntity}
 					/>
 				</Modal>
 			)}

@@ -1,4 +1,8 @@
-import { PlusIcon, CreditCardIcon } from '@heroicons/react/24/outline';
+import {
+	PlusIcon,
+	CreditCardIcon,
+	LockOpenIcon,
+} from '@heroicons/react/24/outline';
 
 import GenericTable, {
 	DataTableInterface,
@@ -20,6 +24,8 @@ import { useAppSelector } from '../../store/hooks';
 import useServerCards from '../../api/userServerCards';
 import { formatCalendar } from '../../utils/helpers';
 import EditCardContainer from './editCardWizzard/EditCardContainer';
+import StateSpanForTable from '../../components/misc/StateSpanForTable';
+import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 
 const Card = () => {
 	const [query, setQuery] = useState<string>('');
@@ -48,10 +54,6 @@ const Card = () => {
 	>({});
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
 
-	/*useEffect(() => {
-              getAllClients(filter);
-            }, [filter]);*/
-
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [
 		'id',
@@ -60,14 +62,15 @@ const Card = () => {
 		'Moneda',
 		'Direccion',
 		'Descripcion',
+		'Estado',
 	];
 	const tableData: DataTableInterface[] = [];
 	// eslint-disable-next-line array-callback-return
 
-	const items = useAppSelector((state) => state.cards.Cards);
+	//const items = useAppSelector((state) => state.cards.Cards);
 
 	// @ts-ignore
-	items?.map((item: any) => {
+	allCards?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
@@ -75,9 +78,10 @@ const Card = () => {
 				Codigo: `${item?.code}`,
 				Expiracion: formatCalendar(item?.expiratedAt),
 				Propietario: item.holder?.fullName,
-				Moneda: item.currency.code,
+				Moneda: item.currency?.code,
 				Descripcion: item.description,
 				Direccion: item.address,
+				Estado: <BlockedStateForTable currentState={item.isBlocked} />,
 			},
 		});
 	});
@@ -160,6 +164,10 @@ const Card = () => {
 						deleteCard={deleteCard}
 						isFetching={isFetching}
 						closeModal={close}
+						allCards={allCards}
+						card={card}
+						isLoading={isLoading}
+						getCard={getCard}
 					/>
 				</Modal>
 			)}

@@ -21,17 +21,17 @@ import EditEntityContainer from '../entity/editEntityWizzard/EditEntityContainer
 
 const Entity = () => {
 	const [query, setQuery] = useState<string>('');
-
 	const {
+		getAllEntity,
+		editEntity,
+		deleteEntity,
+		getEntity,
+		setAllEntity,
+		paginate,
 		isLoading,
 		isFetching,
-
-		allTickets,
-		getAllEntity,
-
-		editEntity,
-
-		deleteEntity,
+		allEntity,
+		entity,
 	} = useServerEntity();
 
 	const [filter, setFilter] = useState<
@@ -165,6 +165,11 @@ const Entity = () => {
 						deleteEntity={deleteEntity}
 						isFetching={isFetching}
 						closeModal={close}
+						getEntity={getEntity}
+						setAllEntity={setAllEntity}
+						isLoading={isLoading}
+						entity={entity}
+						allEntity={allEntity}
 					/>
 				</Modal>
 			)}
