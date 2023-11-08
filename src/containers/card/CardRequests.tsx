@@ -26,8 +26,10 @@ import { formatCalendar } from '../../utils/helpers';
 import EditCardContainer from './editCardWizzard/EditCardContainer';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
+import useServerCardsRequests from '../../api/userServerCardsRequests';
+import CreatedStateForTable from '../../components/misc/CreatedStateForTable';
 
-const Card = () => {
+const CardRequests = () => {
 	const [query, setQuery] = useState<string>('');
 	const [post, setPost] = useState(null);
 
@@ -35,15 +37,15 @@ const Card = () => {
 		paginate,
 		isLoading,
 		isFetching,
-		card,
-		allCards,
-		getAllCards,
+		cardRequest,
+		allCardsRequests,
+		getAllCardsRequests,
 		addCard,
 		getCard,
 		editCard,
 		deleteCard,
 		setSelectedDataToParent,
-	} = useServerCards();
+	} = useServerCardsRequests();
 
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
@@ -52,32 +54,31 @@ const Card = () => {
 
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [
-		'id',
-		'Expiracion',
+		'No. Solicitud',
+		'Tipo',
 		'Propietario',
 		'Moneda',
-		'Direccion',
-		'Descripcion',
+		'Cuenta',
 		'Estado',
 	];
 	const tableData: DataTableInterface[] = [];
-	// eslint-disable-next-line array-callback-return
 
-	//const items = useAppSelector((state) => state.cards.Cards);
-
-	// @ts-ignore
-	allCards?.map((item: any) => {
+	allCardsRequests?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				id: item.id,
-				Codigo: `${item?.code}`,
-				Expiracion: formatCalendar(item?.expiratedAt),
-				Propietario: item.holder?.fullName,
+				'No. Solicitud': item.id,
+				Tipo: item?.priority,
+				Propietario: item.user?.fullName,
 				Moneda: item.currency?.code,
-				Descripcion: item.description,
-				Direccion: item.address,
-				Estado: <BlockedStateForTable currentState={item.isBlocked} />,
+				Cuenta: item.address,
+				Estado: (
+					<CreatedStateForTable
+						greenState='CREADA'
+						redState='SIN CREAR'
+						currentState={item.status}
+					/>
+				),
 			},
 		});
 	});
@@ -105,7 +106,7 @@ const Card = () => {
 			name: 'Tarjetas',
 		},
 		{
-			name: 'Todas',
+			name: ' Solicitudes',
 		},
 	];
 	//------------------------------------------------------------------------------------
@@ -119,7 +120,7 @@ const Card = () => {
 	const closeAddAccount = () => setAddTicketmodal(false);
 
 	useEffect(() => {
-		getAllCards(filter);
+		getAllCardsRequests(filter);
 	}, [filter]);
 
 	return (
@@ -163,8 +164,8 @@ const Card = () => {
 						deleteCard={deleteCard}
 						isFetching={isFetching}
 						closeModal={close}
-						allCards={allCards}
-						card={card}
+						allCards={allCardsRequests}
+						card={cardRequest}
 						isLoading={isLoading}
 						getCard={getCard}
 						setSelectedDataToParent={setSelectedDataToParent}
@@ -175,4 +176,4 @@ const Card = () => {
 	);
 };
 
-export default Card;
+export default CardRequests;

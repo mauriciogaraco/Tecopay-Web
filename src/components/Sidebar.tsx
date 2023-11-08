@@ -94,13 +94,14 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 			children: [
 				{
 					name: 'Todas',
-					href: `/tarjetas`,
-					current: !secondaryCurrent && mainCurrent === 'tarjetas',
+					href: `/tarjetas/todas`,
+					current: secondaryCurrent === 'todas' && mainCurrent === 'tarjetas',
 				},
 				{
-					name: 'Reportes',
-					href: `/stocks/reports`,
-					current: secondaryCurrent === 'reports' && mainCurrent === 'stocks',
+					name: ' Solicitudes',
+					href: `/tarjetas/solicitudes`,
+					current:
+						secondaryCurrent === 'solicitudes' && mainCurrent === 'tarjetas',
 				},
 			],
 		},

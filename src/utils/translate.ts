@@ -141,7 +141,7 @@ export const translateEcoCycleTab = (tab?: string) => {
       return "Órdenes";
 
     case "reports":
-      return "Reportes";
+      return " Solicitudes";
 
     case "cashbox":
       return "Caja";

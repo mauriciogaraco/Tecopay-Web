@@ -11,6 +11,7 @@ import { Suspense, lazy } from 'react';
 import Loading from '../components/misc/Loading';
 import Entity from '../containers/entity/Entity';
 import Card from '../containers/card/Card';
+import CardRequests from '../containers/card/CardRequests';
 
 //Almacenes
 /*const ListStocks = lazy(() => import("../containers/areas/ListStocks"));
@@ -33,7 +34,8 @@ const AppRoute = () => {
 			<Route path='/' element={<AppContainer />}>
 				<Route index element={<Dashboard />} />
 				<Route path='/cuentas' element={<Tickets />} />
-				<Route path='/tarjetas' element={<Card />} />
+				<Route path='/tarjetas/todas' element={<Card />} />
+				<Route path='/tarjetas/solicitudes' element={<CardRequests />} />
 				<Route path='/cuentas/Detalles' element={<Tickets />} />
 				<Route path='/entidades' element={<Entity />} />
 				{/**Stocks */}
