@@ -14,6 +14,7 @@ interface UserWizzardInterface {
 	card: any;
 	getCard: Function;
 	isLoading: Boolean;
+	setSelectedDataToParent: any;
 }
 
 const EditCardContainer = ({
@@ -26,6 +27,7 @@ const EditCardContainer = ({
 	card,
 	getCard,
 	isLoading,
+	setSelectedDataToParent,
 }: UserWizzardInterface) => {
 	useEffect(() => {
 		id && getCard(id);
@@ -52,7 +54,8 @@ const EditCardContainer = ({
 						value='Editar'
 					></Button>
 				</div>
-				<DetailCardComponent Card={card} />
+
+				<DetailCardComponent id={id} allCards={allCards} Card={card} />
 			</div>
 		);
 	else
@@ -61,6 +64,14 @@ const EditCardContainer = ({
 				<div className='flex items-center justify-around'>
 					<h1 className='ml-2 text-lg'>Editar tarjeta {id}</h1>
 				</div>
+				<Button
+					action={() => setEditModal(!editModal)}
+					name='Editar'
+					outline={true}
+					color='tecopay-400'
+					textColor='black'
+					value='Editar'
+				></Button>
 
 				<EditDetailCardComponent
 					id={id}
@@ -70,6 +81,7 @@ const EditCardContainer = ({
 					closeModal={closeModal}
 					isFetching={isFetching}
 					allCards={allCards}
+					setSelectedDataToParent={setSelectedDataToParent}
 				/>
 			</div>
 		);

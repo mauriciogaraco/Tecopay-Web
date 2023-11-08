@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateUrlParams } from "../utils/helpers";
 import { type BasicType } from "../interfaces/LocalInterfaces";
+import { SelectInterface } from "../interfaces/InterfacesLocal";
 
 const useServerCards = () => {
   const { manageErrors } = useServer();
@@ -25,6 +26,9 @@ const useServerCards = () => {
   const [modalWaitingError, setModalWaitingError] = useState<string | null>(
     null
   );
+  const [selectedDataToParent, setSelectedDataToParent] =
+  useState<SelectInterface | null>(null);
+
   const [waiting, setWaiting] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const items = useAppSelector((state)=> state.account.items)
@@ -81,10 +85,11 @@ const useServerCards = () => {
     await query
       .put(`/card/update/${id}`, data)
       .then((resp) => {
+        console.log(selectedDataToParent)
         const newCards:any = [...allCards];
         const idx = newCards.findIndex((card:any) => card.id === id);
         const cardWithId = allCards.find((card:any) => card.id == id);
-        const wholeData = Object.assign(data, {id, holder:{fullName:cardWithId.holder.fullName}, currency: {code: cardWithId.currency.code}} )
+        const wholeData = Object.assign(data, {id, holder:{fullName:cardWithId.holder.fullName}, currency: {code: selectedDataToParent?.name}} )
         newCards.splice(idx, 1, wholeData);
         
         setAllCards(newCards)
@@ -136,6 +141,7 @@ const useServerCards = () => {
     modalWaitingError,
     allCards,
     setAllCards,
+    setSelectedDataToParent,
   };
 };
 export default useServerCards;

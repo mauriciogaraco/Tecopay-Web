@@ -116,24 +116,6 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 			icon: Cog6ToothIcon,
 			current: mainCurrent === 'configuration',
 		},
-		{
-			name: 'Mis almacenes',
-			icon: RectangleGroupIcon,
-			current: mainCurrent === 'stocks',
-
-			children: [
-				{
-					name: 'Todos',
-					href: `/stocks`,
-					current: !secondaryCurrent && mainCurrent === 'stocks',
-				},
-				{
-					name: 'Reportes',
-					href: `/stocks/reports`,
-					current: secondaryCurrent === 'reports' && mainCurrent === 'stocks',
-				},
-			],
-		},
 	];
 
 	const [changeBusinessModal, setChangeBusinessModal] = useState(false);
@@ -157,7 +139,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 						leaveFrom='opacity-100'
 						leaveTo='opacity-0'
 					>
-						<div className='fixed inset-0 bg-gray-600 bg-opacity-75' />
+						<div className='fixed inset-0 bg-tecopay-600 bg-opacity-75' />
 					</Transition.Child>
 
 					<div className='fixed inset-0 z-40 flex'>
@@ -170,7 +152,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 							leaveFrom='translate-x-0'
 							leaveTo='-translate-x-full'
 						>
-							<Dialog.Panel className='relative flex w-full max-w-xs flex-1 flex-col bg-gray-800 pt-5 pb-4'>
+							<Dialog.Panel className='relative flex w-full max-w-xs flex-1 flex-col bg-tecopay-800 pt-5 pb-4'>
 								<Transition.Child
 									as={Fragment}
 									enter='ease-in-out duration-300'
@@ -205,7 +187,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 											className='inline-flex items-center flex-1 focus:outline-none w-full'
 											onTouchEnd={() => setChangeBusinessModal(true)}
 										>
-											<h4 className='flex p-2 text-gray-100 w-full'>
+											<h4 className='flex p-2 text-white w-full'>
 												{business?.name}
 											</h4>
 
@@ -220,7 +202,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 											hash={business?.logo?.blurHash ?? null}
 										/>
 										<div className='inline-flex group-hover:flex-shrink-0 items-center w-full focus:outline-none'>
-											<h4 className='flex ml-2 items-center text-gray-100'>
+											<h4 className='flex ml-2 items-center text-white'>
 												{business?.name}
 											</h4>
 										</div>
@@ -235,8 +217,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 													to={item.href ?? ''}
 													className={classNames(
 														item.current
-															? 'bg-gray-900 text-white'
-															: 'text-gray-300 hover:bg-gray-700 hover:text-white',
+															? 'bg-tecopay-900 text-white'
+															: 'text-white hover:bg-tecopay-700 hover:text-white',
 														'group flex items-center px-2 py-2 text-sm font-medium rounded-md',
 													)}
 													onClick={() => switchSideBar()}
@@ -244,8 +226,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 													<item.icon
 														className={classNames(
 															item.current
-																? 'text-gray-300'
-																: 'text-gray-400 group-hover:text-gray-300',
+																? 'text-white'
+																: 'text-tecopay-400 group-hover:text-white',
 															'mr-3 flex-shrink-0 h-6 w-6',
 														)}
 														aria-hidden='true'
@@ -263,22 +245,22 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 															<Disclosure.Button
 																className={classNames(
 																	item.current
-																		? 'bg-gray-900 text-white'
-																		: 'text-gray-300 hover:bg-gray-700 hover:text-white',
+																		? 'bg-tecopay-900 text-white'
+																		: 'text-white hover:bg-tecopay-700 hover:text-white',
 																	'group w-full flex items-center px-2 py-2 text-left text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500',
 																)}
 															>
 																<item.icon
-																	className='mr-3 h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500'
+																	className='mr-3 h-6 w-6 flex-shrink-0 text-white group-hover:text-white'
 																	aria-hidden='true'
 																/>
 																<span className='flex-1'>{item.name}</span>
 																<svg
 																	className={classNames(
 																		open
-																			? 'text-gray-400 rotate-90'
-																			: 'text-gray-300',
-																		'ml-3 h-5 w-5 flex-shrink-0 transform transition-colors duration-150 ease-in-out group-hover:text-gray-400',
+																			? 'text-white rotate-90'
+																			: 'text-white',
+																		'ml-3 h-5 w-5 flex-shrink-0 transform transition-colors duration-150 ease-in-out group-hover:text-tecopay-400',
 																	)}
 																	viewBox='0 0 20 20'
 																	aria-hidden='true'
@@ -296,7 +278,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 																			key={subItem.name}
 																			as={Link}
 																			to={subItem.href ?? ''}
-																			className='group flex w-full items-center rounded-md py-2 pl-11 pr-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+																			className='group flex w-full items-center rounded-md py-2 pl-11 pr-2 text-sm font-medium text-tecopay-600 hover:bg-tecopay-50 hover:text-tecopay-900'
 																			onClickCapture={() => switchSideBar()}
 																		>
 																			{subItem.name}
@@ -329,9 +311,9 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 				}
 			>
 				{/* Sidebar component, swap this element with another sidebar if you like */}
-				<div className='relative flex min-h-0 flex-1 flex-col bg-slate-800'>
+				<div className='relative flex min-h-0 flex-1 flex-col bg-tecopay-800'>
 					<div
-						className={`flex flex-grow flex-col  scrollbar-thumb-gray-900 border-r border-slate-200 bg-slate-800 pt-1 pb-4 ${
+						className={`flex flex-grow flex-col  scrollbar-thumb-tecopay-900 border-r border-tecopay-200 bg-tecopay-800 pt-1 pb-4 ${
 							staticBar
 								? 'pr-3 overflow-y-scroll scrollbar-thin'
 								: 'group-hover:pr-3 group-hover:overflow-auto group-hover:scrollbar-thin'
@@ -359,7 +341,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 									<h4
 										className={`${
 											staticBar ? 'flex' : 'hidden group-hover:flex'
-										} p-2 text-gray-100 w-full `}
+										} p-2 text-white w-full `}
 									>
 										{business?.name}
 									</h4>
@@ -390,7 +372,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 									<h4
 										className={`${
 											staticBar ? 'flex' : 'hidden group-hover:flex'
-										} ml-2 items-center text-gray-100`}
+										} ml-2 items-center text-white`}
 									>
 										{business?.name}
 									</h4>
@@ -406,8 +388,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 												to={item.href ?? ''}
 												className={classNames(
 													item.current
-														? 'bg-gray-900 text-white'
-														: 'text-gray-300 hover:bg-gray-700 hover:text-white',
+														? 'bg-tecopay-900 text-white'
+														: 'text-white hover:bg-tecopay-700 hover:text-white',
 													`relative group flex items-center ${
 														staticBar
 															? ''
@@ -418,8 +400,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 												<item.icon
 													className={classNames(
 														item.current
-															? 'text-gray-300'
-															: 'text-gray-400 group-hover:text-gray-300',
+															? 'text-white'
+															: 'text-white group-hover:text-white',
 														`${
 															staticBar ? 'mr-3' : 'group-hover:mr-3'
 														} flex-shrink-0 h-6 w-6`,
@@ -458,8 +440,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 														<Disclosure.Button
 															className={classNames(
 																item.current
-																	? 'bg-gray-900 text-white'
-																	: 'text-gray-300 hover:bg-gray-900 hover:text-white',
+																	? 'bg-tecopay-900 text-white'
+																	: 'text-white hover:bg-tecopay-900 hover:text-white',
 																`relative group w-full flex  items-center ${
 																	staticBar
 																		? ''
@@ -471,8 +453,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 															<item.icon
 																className={classNames(
 																	item.current
-																		? 'text-gray-300'
-																		: 'text-gray-400 group-hover:text-gray-300',
+																		? 'text-white'
+																		: 'text-white group-hover:text-white',
 																	`${
 																		staticBar ? 'mr-3' : 'group-hover:mr-3'
 																	} flex-shrink-0 h-6 w-6 text-center`,
@@ -490,10 +472,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 															</span>
 															<ChevronRightIcon
 																className={classNames(
-																	open
-																		? 'text-gray-500 rotate-90'
-																		: 'text-gray-200',
-																	`h-4 w-4 flex-shrink-0 transform transition-colors duration-150 ease-in-out group-hover:text-gray-400 ${
+																	open ? 'text-white rotate-90' : 'text-white',
+																	`h-4 w-4 flex-shrink-0 transform transition-colors duration-150 ease-in-out group-hover:text-white ${
 																		staticBar ? '' : 'hidden group-hover:block'
 																	} absolute right-1`,
 																)}
@@ -512,8 +492,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 																		to={subItem.href ?? ''}
 																		className={classNames(
 																			subItem.current
-																				? 'bg-gray-600 text-white'
-																				: 'text-gray-300 hover:bg-gray-700 hover:text-white',
+																				? 'bg-tecopay-600 text-white'
+																				: 'text-white hover:bg-tecopay-700 hover:text-white',
 																			'relative group flex items-center px-2 py-2 text-sm font-medium rounded-md w-full',
 																		)}
 																	>
@@ -536,7 +516,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 
 							<div className='flex justify-center items-center mt-16'>
 								<BsPin
-									className={`text-gray-400 hover:text-gray-100 cursor-pointer ${
+									className={`text-white hover:text-white cursor-pointer ${
 										staticBar ? '' : 'rotate-90'
 									}`}
 									onClick={() => dispatch(changeStaticBar())}
@@ -551,7 +531,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 			{!barState && (
 				<button
 					type='button'
-					className='absolute top-16 z-50 py-2 px-4 mt-2 text-gray-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-slate-500 md:hidden'
+					className='absolute top-16 z-50 py-2 px-4 mt-2 text-tecopay-600 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-tecopay-500 md:hidden'
 					onClick={() => switchSideBar()}
 				>
 					<span className='sr-only'>Open sidebar</span>

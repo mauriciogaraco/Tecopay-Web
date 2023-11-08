@@ -20,6 +20,7 @@ import TextArea from '../../../components/forms/TextArea';
 import Select from '../../../components/forms/Select';
 import ComboBox from '../../../components/forms/Combobox';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
+import useServerCards from '../../../api/userServerCards';
 
 interface EditInterface {
 	Card: any;
@@ -29,25 +30,10 @@ interface EditInterface {
 	isFetching: boolean;
 	id: number | null;
 	allCards: any;
+	setSelectedDataToParent: any;
 }
-const selectData = [
-	{ id: 1, name: true },
-	{ id: 2, name: 'cerrado' },
-];
-const prioridad: SelectInterface[] = [
-	{ id: '1', name: 'baja' },
-	{ id: '2', name: 'media' },
-	{ id: '3', name: 'alta' },
-];
 
-const clasificacion: SelectInterface[] = [
-	{ id: '1', name: 'Conectividad' },
-	{ id: '2', name: 'Plataforma Web' },
-	{ id: '3', name: 'Aplicaciones Móviles' },
-	{ id: '4', name: 'Servidores' },
-];
-
-const DetailCardEditComponent = ({
+const EditDetailCardComponent = ({
 	editCard,
 	deleteCard,
 	Card,
@@ -55,6 +41,7 @@ const DetailCardEditComponent = ({
 	isFetching,
 	id,
 	allCards,
+	setSelectedDataToParent,
 }: EditInterface) => {
 	const { control, handleSubmit, watch, reset, formState } = useForm<BasicType>(
 		{
@@ -125,6 +112,7 @@ const DetailCardEditComponent = ({
 							label='Moneda'
 							dataQuery={{ url: '/currency/all' }}
 							normalizeData={{ id: 'id', name: 'code' }}
+							setSelectedDataToParent={setSelectedDataToParent}
 						></AsyncComboBox>
 					</div>
 					<div className='flex py-5 justify-around gap-5'></div>
@@ -174,4 +162,4 @@ const DetailCardEditComponent = ({
 	);
 };
 
-export default DetailCardEditComponent;
+export default EditDetailCardComponent;

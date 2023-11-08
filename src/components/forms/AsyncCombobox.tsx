@@ -37,6 +37,7 @@ interface InputProps {
 	defaultItem?: { id: string | number | null; name: string };
 	dependendValue?: BasicType;
 	callback?: Function;
+	setSelectedDataToParent?: any;
 }
 
 export default function AsyncComboBox(props: UseControllerProps & InputProps) {
@@ -52,6 +53,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 		dependendValue,
 		callback,
 		nullOpt,
+		setSelectedDataToParent,
 	} = props;
 
 	//query management states ----------------------------------------------------------
@@ -159,6 +161,9 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 				onChange={(e: SelectInterface) => {
 					setSelectedData(e);
 					field.onChange(e.id);
+					{
+						setSelectedDataToParent && setSelectedDataToParent(e);
+					}
 				}}
 				disabled={disabled}
 				by={(current, rest) => current?.id === rest?.id}

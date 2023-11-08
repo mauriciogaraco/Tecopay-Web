@@ -35,8 +35,6 @@ const Card = () => {
 		paginate,
 		isLoading,
 		isFetching,
-		waiting,
-		modalWaiting,
 		card,
 		allCards,
 		getAllCards,
@@ -44,9 +42,7 @@ const Card = () => {
 		getCard,
 		editCard,
 		deleteCard,
-		setAllCards,
-		manageErrors,
-		modalWaitingError,
+		setSelectedDataToParent,
 	} = useServerCards();
 
 	const [filter, setFilter] = useState<
@@ -168,6 +164,7 @@ const Card = () => {
 						card={card}
 						isLoading={isLoading}
 						getCard={getCard}
+						setSelectedDataToParent={setSelectedDataToParent}
 					/>
 				</Modal>
 			)}
