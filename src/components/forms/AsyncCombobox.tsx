@@ -130,10 +130,13 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 			setSelectedData(elemDefault);
 		} else if (defaultItem && !selectedData) {
 			setSelectedData(defaultItem);
+			if (setSelectedDataToParent) setSelectedDataToParent(defaultItem);
+			if (setSelectedDataToParentTwo) setSelectedDataToParentTwo(defaultItem);
 		}
 		if (Object.values(allParams).length !== 0 && !disabled) {
 			apiCall(allParams);
 		}
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [query, allParams]);
 	//-------------------------------------------------------------------------

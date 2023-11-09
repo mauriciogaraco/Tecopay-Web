@@ -66,11 +66,11 @@ const EditCardContainer = ({
 				</div>
 				<Button
 					action={() => setEditModal(!editModal)}
-					name='Editar'
+					name='Detalles'
 					outline={true}
 					color='tecopay-400'
 					textColor='black'
-					value='Editar'
+					value='Detalles'
 				></Button>
 
 				<EditDetailCardComponent

@@ -99,20 +99,14 @@ const DetailAccountEditComponent = ({
 
 						<AsyncComboBox
 							name='issueEntityId'
-							defaultItem={
-								account
-									? {
-											id: account?.data.issueEntityId,
-											name: desiredCurrencyCodeEntityObject?.issueEntity?.name,
-									  }
-									: undefined
-							}
+							defaultItem={{
+								id: account?.data.issueEntityId,
+								name: desiredCurrencyCodeEntityObject?.issueEntity?.name,
+							}}
 							defaultValue={account?.data.issueEntityId}
 							control={control}
 							rules={{ required: 'Campo requerido' }}
 							label='Entidad'
-							setSelectedDataToParent={setSelectedDataToParent}
-							selectedDataToParent={selectedDataToParent}
 							setSelectedDataToParentTwo={setSelectedDataToParentTwo}
 							dataQuery={{ url: '/entity/all' }}
 							normalizeData={{ id: 'id', name: 'name' }}
