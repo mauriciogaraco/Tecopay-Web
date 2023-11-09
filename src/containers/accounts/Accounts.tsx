@@ -47,9 +47,9 @@ const Accounts = () => {
 		getAccount,
 		editAccount,
 		deleteAccount,
-		setAllAccounts,
-		manageErrors,
-		modalWaitingError,
+		setSelectedDataToParent,
+		setSelectedDataToParentTwo,
+		selectedDataToParent,
 	} = useServerAccounts();
 
 	const [filter, setFilter] = useState<
@@ -74,7 +74,6 @@ const Accounts = () => {
 		'Actividad',
 	];
 	const tableData: DataTableInterface[] = [];
-	// eslint-disable-next-line array-callback-return
 
 	allAccounts?.map((item: any) => {
 		tableData.push({
@@ -187,6 +186,8 @@ const Accounts = () => {
 			{editTicketModal.state && (
 				<Modal state={editTicketModal.state} close={close} size='m'>
 					<EditAccountContainer
+						allAccounts={allAccounts}
+						selectedDataToParent={selectedDataToParent}
 						deleteAccount={deleteAccount}
 						isLoading={isLoading}
 						account={account}
@@ -195,6 +196,8 @@ const Accounts = () => {
 						editAccount={editAccount}
 						isFetching={isFetching}
 						closeModal={close}
+						setSelectedDataToParent={setSelectedDataToParent}
+						setSelectedDataToParentTwo={setSelectedDataToParentTwo}
 					/>
 				</Modal>
 			)}

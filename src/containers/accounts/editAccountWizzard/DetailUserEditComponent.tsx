@@ -29,6 +29,10 @@ interface EditInterface {
 	closeModal: Function;
 	isFetching: boolean;
 	id: number | null;
+	setSelectedDataToParent: Function;
+	allAccounts: any;
+	selectedDataToParent: any;
+	setSelectedDataToParentTwo: any;
 }
 
 const DetailUserEditComponent = ({
@@ -38,17 +42,21 @@ const DetailUserEditComponent = ({
 	closeModal,
 	isFetching,
 	id,
+	setSelectedDataToParent,
+	allAccounts,
+	selectedDataToParent,
+	setSelectedDataToParentTwo,
 }: EditInterface) => {
 	const { control, handleSubmit, watch, reset, formState } = useForm<BasicType>(
 		{
 			mode: 'onChange',
 		},
 	);
-	const { isFetching: loadingPsw } = useServerAccounts();
-	const { isFetching: fetchingUser } = useServerAccounts();
-	const { isFetching: fetchingMail } = useServerAccounts();
+	const desiredCurrencyCodeEntityObject: any = allAccounts.find(
+		(item: any) => item.id === id,
+	);
+
 	const [delAction, setDelAction] = useState(false);
-	const { getAllAccounts } = useServerAccounts();
 
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
 		const WholeData = Object.assign(data, {
@@ -86,12 +94,6 @@ const DetailUserEditComponent = ({
 							control={control}
 							rules={{
 								required: 'Campo requerido',
-								//         validate: {
-								//           validateChar: (value) =>
-								//             validateUserChar(value) ||
-								//             "El usuario no puede contener espacios ni caracteres especiales excepto - _ .",
-								//
-								//             },
 							}}
 						/>
 
@@ -101,7 +103,7 @@ const DetailUserEditComponent = ({
 								account
 									? {
 											id: account?.data.issueEntityId,
-											name: account?.data.issueEntityId,
+											name: desiredCurrencyCodeEntityObject?.issueEntity?.name,
 									  }
 									: undefined
 							}
@@ -109,22 +111,26 @@ const DetailUserEditComponent = ({
 							control={control}
 							rules={{ required: 'Campo requerido' }}
 							label='Entidad'
+							setSelectedDataToParent={setSelectedDataToParent}
+							selectedDataToParent={selectedDataToParent}
+							setSelectedDataToParentTwo={setSelectedDataToParentTwo}
 							dataQuery={{ url: '/entity/all' }}
 							normalizeData={{ id: 'id', name: 'name' }}
 						></AsyncComboBox>
 						<AsyncComboBox
 							name='currencyId'
-							defaultItem={
-								account
-									? { id: account?.data.id, name: account?.data.currencyId }
-									: undefined
-							}
+							defaultItem={{
+								id: account?.data.currencyId,
+								name: desiredCurrencyCodeEntityObject?.currency?.code,
+							}}
 							defaultValue={account?.data.currencyId}
 							control={control}
 							rules={{ required: 'Campo requerido' }}
 							label='Moneda'
 							dataQuery={{ url: '/currency/all' }}
 							normalizeData={{ id: 'id', name: 'code' }}
+							setSelectedDataToParent={setSelectedDataToParent}
+							selectedDataToParent={selectedDataToParent}
 						></AsyncComboBox>
 					</div>
 					<div className='flex py-5 justify-around gap-5'>

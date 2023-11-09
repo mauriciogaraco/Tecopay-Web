@@ -15,18 +15,25 @@ interface UserWizzardInterface {
 	getAccount: Function;
 	isLoading: Boolean;
 	account: any;
+	setSelectedDataToParent: Function;
+	allAccounts: any;
+	selectedDataToParent: any;
+	setSelectedDataToParentTwo: any;
 }
 
 const EditAccountContainer = ({
 	id,
 	editAccount,
-
+	allAccounts,
 	isFetching,
 	closeModal,
 	getAccount,
 	isLoading,
 	deleteAccount,
 	account,
+	setSelectedDataToParent,
+	selectedDataToParent,
+	setSelectedDataToParentTwo,
 }: UserWizzardInterface) => {
 	useEffect(() => {
 		id && getAccount(id);
@@ -78,12 +85,16 @@ const EditAccountContainer = ({
       <TabNav tabs={tabs} action={action} />*/}
 			{currentTab === 'edit' && (
 				<DetailUserEditComponent
+					allAccounts={allAccounts}
+					selectedDataToParent={selectedDataToParent}
 					id={id}
 					editAccount={editAccount}
 					deleteAccount={deleteAccount}
 					account={account}
 					closeModal={closeModal}
 					isFetching={isFetching}
+					setSelectedDataToParent={setSelectedDataToParent}
+					setSelectedDataToParentTwo={setSelectedDataToParentTwo}
 				/>
 			)}
 		</div>

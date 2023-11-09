@@ -37,7 +37,9 @@ interface InputProps {
 	defaultItem?: { id: string | number | null; name: string };
 	dependendValue?: BasicType;
 	callback?: Function;
-	setSelectedDataToParent?: any;
+	setSelectedDataToParent?: Function;
+	selectedDataToParent?: any;
+	setSelectedDataToParentTwo?: Function;
 }
 
 export default function AsyncComboBox(props: UseControllerProps & InputProps) {
@@ -54,6 +56,8 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 		callback,
 		nullOpt,
 		setSelectedDataToParent,
+		selectedDataToParent,
+		setSelectedDataToParentTwo,
 	} = props;
 
 	//query management states ----------------------------------------------------------
@@ -62,6 +66,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 	const [selectedData, setSelectedData] = useState<SelectInterface | null>(
 		null,
 	);
+	const newArray = [{}];
 	const [loading, setLoading] = useState(false);
 
 	const currentDependendValue = useRef<
@@ -162,7 +167,9 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 					setSelectedData(e);
 					field.onChange(e.id);
 					{
-						setSelectedDataToParent && setSelectedDataToParent(e);
+						if (dataQuery.url !== '/entity/all')
+							setSelectedDataToParent && setSelectedDataToParent(e);
+						else setSelectedDataToParentTwo && setSelectedDataToParentTwo(e);
 					}
 				}}
 				disabled={disabled}
