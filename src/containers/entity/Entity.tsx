@@ -25,7 +25,7 @@ import { useEffect, useState } from 'react';
 import NuevoTicketModal from '../accounts/NewAccount/NewAccountModal';
 import { data } from '../../utils/TemporaryArrayData';
 import axios from 'axios';
-import EditUserContainer from '../accounts/editAccountWizzard/EditUserContainer';
+import EditUserContainer from '../accounts/editAccountWizzard/EditAccountContainer';
 import { useAppSelector } from '../../store/hooks';
 import useServerEntity from '../../api/userServerEntity';
 import { formatCalendar } from '../../utils/helpers';

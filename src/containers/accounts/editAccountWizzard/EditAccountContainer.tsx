@@ -1,10 +1,11 @@
 import { useState, createContext, useEffect } from 'react';
-import DetailUserEditComponent from './DetailUserEditComponent';
+import DetailUserEditComponent from './DetailAccountEditComponent';
 import Fetching from '../../../components/misc/Fetching';
 import TabNav from '../../../components/navigation/TabNav';
 import useServerAccounts from '../../../api/userServerAccounts';
 import { redirect, useNavigate } from 'react-router-dom';
 import useServerCards from '../../../api/userServerCards';
+import DetailAccountEditComponent from './DetailAccountEditComponent';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -84,7 +85,7 @@ const EditAccountContainer = ({
 			{/*isFetching && <Fetching />}
       <TabNav tabs={tabs} action={action} />*/}
 			{currentTab === 'edit' && (
-				<DetailUserEditComponent
+				<DetailAccountEditComponent
 					allAccounts={allAccounts}
 					selectedDataToParent={selectedDataToParent}
 					id={id}

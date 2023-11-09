@@ -35,7 +35,7 @@ interface EditInterface {
 	setSelectedDataToParentTwo: any;
 }
 
-const DetailUserEditComponent = ({
+const DetailAccountEditComponent = ({
 	editAccount,
 	deleteAccount,
 	account,
@@ -193,4 +193,4 @@ const DetailUserEditComponent = ({
 	);
 };
 
-export default DetailUserEditComponent;
+export default DetailAccountEditComponent;

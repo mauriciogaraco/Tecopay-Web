@@ -25,7 +25,7 @@ import { useEffect, useState } from 'react';
 import NewAccountModal from './NewAccount/NewAccountModal';
 import { data } from '../../utils/TemporaryArrayData';
 import { useAppSelector } from '../../store/hooks';
-import EditAccountContainer from './editAccountWizzard/EditUserContainer';
+import EditAccountContainer from './editAccountWizzard/EditAccountContainer';
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
 
@@ -38,12 +38,9 @@ const Accounts = () => {
 		paginate,
 		isLoading,
 		isFetching,
-		waiting,
-		modalWaiting,
 		allAccounts,
 		account,
 		getAllAccounts,
-		addAccount,
 		getAccount,
 		editAccount,
 		deleteAccount,
@@ -115,11 +112,6 @@ const Accounts = () => {
 				setAddTicketmodal(true);
 			},
 		},
-		/* {
-				title: "Exportar a excel",
-				action: () => setExportModal(true),
-				icon: <BsFiletypeXlsx />,
-			  }, */
 	];
 
 	const rowAction = (id: number) => {

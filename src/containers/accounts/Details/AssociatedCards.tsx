@@ -30,7 +30,7 @@ import { data } from '../../../utils/TemporaryArrayData';
 import axios from 'axios';
 import { useAppSelector } from '../../../store/hooks';
 import useServerAccounts from '../../../api/userServerAccounts';
-import EditAccountContainer from '../editAccountWizzard/EditUserContainer';
+import EditAccountContainer from '../editAccountWizzard/EditAccountContainer';
 
 const AssociatedCards = () => {
 	const [query, setQuery] = useState<string>('');
