@@ -26,6 +26,8 @@ import NewAccountModal from './NewAccount/NewAccountModal';
 import { data } from '../../utils/TemporaryArrayData';
 import { useAppSelector } from '../../store/hooks';
 import EditAccountContainer from './editAccountWizzard/EditUserContainer';
+import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
+import StateSpanForTable from '../../components/misc/StateSpanForTable';
 
 const Accounts = () => {
 	const [query, setQuery] = useState<string>('');
@@ -46,49 +48,9 @@ const Accounts = () => {
 		editAccount,
 		deleteAccount,
 		setAllAccounts,
-		resetAccountPsw,
 		manageErrors,
 		modalWaitingError,
 	} = useServerAccounts();
-
-	const handleSearch = (e: any) => {
-		e.preventDefault();
-		setQuery(queryText);
-	};
-
-	const filteredOptions =
-		query === ''
-			? data
-			: data.filter(
-					({
-						cliente,
-						no,
-						fecha,
-						description,
-						prioridad,
-						clasificacion,
-						email,
-					}) => {
-						return (
-							cliente.toLowerCase().includes(query.toLowerCase()) ||
-							no.toLowerCase().includes(query.toLowerCase()) ||
-							prioridad.toLowerCase().includes(query.toLowerCase()) ||
-							clasificacion.toLowerCase().includes(query.toLowerCase()) ||
-							email.toLowerCase().includes(query.toLowerCase()) ||
-							fecha.toLowerCase().includes(query.toLowerCase()) ||
-							cliente.toLowerCase().includes(query.toLowerCase())
-						);
-					},
-			  );
-
-	/* const {
-			  getAllClients,
-			  addClient,
-			  allClients,
-			  paginate,
-			  isLoading,
-			  isFetching,
-			} = useServerOnlineClients(); */
 
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
@@ -108,13 +70,13 @@ const Accounts = () => {
 		'Propietario',
 		'Moneda',
 		'Direccion',
+		'Estado',
+		'Actividad',
 	];
 	const tableData: DataTableInterface[] = [];
 	// eslint-disable-next-line array-callback-return
 
-	const items = useAppSelector((state) => state.account.items);
-
-	items?.map((item: any) => {
+	allAccounts?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
@@ -125,6 +87,14 @@ const Accounts = () => {
 				Propietario: item.owner?.fullName,
 				Moneda: item.currency?.code,
 				Direccion: item.address,
+				Estado: <BlockedStateForTable currentState={item.isBlocked} />,
+				Actividad: (
+					<StateSpanForTable
+						currentState={item?.isActive}
+						greenState='Activa'
+						redState='Inactiva'
+					/>
+				),
 			},
 		});
 	});
@@ -157,100 +127,6 @@ const Accounts = () => {
 		setEditTicketModal({ state: true, id });
 	};
 
-	// Filters-----------------------------------
-	const registrationSelector: SelectInterface[] = [
-		{
-			id: 'WOO',
-			name: 'WOO',
-		},
-		{
-			id: 'ONLINE',
-			name: 'ONLINE',
-		},
-		{
-			id: 'POS',
-			name: 'POS',
-		},
-	];
-
-	const sexSelector: SelectInterface[] = [
-		{
-			id: 'female',
-			name: 'Femenino',
-		},
-		{
-			id: 'male',
-			name: 'Masculino',
-		},
-	];
-
-	const availableFilters: FilterOpts[] = [
-		// País
-		{
-			format: 'select',
-			filterCode: 'countryId',
-			name: 'País',
-			asyncData: {
-				url: '/public/countries',
-				idCode: 'id',
-				dataCode: 'name',
-			},
-		},
-		// Provincia
-		{
-			format: 'select',
-			filterCode: 'provinceId',
-			name: 'Provincia',
-			dependentOn: 'countryId',
-			asyncData: {
-				url: '/public/provinces',
-				idCode: 'id',
-				dataCode: 'name',
-			},
-		},
-		// Municipio
-		{
-			format: 'select',
-			filterCode: 'municipalityId',
-			name: 'Municipio',
-			dependentOn: 'provinceId',
-			asyncData: {
-				url: '/public/municipalities',
-				idCode: 'id',
-				dataCode: 'name',
-			},
-		},
-		// Forma de registro
-		{
-			format: 'select',
-			filterCode: 'registrationWay',
-			name: 'Forma de registro',
-			data: registrationSelector,
-		},
-		// Nacimiento desde
-		{
-			format: 'datepicker',
-			filterCode: 'birthFrom',
-			name: 'Fecha de nacimiento desde',
-		},
-		// Nacimiento hasta
-		{
-			format: 'datepicker',
-			filterCode: 'birthTo',
-			name: 'Fecha de nacimiento hasta',
-		},
-		// Forma de registro
-		{
-			format: 'select',
-			filterCode: 'sex',
-			name: 'Sexo',
-			data: sexSelector,
-		},
-	];
-
-	// const filterAction = (data: BasicType) => setFilter(data);
-	// ----------------------------------------------------------------------------------
-
 	// Breadcrumb-----------------------------------------------------------------------------------
 	const paths: PathInterface[] = [
 		{
@@ -270,9 +146,7 @@ const Accounts = () => {
 	};
 
 	useEffect(() => {
-		getAllAccounts(filter).then(() => {
-			console.log(paginate);
-		});
+		getAllAccounts(filter);
 	}, [filter]);
 
 	return (
@@ -313,9 +187,12 @@ const Accounts = () => {
 			{editTicketModal.state && (
 				<Modal state={editTicketModal.state} close={close} size='m'>
 					<EditAccountContainer
+						deleteAccount={deleteAccount}
+						isLoading={isLoading}
+						account={account}
+						getAccount={getAccount}
 						id={editTicketModal.id}
 						editAccount={editAccount}
-						deleteAccount={deleteAccount}
 						isFetching={isFetching}
 						closeModal={close}
 					/>

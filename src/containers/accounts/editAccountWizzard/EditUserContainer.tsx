@@ -12,6 +12,9 @@ interface UserWizzardInterface {
 	deleteAccount: Function;
 	isFetching: boolean;
 	closeModal: Function;
+	getAccount: Function;
+	isLoading: Boolean;
+	account: any;
 }
 
 const EditAccountContainer = ({
@@ -20,11 +23,13 @@ const EditAccountContainer = ({
 
 	isFetching,
 	closeModal,
+	getAccount,
+	isLoading,
+	deleteAccount,
+	account,
 }: UserWizzardInterface) => {
-	const { getCard, card, deleteCard, isLoading } = useServerCards();
-
 	useEffect(() => {
-		id && getCard(id);
+		id && getAccount(id);
 	}, []);
 
 	//Tabs data --------------------------------------------------------------------------------------------
@@ -75,8 +80,8 @@ const EditAccountContainer = ({
 				<DetailUserEditComponent
 					id={id}
 					editAccount={editAccount}
-					deleteAccount={deleteCard}
-					account={card}
+					deleteAccount={deleteAccount}
+					account={account}
 					closeModal={closeModal}
 					isFetching={isFetching}
 				/>

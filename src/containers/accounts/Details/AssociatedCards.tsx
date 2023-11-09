@@ -51,7 +51,6 @@ const AssociatedCards = () => {
 		editAccount,
 		deleteAccount,
 		setAllAccounts,
-		resetAccountPsw,
 		manageErrors,
 		modalWaitingError,
 	} = useServerAccounts();
@@ -319,7 +318,7 @@ const AssociatedCards = () => {
 					/>
 				</Modal>
 			)}
-			{editTicketModal.state && (
+			{/*editTicketModal.state && (
 				<Modal state={editTicketModal.state} close={close} size='m'>
 					<EditAccountContainer
 						id={editTicketModal.id}
@@ -329,7 +328,7 @@ const AssociatedCards = () => {
 						closeModal={close}
 					/>
 				</Modal>
-			)}
+			)*/}
 		</div>
 	);
 };

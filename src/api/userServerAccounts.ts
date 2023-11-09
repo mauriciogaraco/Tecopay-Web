@@ -40,9 +40,7 @@ const useServerAccounts = () => {
           totalPages: resp.data.totalPages,
           currentPage: resp.data.currentPage,
         });
-        console.log(resp.data)
-        dispatch(saveItems(resp.data.items))
-        console.log(resp.data.items)
+        setAllAccounts(resp.data.items)
 
 
       })
@@ -80,8 +78,7 @@ const useServerAccounts = () => {
         const newAccounts:any = [...items];
         const idx = newAccounts.findIndex((user:any) => user.id === id);
         newAccounts.splice(idx, 1, data);
-        console.log(newAccounts)
-        dispatch(saveItems(newAccounts))
+        setAllAccounts(newAccounts)
         callback?.();
       })
       .catch((e) => { manageErrors(e); });
@@ -94,26 +91,11 @@ const useServerAccounts = () => {
       .get(`/account/findById/${id}`)
       .then((resp) => {
         setAccount(resp.data);
-        console.log(resp.data)
       })
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
 
-
-
-
-  const resetAccountPsw = async (email: string, callback?: Function) => {
-    setIsFetching(true);
-    await query
-      .post(`/control/user/request-password`, { email })
-      .then(() => {
-        toast.success("Operación completada con éxito");
-        callback?.();
-      })
-      .catch((error) => { manageErrors(error); });
-    setIsFetching(false);
-  };
 
   const deleteAccount = async (id: number, callback?: Function) => {
     setIsFetching(true);
@@ -122,7 +104,7 @@ const useServerAccounts = () => {
       .then(() => {
         toast.success("Usuario Eliminado con éxito");
         const newAccounts = items.filter((item:any) => item.id !== id);
-        dispatch(saveItems(newAccounts))
+        setAllAccounts(newAccounts)
         callback?.();
       })
       .catch((error) => { manageErrors(error); });
@@ -142,7 +124,6 @@ const useServerAccounts = () => {
     editAccount,
     deleteAccount,
     setAllAccounts,
-    resetAccountPsw,
     manageErrors,
     modalWaitingError,
 
