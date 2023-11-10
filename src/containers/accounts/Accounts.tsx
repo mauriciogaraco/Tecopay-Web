@@ -61,14 +61,12 @@ const Accounts = () => {
 
 	// Data for table ------------------------------------------------------------------------
 	const tableTitles = [
-		'Codigo',
+		'Código',
 		'Nombre',
 		'Entidad',
 		'Propietario',
 		'Moneda',
-		'Direccion',
-		'Estado',
-		'Actividad',
+		'',
 	];
 	const tableData: DataTableInterface[] = [];
 
@@ -77,19 +75,21 @@ const Accounts = () => {
 			rowId: item.id,
 			payload: {
 				'No.': item.id,
-				Codigo: `${item?.code}`,
+				Código: `${item?.code}`,
 				Nombre: item?.name,
 				Entidad: item?.issueEntity?.name,
 				Propietario: item.owner?.fullName,
 				Moneda: item.currency?.code,
-				Direccion: item.address,
-				Estado: <BlockedStateForTable currentState={item.isBlocked} />,
-				Actividad: (
-					<StateSpanForTable
-						currentState={item?.isActive}
-						greenState='Activa'
-						redState='Inactiva'
-					/>
+				Dirección: item.address,
+				'': (
+					<span className='flex whitespace-nowrap gap-4'>
+						<BlockedStateForTable currentState={item.isBlocked} />
+						<StateSpanForTable
+							currentState={item?.isActive}
+							greenState='Activa'
+							redState='Inactiva'
+						/>
+					</span>
 				),
 			},
 		});

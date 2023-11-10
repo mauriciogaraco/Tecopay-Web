@@ -106,13 +106,13 @@ const AssociatedCards = () => {
 
 	// Data for table ------------------------------------------------------------------------
 	const tableTitles = [
-		'Codigo',
+		'Código',
 		'Nombre',
 		'Entidad',
 		'Propietario',
 		'Moneda',
-		'Direccion',
-		'Descripcion',
+		'Dirección',
+		'Descripción',
 	];
 	const tableData: DataTableInterface[] = [];
 	// eslint-disable-next-line array-callback-return
@@ -124,13 +124,13 @@ const AssociatedCards = () => {
 			rowId: item.id,
 			payload: {
 				'No.': item.id,
-				Codigo: `${item?.code}`,
+				Código: `${item?.code}`,
 				Nombre: item?.name,
 				Entidad: item?.issueEntityId,
 				Propietario: item.ownerId,
 				Moneda: item.currencyId,
-				Descripcion: item.description,
-				Direccion: item.address,
+				Descripción: item.description,
+				Dirección: item.address,
 			},
 		});
 	});

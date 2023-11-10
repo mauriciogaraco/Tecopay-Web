@@ -63,7 +63,7 @@ const NewEntityModal = ({ setContactModal, close }: propsDestructured) => {
 							name='address'
 							rules={{ required: 'Campo requerido' }}
 							control={control}
-							label='Direccion'
+							label='Dirección'
 						></TextArea>
 
 						<Input
@@ -83,13 +83,13 @@ const NewEntityModal = ({ setContactModal, close }: propsDestructured) => {
 							normalizeData={{ id: 'id', name: 'symbol' }}
 						></AsyncComboBox>
 					</div>
-					<div className='relative rounded-lg self-center lg:self-end w-[100%] lg:w-[30%] h-[40px] items-center justify-center flex mt-8 bg-indigo-600  text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'>
+					<div className='flex self-end'>
 						<Button
-							loading={isLoading}
-							color='blue-500'
 							name='Insertar'
+							color='slate-600'
 							type='submit'
-						></Button>
+							loading={isLoading}
+						/>
 					</div>
 				</form>
 			</div>

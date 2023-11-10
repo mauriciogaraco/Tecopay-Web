@@ -3,6 +3,12 @@ import Fetching from '../../../components/misc/Fetching';
 import EditDetailCardComponent from './EditDetailCardComponent';
 import DetailCardComponent from './DetailCardComponent';
 import Button from '../../../components/misc/Button';
+import {
+	DocumentMagnifyingGlassIcon,
+	InformationCircleIcon,
+	PencilSquareIcon,
+} from '@heroicons/react/24/outline';
+import TabNav from '../../../components/navigation/TabNav';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -33,6 +39,22 @@ const EditCardContainer = ({
 		id && getCard(id);
 	}, []);
 	const [editModal, setEditModal] = useState(false);
+	const [currentTab, setCurrentTab] = useState('details');
+
+	const tabs = [
+		{
+			icon: <DocumentMagnifyingGlassIcon className='w-5' />,
+			name: 'Detalles',
+			href: 'details',
+			current: currentTab === 'details',
+		},
+		{
+			icon: <PencilSquareIcon className='w-5' />,
+			name: 'Editar',
+			href: 'Editar',
+			current: currentTab === 'Editar',
+		},
+	];
 
 	if (isLoading)
 		return (
@@ -40,49 +62,28 @@ const EditCardContainer = ({
 				<Fetching />
 			</div>
 		);
-	else if (!editModal)
-		return (
-			<div className=''>
-				<div className='flex items-center justify-around'>
-					<h1 className='ml-2 text-lg'>Detalles de tarjeta {id}</h1>
-					<Button
-						action={() => setEditModal(!editModal)}
-						name='Editar'
-						outline={true}
-						color='tecopay-400'
-						textColor='black'
-						value='Editar'
-					></Button>
-				</div>
-
-				<DetailCardComponent id={id} allCards={allCards} Card={card} />
-			</div>
-		);
 	else
 		return (
 			<div className=''>
-				<div className='flex items-center justify-around'>
-					<h1 className='ml-2 text-lg'>Editar tarjeta {id}</h1>
-				</div>
-				<Button
-					action={() => setEditModal(!editModal)}
-					name='Detalles'
-					outline={true}
-					color='tecopay-400'
-					textColor='black'
-					value='Detalles'
-				></Button>
-
-				<EditDetailCardComponent
-					id={id}
-					editCard={editCard}
-					deleteCard={deleteCard}
-					Card={card}
-					closeModal={closeModal}
-					isFetching={isFetching}
-					allCards={allCards}
-					setSelectedDataToParent={setSelectedDataToParent}
-				/>
+				<TabNav action={setCurrentTab} tabs={tabs} />
+				{currentTab == 'details' ? (
+					<div>
+						<div className=''>
+							<DetailCardComponent id={id} allCards={allCards} Card={card} />
+						</div>
+					</div>
+				) : (
+					<EditDetailCardComponent
+						id={id}
+						editCard={editCard}
+						deleteCard={deleteCard}
+						Card={card}
+						closeModal={closeModal}
+						isFetching={isFetching}
+						allCards={allCards}
+						setSelectedDataToParent={setSelectedDataToParent}
+					/>
+				)}
 			</div>
 		);
 };

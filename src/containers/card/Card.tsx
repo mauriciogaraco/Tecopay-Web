@@ -51,15 +51,7 @@ const Card = () => {
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
 
 	//Data for table ------------------------------------------------------------------------
-	const tableTitles = [
-		'id',
-		'Expiracion',
-		'Propietario',
-		'Moneda',
-		'Direccion',
-		'Descripcion',
-		'Estado',
-	];
+	const tableTitles = ['Expiración', 'Propietario', 'Moneda', 'Dirección', ''];
 	const tableData: DataTableInterface[] = [];
 	// eslint-disable-next-line array-callback-return
 
@@ -70,14 +62,13 @@ const Card = () => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				id: item.id,
-				Codigo: `${item?.code}`,
-				Expiracion: formatCalendar(item?.expiratedAt),
+				Código: `${item?.code}`,
+				Expiración: formatCalendar(item?.expiratedAt),
 				Propietario: item.holder?.fullName,
 				Moneda: item.currency?.code,
-				Descripcion: item.description,
-				Direccion: item.address,
-				Estado: <BlockedStateForTable currentState={item.isBlocked} />,
+
+				Dirección: item.address,
+				'': <BlockedStateForTable currentState={item.isBlocked} />,
 			},
 		});
 	});

@@ -65,7 +65,7 @@ const UserModal = ({ closeModal }: UserModal) => {
 					<Button
 						color='slate-600'
 						type='submit'
-						name='Actualizar'
+						name='Insertar'
 						loading={isFetching}
 						disabled={isFetching}
 						full

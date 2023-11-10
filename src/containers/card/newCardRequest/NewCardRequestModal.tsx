@@ -38,7 +38,7 @@ const NewCardRequestModal = ({ setContactModal, close }: propsDestructured) => {
 	};
 
 	const { isFetching, addCardRequest } = useServerCardsRequests();
-	const [createManyState, setCreateManyState] = useState(null);
+	const [createManyState, setCreateManyState] = useState(false);
 
 	return (
 		<main>
@@ -66,7 +66,7 @@ const NewCardRequestModal = ({ setContactModal, close }: propsDestructured) => {
 						<Input
 							name='quantity'
 							label='Cantidad'
-							placeholder='Cantidad en numeros'
+							placeholder='Cantidad'
 							control={control}
 							rules={{ required: 'Campo requerido' }}
 						></Input>
@@ -85,7 +85,6 @@ const NewCardRequestModal = ({ setContactModal, close }: propsDestructured) => {
 					<div className='h-full'>
 						<TextArea
 							name='observation'
-							rules={{ required: 'Campo requerido' }}
 							control={control}
 							paddingInput='py-0'
 							label='Observaciones'
@@ -94,7 +93,7 @@ const NewCardRequestModal = ({ setContactModal, close }: propsDestructured) => {
 
 					<div className='flex self-end'>
 						<Button
-							name='Actualizar'
+							name='Insertar'
 							color='slate-600'
 							type='submit'
 							loading={isFetching}

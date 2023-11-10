@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react';
-import { Dialog, Transition, Disclosure } from '@headlessui/react';
+import { Dialog, Transition, Disclosure, Menu } from '@headlessui/react';
 import {
 	LockClosedIcon,
 	Bars3Icon,
@@ -22,6 +22,7 @@ import {
 	UserCircleIcon,
 	HomeModernIcon,
 	Cog6ToothIcon,
+	ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 import { useLocation, Link } from 'react-router-dom';
 
@@ -32,6 +33,10 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import ImageComponent from './misc/Images/Image';
 import { changeStaticBar } from '../store/slices/sessionSlice';
 import Modal from './modals/GenericModal';
+import LoadingSpin from './misc/LoadingSpin';
+import UserModal from './app/UserModal';
+import PasswordModal from './app/PasswordModal';
+import useServer from '../api/useServer';
 
 interface SideBarProps {
 	barState: boolean;
@@ -65,6 +70,9 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 	const { business, branches, user, roles } = useAppSelector(
 		(state) => state.init,
 	);
+	const { logOut, isFetching } = useServer();
+	const [userModal, setUserModal] = useState(false);
+	const [passwModal, setPasswModal] = useState(false);
 	const { staticBar } = useAppSelector((state) => state.session);
 
 	const dispatch = useAppDispatch();
@@ -177,38 +185,6 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 										</button>
 									</div>
 								</Transition.Child>
-								{branches && branches?.length !== 0 ? (
-									<div className='flex px-3 py-4 items-center justify-start group-hover:w-60'>
-										<ImageComponent
-											className='flex flex-shrink-0 h-10 w-10 rounded-full overflow-hidden'
-											src={business?.logo?.src ?? null}
-											hash={business?.logo?.blurHash ?? null}
-										/>
-										<button
-											className='inline-flex items-center flex-1 focus:outline-none w-full'
-											onTouchEnd={() => setChangeBusinessModal(true)}
-										>
-											<h4 className='flex p-2 text-white w-full'>
-												{business?.name}
-											</h4>
-
-											<ChevronRightIcon className='h-5 text-white' />
-										</button>
-									</div>
-								) : (
-									<div className='flex px-3 py-4 items-center justify-start group-hover:w-64'>
-										<ImageComponent
-											className='h-10 w-10 rounded-full overflow-hidden flex flex-shrink-0'
-											src={business?.logo?.src ?? null}
-											hash={business?.logo?.blurHash ?? null}
-										/>
-										<div className='inline-flex group-hover:flex-shrink-0 items-center w-full focus:outline-none'>
-											<h4 className='flex ml-2 items-center text-white'>
-												{business?.name}
-											</h4>
-										</div>
-									</div>
-								)}
 								<div className='flex flex-1 flex-col overflow-y-auto overflow-x-visible scrollbar-thin'>
 									<nav className='flex-1 space-y-1 px-2 py-4'>
 										{navigation.map((item) =>
@@ -320,65 +296,109 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 								: 'group-hover:pr-3 group-hover:overflow-auto group-hover:scrollbar-thin'
 						}`}
 					>
-						{branches && branches?.length !== 0 ? (
-							<div
-								className={`flex px-3 py-4 items-center justify-center ${
-									staticBar
-										? 'w-full'
-										: 'group-hover:justify-start group-hover:w-full'
-								}`}
+						{/* Profile dropdown */}
+						<Menu as='div' className='relative ml-4'>
+							<div>
+								<Menu.Button className='flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
+									<span className='sr-only'>Open user menu</span>
+									<img
+										className='h-8 w-8 rounded-full'
+										src={
+											user?.avatar?.src ?? require('../assets/user-default.jpg')
+										}
+										alt=''
+									/>
+								</Menu.Button>
+							</div>
+							<Transition
+								as={Fragment}
+								enter='transition ease-out duration-100'
+								enterFrom='transform opacity-0 scale-95'
+								enterTo='transform opacity-100 scale-100'
+								leave='transition ease-in duration-75'
+								leaveFrom='transform opacity-100 scale-100'
+								leaveTo='transform opacity-0 scale-95'
 							>
-								<ImageComponent
-									className='flex flex-shrink-0 h-10 w-10 rounded-full overflow-hidden'
-									src={business?.logo?.src ?? null}
-									hash={business?.logo?.blurHash ?? null}
-								/>
-								<button
-									className={`${
-										staticBar ? 'inline-flex' : 'hidden group-hover:inline-flex'
-									} items-center flex-1 focus:outline-none w-full`}
-									onClick={() => setChangeBusinessModal(true)}
-								>
-									<h4
-										className={`${
-											staticBar ? 'flex' : 'hidden group-hover:flex'
-										} p-2 text-white w-full `}
-									>
-										{business?.name}
-									</h4>
+								<Menu.Items className='absolute  overflow-auto z-10 mt-2 w-64 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+									<Menu.Item>
+										<div>
+											<div className='relative flex items-center rounded-lg bg-white px-2 py-2 gap-2'>
+												<div className='flex-shrink-0'>
+													<img
+														className='h-16 w-16 rounded-full'
+														src={
+															user?.avatar?.src ??
+															require('../assets/user-default.jpg')
+														}
+														alt=''
+													/>
+												</div>
+												<div className='min-w-0 flex-1'>
+													<a href='#' className='focus:outline-none'>
+														<span
+															className='absolute inset-0'
+															aria-hidden='true'
+														/>
+														<p className='text-sm font-medium text-gray-900'>
+															{user?.displayName}
+														</p>
+														<p className='text-xs text-gray-500 flex flex-col'>
+															{user?.roles?.map((item: any, idx: any) => (
+																<span key={idx}>{item.name}</span>
+															))}
+														</p>
+													</a>
+												</div>
+											</div>
+											<button
+												className='flex justify-start items-center w-full px-4 py-2 text-sm text-gray-700 shadow-inner gap-1 font-medium'
+												onClick={(e) => {
+													//e.preventDefault();
+													setUserModal(true);
+												}}
+											>
+												<Cog6ToothIcon className='h-5' />
+												Configurar mi cuenta
+											</button>
+											<button
+												className='flex justify-start items-center w-full px-4 py-2 text-sm text-gray-700 shadow-inner gap-1 font-medium'
+												onClick={(e) => {
+													//e.preventDefault();
+													setPasswModal(true);
+												}}
+											>
+												<LockClosedIcon className='h-5' />
+												Cambiar contraseña
+											</button>
+											<button
+												className='flex justify-start items-center w-full px-4 py-2 text-sm text-gray-700 shadow-inner gap-1 font-medium'
+												onClick={(e) => {
+													e.preventDefault();
+													logOut();
+												}}
+											>
+												{isFetching ? (
+													<LoadingSpin color='gray-800' />
+												) : (
+													<ArrowRightOnRectangleIcon className='h-5' />
+												)}
+												Salir
+											</button>
+										</div>
+									</Menu.Item>
+								</Menu.Items>
+							</Transition>
+						</Menu>
+						{userModal && (
+							<Modal state={userModal} close={() => setUserModal(false)}>
+								<UserModal closeModal={() => setUserModal(false)} />
+							</Modal>
+						)}
 
-									<ChevronRightIcon className='h-5 text-white' />
-								</button>
-							</div>
-						) : (
-							<div
-								className={`flex px-3 py-4 items-center justify-center ${
-									staticBar
-										? 'w-full'
-										: 'group-hover:justify-start group-hover:w-64'
-								}`}
-							>
-								<ImageComponent
-									className='h-10 w-10 rounded-full overflow-hidden flex flex-shrink-0'
-									src={business?.logo?.src ?? null}
-									hash={business?.logo?.blurHash ?? null}
-								/>
-								<div
-									className={`${
-										staticBar
-											? 'inline-flex'
-											: 'hidden group-hover:inline-flex group-hover:flex-shrink-0'
-									} items-center w-full focus:outline-none`}
-								>
-									<h4
-										className={`${
-											staticBar ? 'flex' : 'hidden group-hover:flex'
-										} ml-2 items-center text-white`}
-									>
-										{business?.name}
-									</h4>
-								</div>
-							</div>
+						{passwModal && (
+							<Modal state={passwModal} close={() => setPasswModal(false)}>
+								<PasswordModal closeModal={() => setPasswModal(false)} />
+							</Modal>
 						)}
 						<div className='flex flex-grow flex-col'>
 							<nav className='flex-1 space-y-1 px-2 py-2'>

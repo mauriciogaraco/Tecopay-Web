@@ -10,6 +10,7 @@ import AlertContainer from '../../../components/misc/AlertContainer';
 import { useState } from 'react';
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import { BasicType } from '../../../interfaces/InterfacesLocal';
+import useServerCardsRequests from '../../../api/userServerCardsRequests';
 
 interface EditInterface {
 	cardRequest: any;
@@ -51,6 +52,7 @@ const DetailCardRequestComponent = ({
 			reset(),
 		).then(() => closeModal());
 	};
+	const { isLoading } = useServerCardsRequests();
 	return (
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
@@ -114,17 +116,13 @@ const DetailCardRequestComponent = ({
 						></TextArea>
 					</div>
 
-					<div className=' self-end pt-3'>
+					<div className='flex self-end'>
 						<Button
-							loading={isFetching}
-							color='tecopay-500'
-							name='Actualizar'
+							name='Insertar'
+							color='slate-600'
 							type='submit'
-							textColor='black'
-							colorHover='tecopay-600'
-							textColorHover='black'
-							outline={true}
-						></Button>
+							loading={isLoading}
+						/>
 					</div>
 				</section>
 			</form>

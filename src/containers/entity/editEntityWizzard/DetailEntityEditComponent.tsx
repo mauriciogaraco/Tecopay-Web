@@ -133,12 +133,12 @@ const DetailEntityEditComponent = ({
 						defaultValue={entity?.data.address}
 						name='address'
 						control={control}
-						label='Direccion'
+						label='Dirección'
 					></TextArea>
 
 					<div className='flex justify-end mt-5'>
 						<Button
-							name='Actualizar'
+							name='Insertar'
 							color='slate-600'
 							type='submit'
 							loading={isFetching}

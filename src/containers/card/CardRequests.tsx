@@ -60,25 +60,16 @@ const CardRequests = () => {
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
 
 	//Data for table ------------------------------------------------------------------------
-	const tableTitles = [
-		'No. Solicitud',
-		'Tipo',
-		'Propietario',
-		'Moneda',
-		'Cuenta',
-		'Estado',
-	];
+	const tableTitles = ['Tipo', 'Propietario', 'Estado'];
 	const tableData: DataTableInterface[] = [];
 
 	allCardsRequests?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				'No. Solicitud': item.id,
 				Tipo: item?.priority,
 				Propietario: item.user?.fullName,
-				Moneda: item.card?.currency?.code,
-				Cuenta: item.issueEntity?.name,
+
 				Estado: (
 					<CreatedStateForTable
 						greenState='CREADA'

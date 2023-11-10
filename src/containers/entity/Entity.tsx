@@ -57,64 +57,30 @@ const Entity = () => {
 		setQuery(queryText);
 	};
 
-	const filteredOptions =
-		query === ''
-			? data
-			: data.filter(
-					({
-						cliente,
-						no,
-						fecha,
-						description,
-						prioridad,
-						clasificacion,
-						email,
-					}) => {
-						return (
-							cliente.toLowerCase().includes(query.toLowerCase()) ||
-							no.toLowerCase().includes(query.toLowerCase()) ||
-							prioridad.toLowerCase().includes(query.toLowerCase()) ||
-							clasificacion.toLowerCase().includes(query.toLowerCase()) ||
-							email.toLowerCase().includes(query.toLowerCase()) ||
-							fecha.toLowerCase().includes(query.toLowerCase()) ||
-							cliente.toLowerCase().includes(query.toLowerCase())
-						);
-					},
-			  );
-
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
-	//const [exportModal, setExportModal] = useState(false);
-
-	/*useEffect(() => {
-              getAllClients(filter);
-            }, [filter]);*/
 
 	//Data for table ------------------------------------------------------------------------
-	const tableTitles = ['ID', 'Nombre', 'Direccion', 'Estado', 'Telefono'];
+	const tableTitles = ['Nombre', 'Dirección', 'Telefono', ''];
 	const tableData: DataTableInterface[] = [];
-	// eslint-disable-next-line array-callback-return
-
-	//const items = useAppSelector((state) => state.Entity.Entity);
 
 	// @ts-ignore
 	allEntity?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				ID: item.id,
 				Nombre: item?.name,
 				Telefono: item.phone,
-				Estado: (
+				'': (
 					<StateSpanForTable
 						currentState={item.status}
 						greenState='Activa'
 						redState='Inactiva'
 					/>
 				),
-				Direccion: item.address,
+				Dirección: item.address,
 			},
 		});
 	});

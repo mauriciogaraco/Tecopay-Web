@@ -1,3 +1,5 @@
+import { title } from 'process';
+import GenericList from '../../../components/misc/GenericList';
 import { formatDate } from '../../../utils/helpersAdmin';
 
 interface EditInterface {
@@ -12,48 +14,24 @@ const DetailCardComponent = ({ Card, id, allCards }: EditInterface) => {
 	);
 	return (
 		<>
-			<section>
-				<ul className='grid py-3 gap-3 text-xl'>
-					<li className='border pl-2 rounded-md border-tecopay-800 '>
-						No. Tarjeta: {Card?.data?.id}
-					</li>
-					<li className='border pl-2 rounded-md border-tecopay-800 '>
-						Nombre:{''}
-						<span>{desiredCurrencyCodeEntityObject?.holder?.fullName}</span>
-					</li>
-					<li className='border pl-2 rounded-md border-tecopay-800 '>
-						Creada por: <span>????????</span>
-					</li>
-					<li className='border pl-2 rounded-md border-tecopay-800 '>
-						Fecha de emisión: <span>{formatDate(Card?.data.createdAt)}</span>
-					</li>
-					<li className='border pl-2 rounded-md border-tecopay-800 '>
-						Fecha de expiración:{' '}
-						<span>
-							{formatDate(desiredCurrencyCodeEntityObject?.expiratedAt)}
-						</span>
-					</li>
-					<li className='border pl-2 rounded-md border-tecopay-800 '>
-						Propietario: <span>????????</span>
-					</li>
-					<li className='border pl-2 rounded-md border-tecopay-800 '>
-						Cuenta: <span>????????</span>
-					</li>
-					<li className='border pl-2 rounded-md border-tecopay-800 '>
-						Moneda:{' '}
-						<span>{desiredCurrencyCodeEntityObject?.currency?.name}</span>
-					</li>
-					<li className='border pl-2 rounded-md border-tecopay-800 '>
-						Monto mínimo sin confirmar:{' '}
-						<span>
-							{desiredCurrencyCodeEntityObject?.minAmountWithoutConfirmation}
-						</span>
-					</li>
-					<li className='border pl-2 rounded-md border-tecopay-800 '>
-						Descripción: <span>{Card?.data.description}</span>
-					</li>
-				</ul>
-			</section>
+			<GenericList
+				header={{ title: `Detalles de tarjeta ${id}` }}
+				body={{
+					Nombre: desiredCurrencyCodeEntityObject?.holder?.fullName,
+					'Creada por': '>????????</',
+					'Fecha de emisión': formatDate(Card?.data.createdAt),
+					'Fecha de expiración': formatDate(
+						desiredCurrencyCodeEntityObject?.expiratedAt,
+					),
+					Propietario: '********',
+					Cuenta: '******',
+					Moneda: desiredCurrencyCodeEntityObject?.currency?.name,
+					'Monto mínimo sin confirmar':
+						desiredCurrencyCodeEntityObject?.minAmountWithoutConfirmation,
+					Descripción:
+						desiredCurrencyCodeEntityObject?.minAmountWithoutConfirmation,
+				}}
+			></GenericList>
 		</>
 	);
 };

@@ -45,7 +45,7 @@ const Entity = () => {
             }, [filter]); */
 
 	// Data for table ------------------------------------------------------------------------
-	const tableTitles = ['ID', 'Nombre', 'Direccion', 'Telefono', 'Fecha'];
+	const tableTitles = ['ID', 'Nombre', 'Dirección', 'Telefono', 'Fecha'];
 	const tableData: DataTableInterface[] = [];
 	// eslint-disable-next-line array-callback-return
 
@@ -60,7 +60,7 @@ const Entity = () => {
 				Nombre: item?.name,
 				Telefono: item.phone,
 				Fecha: formatCalendar(item.createdAt),
-				Direccion: item.address,
+				Dirección: item.address,
 			},
 		});
 	});
