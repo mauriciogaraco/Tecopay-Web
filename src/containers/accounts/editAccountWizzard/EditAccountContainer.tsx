@@ -60,7 +60,7 @@ const EditAccountContainer = ({
 	const navigate = useNavigate();
 
 	{
-		currentTab === 'details' && (() => navigate('/Detalles'));
+		//currentTab === 'details' && (() => navigate('/Detalles'));
 	}
 
 	//------------------------------------------------------------------------------------------------------
