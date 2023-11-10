@@ -124,10 +124,7 @@ const Card = () => {
 
 	return (
 		<div className=''>
-			<Breadcrumb
-				icon={<CreditCardIcon className='h-6 text-gray-500' />}
-				paths={paths}
-			/>
+			<Breadcrumb icon={<CreditCardIcon className='h-6' />} paths={paths} />
 			<GenericTable
 				tableData={tableData}
 				tableTitles={tableTitles}
