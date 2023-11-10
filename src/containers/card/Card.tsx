@@ -23,9 +23,9 @@ import NuevoTicketModal from '../accounts/NewAccount/NewAccountModal';
 import { useAppSelector } from '../../store/hooks';
 import useServerCards from '../../api/userServerCards';
 import { formatCalendar } from '../../utils/helpers';
-import EditCardContainer from './editCardWizzard/EditCardContainer';
-import StateSpanForTable from '../../components/misc/StateSpanForTable';
+
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
+import EditCardContainer from './editCardWizzard/EditCardContainer';
 
 const Card = () => {
 	const [query, setQuery] = useState<string>('');

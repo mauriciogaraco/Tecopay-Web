@@ -1,3 +1,5 @@
+import { formatDate } from '../../../utils/helpersAdmin';
+
 interface EditInterface {
 	Card: any;
 	allCards: any;
@@ -23,11 +25,13 @@ const DetailCardComponent = ({ Card, id, allCards }: EditInterface) => {
 						Creada por: <span>????????</span>
 					</li>
 					<li className='border pl-2 rounded-md border-tecopay-800 '>
-						Fecha de emisión: <span>{Card?.data.createdAt}</span>
+						Fecha de emisión: <span>{formatDate(Card?.data.createdAt)}</span>
 					</li>
 					<li className='border pl-2 rounded-md border-tecopay-800 '>
 						Fecha de expiración:{' '}
-						<span>{desiredCurrencyCodeEntityObject?.expiratedAt}</span>
+						<span>
+							{formatDate(desiredCurrencyCodeEntityObject?.expiratedAt)}
+						</span>
 					</li>
 					<li className='border pl-2 rounded-md border-tecopay-800 '>
 						Propietario: <span>????????</span>

@@ -50,7 +50,7 @@ const useServerCardsRequests = () => {
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
-  const addCard = async (
+  const addCardRequest = async (
     data: any,
     close: Function
   ) => {
@@ -72,7 +72,7 @@ const useServerCardsRequests = () => {
     setIsLoading(false)
   };
 
-  const editCard = async (
+  const editCardRequest = async (
     id: number,
     data: Record<string, string | number | boolean | string[]>,
     callback?: Function
@@ -85,7 +85,7 @@ const useServerCardsRequests = () => {
         const newCardsRequests:any = [...allCardsRequests];
         const idx = newCardsRequests.findIndex((card:any) => card.id === id);
         const cardWithId = allCardsRequests.find((card:any) => card.id == id);
-        const wholeData = Object.assign(data, {id, holder:{fullName:cardWithId.holder.fullName}, currency: {code: selectedDataToParent?.name}} )
+        const wholeData = Object.assign(data, {id, issueEntity:{name:cardWithId.issueEntity.name}, card: {currency: cardWithId?.card.currency.code}, user: {currency: cardWithId?.user.fullName}} )
         newCardsRequests.splice(idx, 1, wholeData);
         
         setAllCardsRequests(newCardsRequests)
@@ -95,7 +95,7 @@ const useServerCardsRequests = () => {
     setIsFetching(false);
   };
 
-  const getCard = async (id: any) => {
+  const getCardRequest = async (id: any) => {
     setIsLoading(true);
     await query
       .get(`/request/findById/${id}`)
@@ -108,7 +108,7 @@ const useServerCardsRequests = () => {
   };
 
 
-  const deleteCard = async (id: number, callback?: Function) => {
+  const deleteCardRequest = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
       .deleteAPI(`/request/delete/${id}`, {})
@@ -129,10 +129,10 @@ const useServerCardsRequests = () => {
     modalWaiting,
     cardRequest,
     getAllCardsRequests,
-    addCard,
-    getCard,
-    editCard,
-    deleteCard,
+    addCardRequest,
+    getCardRequest,
+    editCardRequest,
+    deleteCardRequest,
     manageErrors,
     modalWaitingError,
     allCardsRequests,

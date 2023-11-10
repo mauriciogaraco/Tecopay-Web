@@ -23,11 +23,13 @@ import NuevoTicketModal from '../accounts/NewAccount/NewAccountModal';
 import { useAppSelector } from '../../store/hooks';
 import useServerCards from '../../api/userServerCards';
 import { formatCalendar } from '../../utils/helpers';
-import EditCardContainer from './editCardWizzard/EditCardContainer';
+import EditCardContainer from './editCardRequestWizzard/EditCardRequestContainer';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 import useServerCardsRequests from '../../api/userServerCardsRequests';
 import CreatedStateForTable from '../../components/misc/CreatedStateForTable';
+import NewCardRequestModal from './newCardRequest/NewCardRequestModal';
+import EditCardRequestContainer from './editCardRequestWizzard/EditCardRequestContainer';
 
 const CardRequests = () => {
 	const [query, setQuery] = useState<string>('');
@@ -37,13 +39,18 @@ const CardRequests = () => {
 		paginate,
 		isLoading,
 		isFetching,
+		waiting,
+		modalWaiting,
 		cardRequest,
-		allCardsRequests,
 		getAllCardsRequests,
-		addCard,
-		getCard,
-		editCard,
-		deleteCard,
+		addCardRequest,
+		getCardRequest,
+		editCardRequest,
+		deleteCardRequest,
+		manageErrors,
+		modalWaitingError,
+		allCardsRequests,
+		setAllCardsRequests,
 		setSelectedDataToParent,
 	} = useServerCardsRequests();
 
@@ -70,8 +77,8 @@ const CardRequests = () => {
 				'No. Solicitud': item.id,
 				Tipo: item?.priority,
 				Propietario: item.user?.fullName,
-				Moneda: item.currency?.code,
-				Cuenta: item.address,
+				Moneda: item.card?.currency?.code,
+				Cuenta: item.issueEntity?.name,
 				Estado: (
 					<CreatedStateForTable
 						greenState='CREADA'
@@ -85,13 +92,13 @@ const CardRequests = () => {
 
 	const searching = {
 		action: (search: string) => setFilter({ ...filter, search }),
-		placeholder: 'Buscar ticket',
+		placeholder: 'Buscar Solicitud',
 	};
 	const close = () => setEditTicketModal({ state: false, id: null });
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
-			title: 'Agregar tarjeta',
+			title: 'Agregar Solicitud',
 			action: () => setAddTicketmodal(true),
 		},
 	];
@@ -147,7 +154,7 @@ const CardRequests = () => {
 
 			{addTicketmodal && (
 				<Modal state={addTicketmodal} close={setAddTicketmodal}>
-					<NuevoTicketModal
+					<NewCardRequestModal
 						setContactModal={setContactModal}
 						close={closeAddAccount}
 						contactModal={contactModal}
@@ -158,16 +165,16 @@ const CardRequests = () => {
 			)}
 			{editTicketModal.state && (
 				<Modal state={editTicketModal.state} close={close} size='m'>
-					<EditCardContainer
+					<EditCardRequestContainer
 						id={editTicketModal.id}
-						editCard={editCard}
-						deleteCard={deleteCard}
+						editCardRequest={editCardRequest}
+						deleteCardRequest={deleteCardRequest}
 						isFetching={isFetching}
 						closeModal={close}
-						allCards={allCardsRequests}
-						card={cardRequest}
+						allCardsRequests={allCardsRequests}
+						cardRequest={cardRequest}
 						isLoading={isLoading}
-						getCard={getCard}
+						getCardRequest={getCardRequest}
 						setSelectedDataToParent={setSelectedDataToParent}
 					/>
 				</Modal>

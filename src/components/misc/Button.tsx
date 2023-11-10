@@ -15,6 +15,7 @@ interface ButtonProp {
 	textColor?: string;
 	colorHover?: string;
 	value?: number | string;
+	textColorHover?: string;
 }
 
 const Button = ({
@@ -30,20 +31,25 @@ const Button = ({
 	colorHover,
 	value,
 	textColor = 'white',
+	textColorHover,
 	type,
 }: ButtonProp) => {
 	return (
 		<button
 			type={type}
-			className={`inline-flex items-center rounded-md border justify-center 
+			className={`inline-flex items-center rounded-md border justify-center transition-all ease-in-out duration-200
       ${
-				outline ? 'border border-' + color : 'border-transparent bg-' + color
+				outline
+					? `border border-${color} bg-${color}`
+					: `border-transparent bg-${color}`
 			} ${
 				full ? 'w-full' : ''
 			} px-3 py-2 text-sm font-medium text-${textColor} shadow-sm focus:outline-none gap-2 ${
 				disabled && 'cursor-not-allowed'
 			} hover:shadow-md ${
-				colorHover ? 'hover:bg-' + colorHover + ' hover:text-white' : ''
+				colorHover
+					? 'hover:bg-' + colorHover + ` hover:text-${textColorHover}`
+					: ''
 			}`}
 			onClick={(e) => action && action(e.currentTarget.value)}
 			disabled={disabled}

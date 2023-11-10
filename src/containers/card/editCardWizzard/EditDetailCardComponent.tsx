@@ -73,8 +73,8 @@ const EditDetailCardComponent = ({
 					<div className='flex justify-end'>
 						<div className='bg-red-200 hover:bg-red-300 transition-all duration-200 ease-in-out  rounded-lg'>
 							<Button
-								icon={<TrashIcon className='h-5 text-gray-700' />}
-								color='gray-500'
+								icon={<TrashIcon className='h-5 text-red-500' />}
+								color='gray-50'
 								type='button'
 								action={() => {
 									setDelAction(true);

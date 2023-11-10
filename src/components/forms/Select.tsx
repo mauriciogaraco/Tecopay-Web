@@ -28,7 +28,7 @@ export default function Select(props: UseControllerProps & InputProps) {
 		);
 		if (current !== -1) {
 			setSelected(data[current]);
-			field.onChange(data[current].id);
+			field.onChange(data[current].name);
 		}
 	}, []);
 
