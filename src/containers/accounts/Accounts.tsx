@@ -1,9 +1,4 @@
-import {
-	PlusIcon,
-	TicketIcon,
-	UsersIcon,
-	UserCircleIcon,
-} from '@heroicons/react/24/outline';
+import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 
 import GenericTable, {
 	type DataTableInterface,
@@ -24,10 +19,12 @@ import {
 import { useEffect, useState } from 'react';
 import NewAccountModal from './NewAccount/NewAccountModal';
 import { data } from '../../utils/TemporaryArrayData';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import EditAccountContainer from './editAccountWizzard/EditAccountContainer';
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
+import { saveAccountId } from '../../store/slices/accountSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Accounts = () => {
 	const [query, setQuery] = useState<string>('');
@@ -53,6 +50,7 @@ const Accounts = () => {
 		Record<string, string | number | boolean | null>
 	>({});
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
+	const dispatch = useAppDispatch();
 	// const [exportModal, setExportModal] = useState(false);
 
 	/* useEffect(() => {
@@ -95,6 +93,8 @@ const Accounts = () => {
 		});
 	});
 
+	const navigate = useNavigate();
+
 	const searching = {
 		action: (search: string) => {
 			setFilter({ ...filter, search });
@@ -115,7 +115,8 @@ const Accounts = () => {
 	];
 
 	const rowAction = (id: number) => {
-		setEditTicketModal({ state: true, id });
+		/*setEditTicketModal({ state: true, id });*/
+		dispatch(saveAccountId(id)), navigate('detalles');
 	};
 
 	// Breadcrumb-----------------------------------------------------------------------------------

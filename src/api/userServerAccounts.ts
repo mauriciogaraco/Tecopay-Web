@@ -8,7 +8,7 @@ import query from "./APIServices";
 import useServer from "./useServer";
 import {  toast } from "react-toastify";
 
-import { saveItems } from "../store/slices/accountSlice";
+import { saveAccount } from "../store/slices/accountSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 import { generateUrlParams } from "../utils/helpers";
@@ -61,7 +61,7 @@ const useServerAccounts = () => {
     await query
     .post("/account/register", data)
       .then((resp) => {   
-        dispatch(saveItems([...allAccounts, resp.data.data]))
+        dispatch(saveAccount([...allAccounts, resp.data.data]))
         // setAllTickets();
         
         toast.success("Ticket agregado satisfactoriamente");
@@ -92,17 +92,23 @@ const useServerAccounts = () => {
     setIsFetching(false);
   };
 
-  const getAccount = async (id: any) => {
-    setIsLoading(true);
-    await query
-      .get(`/account/findById/${id}`)
-      .then((resp) => {
-        setAccount(resp.data);
-      })
-      .catch((error) => { manageErrors(error); });
-    setIsLoading(false);
+  const getAccount = async (id: any): Promise<any> => {
+    try {
+      setIsLoading(true);
+      const response = await query.get(`/account/findById/${id}`);
+      const account = response.data;
+      setAccount(account);
+  
+  
+      return account;
+    } catch (error) {
+      console.error(error);
+      // Display a user-friendly error message.
+    } finally {
+      setIsLoading(false);
+    }
   };
-
+  
 
   const deleteAccount = async (id: number, callback?: Function) => {
     setIsFetching(true);

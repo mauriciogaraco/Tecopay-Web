@@ -8,7 +8,7 @@ import {
 import query from "./APIServices";
 import useServer from "./useServer";
 import { Flip, toast } from "react-toastify";
-import { saveItems } from "../store/slices/accountSlice";
+import { saveAccount } from "../store/slices/accountSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateUrlParams } from "../utils/helpers";
@@ -39,7 +39,7 @@ const useServerUser = () => {
       .then((resp) => {
         const data = resp.data;
         const data1 = data.data
-        dispatch(saveItems(data1))
+        dispatch(saveAccount(data1))
         setAllTickets(data1);
 
       })
@@ -58,7 +58,7 @@ const useServerUser = () => {
         
         console.log(resp.data.data)
         console.log(items)
-        dispatch(saveItems([...items, resp.data.data]))
+        dispatch(saveAccount([...items, resp.data.data]))
         // setAllTickets();
         
         toast.success("Ticket agregado satisfactoriamente");
@@ -81,7 +81,7 @@ const useServerUser = () => {
         const idx = newUsers.findIndex((user:any) => user.id === id);
         newUsers.splice(idx, 1, data);
         console.log(newUsers)
-        dispatch(saveItems(newUsers))
+        dispatch(saveAccount(newUsers))
         callback?.();
       })
       .catch((e) => { manageErrors(e); });
