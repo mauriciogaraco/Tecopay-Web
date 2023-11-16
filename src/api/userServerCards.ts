@@ -105,7 +105,7 @@ const useServerCards = () => {
       .get(`/card/findById/${id}`)
       .then((resp) => {
         setCard(resp.data);
-        console.log(resp.data)
+
       })
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);

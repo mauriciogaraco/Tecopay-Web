@@ -1,7 +1,7 @@
 import axios from "axios";
 import { setKeys } from "../store/slices/sessionSlice";
 
-const baseUrl = `${process.env.REACT_APP_API_HOST_TICKET}${process.env.REACT_APP_VERSION_API}`;
+const baseUrl = `${process.env.REACT_APP_API_HOST_TICKET}`;
 const baseAuthUrl = `${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_VERSION_API}`;
 
 const baseUrlTest = `${"https://jsonplaceholder.typicode.com/"}`; //Test URL

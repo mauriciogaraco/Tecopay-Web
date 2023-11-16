@@ -73,7 +73,7 @@ const Accounts = () => {
 			rowId: item.id,
 			payload: {
 				'No.': item.id,
-				Código: `${item?.code}`,
+				Código: `${item?.address}`,
 				Nombre: item?.name,
 				Entidad: item?.issueEntity?.name,
 				Propietario: item.owner?.fullName,
@@ -116,7 +116,8 @@ const Accounts = () => {
 
 	const rowAction = (id: number) => {
 		/*setEditTicketModal({ state: true, id });*/
-		dispatch(saveAccountId(id)), navigate('detalles');
+		dispatch(saveAccountId(id));
+		navigate('detalles');
 	};
 
 	// Breadcrumb-----------------------------------------------------------------------------------

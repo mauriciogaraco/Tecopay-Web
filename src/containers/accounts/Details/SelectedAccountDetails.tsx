@@ -25,12 +25,12 @@ const SelectedAccountDetails = ({
 				<GenericList
 					header={{ title: `Detalles de cuenta ${id}` }}
 					body={{
-						'No. cuenta': `${account.data.id}`,
+						'No. cuenta': `${account.data.address}`,
 
 						'Fecha de emisión': `${formatDate(account?.data.createdAt)}`,
-						'Creada por': '******** NO existe este campo',
+						'Creada por': `${account?.data.createdById}`,
 						Dirección: `${account?.data.address}`,
-						Código: account?.data.code,
+						Código: `${account?.data.code}`,
 						Moneda: account?.data.name,
 						Propietario: '******** me retorna el ID',
 

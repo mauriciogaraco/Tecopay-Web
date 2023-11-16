@@ -38,7 +38,7 @@ const useServerAccounts = () => {
   const getAllAccounts = async (filter: BasicType) => {
     setIsLoading(true);
     await query
-      .get(`/account/all${generateUrlParams(filter)}`)
+      .get(`/account${generateUrlParams(filter)}`)
       .then((resp) => {
         setPaginate({
           totalItems: resp.data.totalItems,
@@ -95,7 +95,7 @@ const useServerAccounts = () => {
   const getAccount = async (id: any): Promise<any> => {
     try {
       setIsLoading(true);
-      const response = await query.get(`/account/findById/${id}`);
+      const response = await query.get(`/account/${id}`);
       const account = response.data;
       setAccount(account);
   
