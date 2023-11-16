@@ -30,7 +30,6 @@ const useServerCards = () => {
   useState<SelectInterface | null>(null);
 
   const [waiting, setWaiting] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
   const items = useAppSelector((state)=> state.account.items)
 
 

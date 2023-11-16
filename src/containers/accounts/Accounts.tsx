@@ -44,6 +44,7 @@ const Accounts = () => {
 		setSelectedDataToParent,
 		setSelectedDataToParentTwo,
 		selectedDataToParent,
+		addAccount,
 	} = useServerAccounts();
 
 	const [filter, setFilter] = useState<
@@ -174,6 +175,8 @@ const Accounts = () => {
 						contactModal={contactModal}
 						setNuevoTicketModal={setNuevoTicketModal}
 						nuevoTicketModal={nuevoTicketModal}
+						isLoading={isLoading}
+						addAccount={addAccount}
 					/>
 				</Modal>
 			)}

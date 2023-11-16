@@ -20,26 +20,29 @@ interface propsDestructured {
 	setNuevoTicketModal: (contactModal: boolean) => void;
 	nuevoTicketModal: boolean;
 	close: Function;
+	addAccount: Function;
+	isLoading: boolean;
 }
 
-const NewAccountModal = ({ setContactModal, close }: propsDestructured) => {
+const NewAccountModal = ({
+	setContactModal,
+	addAccount,
+	close,
+	isLoading,
+}: propsDestructured) => {
 	const { control, handleSubmit } = useForm();
 
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
 		const sendData = Object.assign(data, {
-			isBlocked: false,
-			code: '123456',
-			ownerId: 251,
+			ownerId: 1,
 		});
 		console.log(sendData);
 		try {
 			addAccount(deleteUndefinedAttr(sendData), close).then(() => close());
 		} catch (error) {}
 	};
-
-	const { isLoading, addAccount, getAllAccounts } = useServerUser();
 
 	return (
 		<main>
@@ -62,27 +65,20 @@ const NewAccountModal = ({ setContactModal, close }: propsDestructured) => {
 						control={control}
 						rules={{ required: 'Campo requerido' }}
 						label='Moneda'
-						dataQuery={{ url: '/currency/all' }}
+						dataQuery={{ url: '/currency' }}
 						normalizeData={{ id: 'id', name: 'symbol' }}
 					></AsyncComboBox>
 
 					<AsyncComboBox
-						name='propietary'
+						name='issueEntityId'
 						control={control}
 						rules={{ required: 'Campo requerido' }}
-						label='Propietario'
-						dataQuery={{ url: '/user/all' }}
-						normalizeData={{ id: 'id', name: 'fullName' }}
+						label='Entidad'
+						dataQuery={{ url: '/entity' }}
+						normalizeData={{ id: 'id', name: 'name' }}
 					></AsyncComboBox>
 
 					<div className='h-full'>
-						<TextArea
-							name='address'
-							rules={{ required: 'Campo requerido' }}
-							control={control}
-							label='Dirección'
-						></TextArea>
-
 						<TextArea
 							name='description'
 							rules={{ required: 'Campo requerido' }}

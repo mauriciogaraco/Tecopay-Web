@@ -59,10 +59,9 @@ const useServerAccounts = () => {
     setIsFetching(true);
     setIsLoading(true)
     await query
-    .post("/account/register", data)
+    .post("/account", data)
       .then((resp) => {   
-        dispatch(saveAccount([...allAccounts, resp.data.data]))
-        // setAllTickets();
+   setAllAccounts([...allAccounts, resp.data])
         
         toast.success("Ticket agregado satisfactoriamente");
       }).then(()=>close())
