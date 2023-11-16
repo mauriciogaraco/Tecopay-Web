@@ -11,7 +11,7 @@ interface BreadCrumbProp {
 export default function Breadcrumb({ paths, icon }: BreadCrumbProp) {
 	return (
 		<nav
-			className='flex border-b border-gray-600 mb-3 shadow-sm w-full'
+			className='flex border-b border-gray-300 mb-3 shadow-sm w-full'
 			aria-label='Breadcrumb'
 		>
 			<ol

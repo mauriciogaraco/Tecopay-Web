@@ -28,25 +28,22 @@ const useServerEntity = () => {
     null
   );
   const [waiting, setWaiting] = useState<boolean>(false);
-  const [allEntity, setAllEntity] = useState([])
-  const dispatch = useAppDispatch();
-  const items = useAppSelector((state)=> state.Entity.Entity)
+  const [allEntity, setAllEntity] = useState<any>([])
 
 
   const getAllEntity = async (filter: BasicType) => {
     setIsLoading(true);
     await query
-      .get(`/entity/all${generateUrlParams(filter)}`)
+      .get(`/entity${generateUrlParams(filter)}`)
       .then((resp) => {
         setPaginate({
           totalItems: resp.data.totalItems,
           totalPages: resp.data.totalPages,
           currentPage: resp.data.currentPage,
         });
-        console.log(resp.data)
+
         setAllEntity(resp.data.items)
-        //dispatch(saveEntity(resp.data.items))
-        console.log(resp.data.items)
+
 
 
       })
@@ -60,12 +57,10 @@ const useServerEntity = () => {
     setIsFetching(true);
     setIsLoading(true)
     await query
-    .post("/entity/register", data)
+    .post("/entity", data)
       .then((resp) => {
-        
-        console.log(resp.data.data)
-        console.log(items)
-        dispatch(saveEntity([...items, resp.data.data]))
+      
+       setAllEntity([...allEntity, resp.data])
         // setAllTickets();
         
         toast.success("Entidad agregada satisfactoriamente");
@@ -82,13 +77,12 @@ const useServerEntity = () => {
   ) => {
     setIsFetching(true);
     await query
-      .put(`/entity/update/${id}`, data)
+      .patch(`/entity/${id}`, data)
       .then((resp) => {
         const newUsers:any = [...allEntity];
         const dataWithId = Object.assign(data, {id:id})
         const idx = newUsers.findIndex((user:any) => user.id === id);
         newUsers.splice(idx, 1, dataWithId);
-        console.log(newUsers)
         setAllEntity(newUsers)
         //dispatch(saveEntity(newUsers))
         callback?.();
@@ -101,7 +95,7 @@ const useServerEntity = () => {
   const getEntity = async (id: any) => {
     setIsLoading(true);
     await query
-      .get(`/entity/findById/${id}`)
+      .get(`/entity/${id}`)
       .then((resp) => {
         setEntity(resp.data);
       })
@@ -135,11 +129,11 @@ const useServerEntity = () => {
   const deleteEntity = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
-      .deleteAPI(`/entity/delete/${id}`, {})
+      .deleteAPI(`/entity/${id}`, {})
       .then(() => {
         toast.success("Usuario Eliminado con éxito");
-        const newUsers = items.filter((item:any) => item.id !== id);
-        dispatch(saveEntity(newUsers))
+        const newUsers = allEntity.filter((item:any) => item.id !== id);
+        setAllEntity(newUsers)
         callback?.();
       })
       .catch((error) => { manageErrors(error); });

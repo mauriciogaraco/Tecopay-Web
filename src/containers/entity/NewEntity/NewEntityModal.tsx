@@ -22,17 +22,24 @@ interface propsDestructured {
 	setNuevoTicketModal: (contactModal: boolean) => void;
 	nuevoTicketModal: boolean;
 	close: Function;
+	addEntity: Function;
+	isLoading: boolean;
 }
 
-const NewEntityModal = ({ setContactModal, close }: propsDestructured) => {
+const NewEntityModal = ({
+	setContactModal,
+	addEntity,
+	close,
+	isLoading,
+}: propsDestructured) => {
 	const { control, handleSubmit } = useForm();
 
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
 		const sendData = Object.assign(data, {
-			status: 'ACTIVA',
-			userId: 1,
+			ownerId: 1,
+			businessId: 6,
 		});
 		console.log(sendData);
 		try {
@@ -40,12 +47,10 @@ const NewEntityModal = ({ setContactModal, close }: propsDestructured) => {
 		} catch (error) {}
 	};
 
-	const { isLoading, addEntity } = useServerEntity();
-
 	return (
 		<main>
 			<div>
-				<h3 className='p-4 text-xl md:text-2xl'>Nueva cuenta</h3>
+				<h3 className='p-4 text-xl md:text-2xl'>Nueva Entidad</h3>
 				<form
 					className='flex flex-col gap-y-3'
 					onSubmit={handleSubmit(onSubmit)}
@@ -63,7 +68,7 @@ const NewEntityModal = ({ setContactModal, close }: propsDestructured) => {
 							name='address'
 							rules={{ required: 'Campo requerido' }}
 							control={control}
-							label='Direccion'
+							label='Dirección'
 						></TextArea>
 
 						<Input
@@ -79,17 +84,17 @@ const NewEntityModal = ({ setContactModal, close }: propsDestructured) => {
 							control={control}
 							rules={{ required: 'Campo requerido' }}
 							label='Moneda'
-							dataQuery={{ url: '/currency/all' }}
+							dataQuery={{ url: '/currency' }}
 							normalizeData={{ id: 'id', name: 'symbol' }}
 						></AsyncComboBox>
 					</div>
-					<div className='relative rounded-lg self-center lg:self-end w-[100%] lg:w-[30%] h-[40px] items-center justify-center flex mt-8 bg-indigo-600  text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'>
+					<div className='flex self-end'>
 						<Button
-							loading={isLoading}
-							color='blue-500'
 							name='Insertar'
+							color='slate-600'
 							type='submit'
-						></Button>
+							loading={isLoading}
+						/>
 					</div>
 				</form>
 			</div>

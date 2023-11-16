@@ -151,18 +151,18 @@ const DetailAccountEditComponent = ({
 						defaultValue={account?.data.address}
 						name='address'
 						control={control}
-						label='Direccion'
+						label='Dirección'
 					></TextArea>
 					<TextArea
 						defaultValue={account?.data.description}
 						name='description'
 						control={control}
-						label='Descripcion'
+						label='Descripción'
 					></TextArea>
 
 					<div className='flex justify-end mt-5'>
 						<Button
-							name='Actualizar'
+							name='Insertar'
 							color='slate-600'
 							type='submit'
 							loading={isFetching}

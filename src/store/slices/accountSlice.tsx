@@ -4,17 +4,20 @@ export const ticketSlice = createSlice({
 	name: 'accountState',
 	initialState: {
 		items: [],
+		id: null,
 	},
 	reducers: {
-		saveItems: (state, action) => {
-			const coc = action.payload;
-			state.items = coc;
+		saveAccount: (state, action) => {
+			const items = action.payload;
+			state.items = items;
+		},
+		saveAccountId: (state, action) => {
+			const id = action.payload;
+			state.id = id;
 		},
 	},
 });
 
-export const { saveItems } = ticketSlice.actions;
+export const { saveAccount, saveAccountId } = ticketSlice.actions;
 
 export default ticketSlice.reducer;
-
-export const selectItems = (state: any) => state.ticketState.items;

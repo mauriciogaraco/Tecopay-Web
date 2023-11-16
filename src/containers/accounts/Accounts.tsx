@@ -1,9 +1,4 @@
-import {
-	PlusIcon,
-	TicketIcon,
-	UsersIcon,
-	UserCircleIcon,
-} from '@heroicons/react/24/outline';
+import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/outline';
 
 import GenericTable, {
 	type DataTableInterface,
@@ -24,10 +19,12 @@ import {
 import { useEffect, useState } from 'react';
 import NewAccountModal from './NewAccount/NewAccountModal';
 import { data } from '../../utils/TemporaryArrayData';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import EditAccountContainer from './editAccountWizzard/EditAccountContainer';
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
+import { saveAccountId } from '../../store/slices/accountSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Accounts = () => {
 	const [query, setQuery] = useState<string>('');
@@ -47,12 +44,14 @@ const Accounts = () => {
 		setSelectedDataToParent,
 		setSelectedDataToParentTwo,
 		selectedDataToParent,
+		addAccount,
 	} = useServerAccounts();
 
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
+	const dispatch = useAppDispatch();
 	// const [exportModal, setExportModal] = useState(false);
 
 	/* useEffect(() => {
@@ -61,14 +60,12 @@ const Accounts = () => {
 
 	// Data for table ------------------------------------------------------------------------
 	const tableTitles = [
-		'Codigo',
+		'Código',
 		'Nombre',
 		'Entidad',
 		'Propietario',
 		'Moneda',
-		'Direccion',
-		'Estado',
-		'Actividad',
+		'',
 	];
 	const tableData: DataTableInterface[] = [];
 
@@ -77,23 +74,27 @@ const Accounts = () => {
 			rowId: item.id,
 			payload: {
 				'No.': item.id,
-				Codigo: `${item?.code}`,
+				Código: `${item?.address}`,
 				Nombre: item?.name,
 				Entidad: item?.issueEntity?.name,
 				Propietario: item.owner?.fullName,
 				Moneda: item.currency?.code,
-				Direccion: item.address,
-				Estado: <BlockedStateForTable currentState={item.isBlocked} />,
-				Actividad: (
-					<StateSpanForTable
-						currentState={item?.isActive}
-						greenState='Activa'
-						redState='Inactiva'
-					/>
+				Dirección: item.address,
+				'': (
+					<span className='flex whitespace-nowrap gap-4'>
+						<BlockedStateForTable currentState={item.isBlocked} />
+						<StateSpanForTable
+							currentState={item?.isActive}
+							greenState='Activa'
+							redState='Inactiva'
+						/>
+					</span>
 				),
 			},
 		});
 	});
+
+	const navigate = useNavigate();
 
 	const searching = {
 		action: (search: string) => {
@@ -115,7 +116,9 @@ const Accounts = () => {
 	];
 
 	const rowAction = (id: number) => {
-		setEditTicketModal({ state: true, id });
+		/*setEditTicketModal({ state: true, id });*/
+		dispatch(saveAccountId(id));
+		navigate('details');
 	};
 
 	// Breadcrumb-----------------------------------------------------------------------------------
@@ -172,6 +175,8 @@ const Accounts = () => {
 						contactModal={contactModal}
 						setNuevoTicketModal={setNuevoTicketModal}
 						nuevoTicketModal={nuevoTicketModal}
+						isLoading={isLoading}
+						addAccount={addAccount}
 					/>
 				</Modal>
 			)}

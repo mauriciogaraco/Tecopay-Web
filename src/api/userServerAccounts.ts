@@ -8,7 +8,7 @@ import query from "./APIServices";
 import useServer from "./useServer";
 import {  toast } from "react-toastify";
 
-import { saveItems } from "../store/slices/accountSlice";
+import { saveAccount } from "../store/slices/accountSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 import { generateUrlParams } from "../utils/helpers";
@@ -38,7 +38,7 @@ const useServerAccounts = () => {
   const getAllAccounts = async (filter: BasicType) => {
     setIsLoading(true);
     await query
-      .get(`/account/all${generateUrlParams(filter)}`)
+      .get(`/account${generateUrlParams(filter)}`)
       .then((resp) => {
         setPaginate({
           totalItems: resp.data.totalItems,
@@ -59,10 +59,9 @@ const useServerAccounts = () => {
     setIsFetching(true);
     setIsLoading(true)
     await query
-    .post("/account/register", data)
+    .post("/account", data)
       .then((resp) => {   
-        dispatch(saveItems([...allAccounts, resp.data.data]))
-        // setAllTickets();
+   setAllAccounts([...allAccounts, resp.data])
         
         toast.success("Ticket agregado satisfactoriamente");
       }).then(()=>close())
@@ -92,17 +91,23 @@ const useServerAccounts = () => {
     setIsFetching(false);
   };
 
-  const getAccount = async (id: any) => {
-    setIsLoading(true);
-    await query
-      .get(`/account/findById/${id}`)
-      .then((resp) => {
-        setAccount(resp.data);
-      })
-      .catch((error) => { manageErrors(error); });
-    setIsLoading(false);
+  const getAccount = async (id: any): Promise<any> => {
+    try {
+      setIsLoading(true);
+      const response = await query.get(`/account/${id}`);
+      const account = response.data;
+      setAccount(account);
+  
+  
+      return account;
+    } catch (error) {
+      console.error(error);
+      // Display a user-friendly error message.
+    } finally {
+      setIsLoading(false);
+    }
   };
-
+  
 
   const deleteAccount = async (id: number, callback?: Function) => {
     setIsFetching(true);

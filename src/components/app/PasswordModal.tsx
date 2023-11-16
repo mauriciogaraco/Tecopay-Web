@@ -92,7 +92,7 @@ const PasswordModal = ({ closeModal }: PasswordModal) => {
 			<Button
 				color='slate-600'
 				type='submit'
-				name='Actualizar'
+				name='Insertar'
 				loading={isFetching}
 				disabled={isFetching}
 				full

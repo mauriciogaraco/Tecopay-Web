@@ -20,26 +20,29 @@ interface propsDestructured {
 	setNuevoTicketModal: (contactModal: boolean) => void;
 	nuevoTicketModal: boolean;
 	close: Function;
+	addAccount: Function;
+	isLoading: boolean;
 }
 
-const NewAccountModal = ({ setContactModal, close }: propsDestructured) => {
+const NewAccountModal = ({
+	addAccount,
+	setContactModal,
+	close,
+	isLoading,
+}: propsDestructured) => {
 	const { control, handleSubmit } = useForm();
 
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
 		const sendData = Object.assign(data, {
-			isBlocked: false,
-			code: '123456',
-			ownerId: 251,
+			ownerId: 1,
 		});
 		console.log(sendData);
 		try {
 			addAccount(deleteUndefinedAttr(sendData), close).then(() => close());
 		} catch (error) {}
 	};
-
-	const { isLoading, addAccount, getAllAccounts } = useServerUser();
 
 	return (
 		<main>
@@ -58,68 +61,39 @@ const NewAccountModal = ({ setContactModal, close }: propsDestructured) => {
 					></Input>
 
 					<AsyncComboBox
-						name='issueEntityId'
-						control={control}
-						rules={{ required: 'Campo requerido' }}
-						label='Entidad'
-						dataQuery={{ url: '/entity/all' }}
-						normalizeData={{ id: 'id', name: 'name' }}
-					></AsyncComboBox>
-
-					<AsyncComboBox
 						name='currencyId'
 						control={control}
 						rules={{ required: 'Campo requerido' }}
 						label='Moneda'
-						dataQuery={{ url: '/currency/all' }}
+						dataQuery={{ url: '/currency' }}
 						normalizeData={{ id: 'id', name: 'symbol' }}
 					></AsyncComboBox>
 
 					<AsyncComboBox
-						name='propietary'
+						name='issueEntityId'
 						control={control}
 						rules={{ required: 'Campo requerido' }}
-						label='Propietario'
-						dataQuery={{ url: '/user/all' }}
-						normalizeData={{ id: 'id', name: 'fullName' }}
+						label='Entidad'
+						dataQuery={{ url: '/entity' }}
+						normalizeData={{ id: 'id', name: 'name' }}
 					></AsyncComboBox>
 
 					<div className='h-full'>
-						<TextArea
-							name='address'
-							rules={{ required: 'Campo requerido' }}
-							control={control}
-							label='Direccion'
-						></TextArea>
-
 						<TextArea
 							name='description'
 							rules={{ required: 'Campo requerido' }}
 							control={control}
 							paddingInput='py-0'
-							label='Descripcion'
+							label='Descripción'
 						></TextArea>
 					</div>
-
-					<div className='flex gap-5'>
-						<Toggle
-							name='isPrivate'
-							title='Cuenta privada'
-							control={control}
-						></Toggle>
-						<Toggle
-							name='isActive'
-							title='Cuenta activa'
-							control={control}
-						></Toggle>
-					</div>
-					<div className='relative rounded-lg self-center lg:self-end w-[100%] lg:w-[30%] h-[40px] items-center justify-center flex mt-8 bg-indigo-600  text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'>
+					<div className='flex self-end'>
 						<Button
-							loading={isLoading}
-							color='blue-500'
 							name='Insertar'
+							color='slate-600'
 							type='submit'
-						></Button>
+							loading={isLoading}
+						/>
 					</div>
 				</form>
 			</div>
