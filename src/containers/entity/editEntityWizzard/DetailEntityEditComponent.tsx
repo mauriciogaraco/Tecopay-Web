@@ -116,7 +116,7 @@ const DetailEntityEditComponent = ({
 							control={control}
 							rules={{ required: 'Campo requerido' }}
 							label='Moneda'
-							dataQuery={{ url: '/currency/all' }}
+							dataQuery={{ url: '/currency' }}
 							normalizeData={{ id: 'id', name: 'code' }}
 						></AsyncComboBox>
 						<Select

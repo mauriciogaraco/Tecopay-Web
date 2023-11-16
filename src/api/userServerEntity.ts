@@ -77,7 +77,7 @@ const useServerEntity = () => {
   ) => {
     setIsFetching(true);
     await query
-      .put(`/entity/${id}`, data)
+      .patch(`/entity/${id}`, data)
       .then((resp) => {
         const newUsers:any = [...allEntity];
         const dataWithId = Object.assign(data, {id:id})
