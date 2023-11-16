@@ -34,11 +34,11 @@ const AppRoute = () => {
 		<Routes>
 			<Route path='/' element={<AppContainer />}>
 				<Route index element={<Dashboard />} />
-				<Route path='/cuentas' element={<Tickets />} />
-				<Route path='/tarjetas/todas' element={<Card />} />
-				<Route path='/tarjetas/solicitudes' element={<CardRequests />} />
-				<Route path='/entidades' element={<Entity />} />
-				<Route path='/cuentas/detalles' element={<AccountDetails />} />
+				<Route path='/accounts' element={<Tickets />} />
+				<Route path='/cards/all' element={<Card />} />
+				<Route path='/cards/requests' element={<CardRequests />} />
+				<Route path='/entities' element={<Entity />} />
+				<Route path='/accounts/details' element={<AccountDetails />} />
 
 				{/**Stocks */}
 				<>

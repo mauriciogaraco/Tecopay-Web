@@ -83,7 +83,6 @@ const useServerEntity = () => {
         const dataWithId = Object.assign(data, {id:id})
         const idx = newUsers.findIndex((user:any) => user.id === id);
         newUsers.splice(idx, 1, dataWithId);
-        console.log(newUsers)
         setAllEntity(newUsers)
         //dispatch(saveEntity(newUsers))
         callback?.();

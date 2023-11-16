@@ -89,41 +89,40 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 
 		{
 			name: 'Cuentas',
-			href: 'cuentas',
+			href: 'accounts',
 			icon: UserCircleIcon,
-			current: mainCurrent === 'cuentas',
+			current: mainCurrent === 'accounts',
 		},
 		{
 			name: 'Tarjetas',
-			href: 'tarjetas',
+			href: 'cards',
 			icon: CreditCardIcon,
-			current: mainCurrent === 'tarjetas',
+			current: mainCurrent === 'cards',
 
 			children: [
 				{
 					name: 'Todas',
-					href: `/tarjetas/todas`,
-					current: secondaryCurrent === 'todas' && mainCurrent === 'tarjetas',
+					href: `/cards/all`,
+					current: secondaryCurrent === 'all' && mainCurrent === 'cards',
 				},
 				{
 					name: ' Solicitudes',
-					href: `/tarjetas/solicitudes`,
-					current:
-						secondaryCurrent === 'solicitudes' && mainCurrent === 'tarjetas',
+					href: `/cards/requests`,
+					current: secondaryCurrent === 'requests' && mainCurrent === 'cards',
 				},
 			],
 		},
 		{
 			name: 'Entidades',
-			href: 'entidades',
+			href: 'entities',
 			icon: HomeModernIcon,
-			current: mainCurrent === 'entidades',
+			current: mainCurrent === 'entities',
 		},
 		{
 			name: 'Configuración',
-			href: 'configuration',
+			href: 'settings',
 			icon: Cog6ToothIcon,
-			current: mainCurrent === 'configuration',
+			current: mainCurrent === 'settings',
 		},
 	];
 

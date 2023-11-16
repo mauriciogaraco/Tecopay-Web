@@ -112,7 +112,7 @@ const DetailEntityEditComponent = ({
 								id: entity?.currencyId,
 								name: desiredCurrencyCodeEntityObject?.currency?.code,
 							}}
-							defaultValue={entity?.currencyId}
+							defaultValue={entity?.code}
 							control={control}
 							rules={{ required: 'Campo requerido' }}
 							label='Moneda'
@@ -121,8 +121,8 @@ const DetailEntityEditComponent = ({
 						></AsyncComboBox>
 						<Select
 							name='status'
-							default={entity?.status}
-							defaultValue={entity?.status}
+							default={desiredCurrencyCodeEntityObject?.status}
+							defaultValue={desiredCurrencyCodeEntityObject?.status}
 							label='Estado de la entidad'
 							control={control}
 							data={statusData}

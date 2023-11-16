@@ -118,7 +118,7 @@ const Accounts = () => {
 	const rowAction = (id: number) => {
 		/*setEditTicketModal({ state: true, id });*/
 		dispatch(saveAccountId(id));
-		navigate('detalles');
+		navigate('details');
 	};
 
 	// Breadcrumb-----------------------------------------------------------------------------------

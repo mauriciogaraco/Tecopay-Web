@@ -25,8 +25,8 @@ interface propsDestructured {
 }
 
 const NewAccountModal = ({
-	setContactModal,
 	addAccount,
+	setContactModal,
 	close,
 	isLoading,
 }: propsDestructured) => {

@@ -132,9 +132,10 @@ const Card = () => {
 				}
 			/>
 
-			{addTicketmodal && (
+			{/*addTicketmodal && (
 				<Modal state={addTicketmodal} close={setAddTicketmodal}>
 					<NuevoTicketModal
+						isLoading={isLoading}
 						setContactModal={setContactModal}
 						close={closeAddAccount}
 						contactModal={contactModal}
@@ -142,7 +143,7 @@ const Card = () => {
 						nuevoTicketModal={nuevoTicketModal}
 					/>
 				</Modal>
-			)}
+			)*/}
 			{editTicketModal.state && (
 				<Modal state={editTicketModal.state} close={close} size='m'>
 					<EditCardContainer

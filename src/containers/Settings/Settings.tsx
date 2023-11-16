@@ -146,7 +146,7 @@ const Entity = () => {
 				}
 			/>
 
-			{addTicketmodal && (
+			{/*addTicketmodal && (
 				<Modal state={addTicketmodal} close={setAddTicketmodal}>
 					<NewEntityModal
 						setContactModal={setContactModal}
@@ -156,7 +156,7 @@ const Entity = () => {
 						nuevoTicketModal={nuevoTicketModal}
 					/>
 				</Modal>
-			)}
+			)*/}
 			{editTicketModal.state && (
 				<Modal state={editTicketModal.state} close={close} size='m'>
 					<EditEntityContainer
