@@ -299,8 +299,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 						<Menu
 							as='div'
 							className={classNames(
-								`relative group flex  ${
-									staticBar ? 'pl-4' : 'self-center group-hover:pl-4'
+								`relative group flex ${staticBar ? '' : 'pl-6'} ${
+									staticBar ? 'pl-4 ' : ' group-hover:pl-4'
 								} px-2 py-2 text-sm font-medium rounded-md`,
 							)}
 						>
