@@ -50,6 +50,7 @@ const Entity = () => {
 		isFetching,
 		allEntity,
 		entity,
+		addEntity,
 	} = useServerEntity();
 
 	const handleSearch = (e: any) => {
@@ -251,6 +252,8 @@ const Entity = () => {
 						contactModal={contactModal}
 						setNuevoTicketModal={setNuevoTicketModal}
 						nuevoTicketModal={nuevoTicketModal}
+						isLoading={isLoading}
+						addEntity={addEntity}
 					/>
 				</Modal>
 			)}

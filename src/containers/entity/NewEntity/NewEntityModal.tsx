@@ -22,17 +22,24 @@ interface propsDestructured {
 	setNuevoTicketModal: (contactModal: boolean) => void;
 	nuevoTicketModal: boolean;
 	close: Function;
+	addEntity: Function;
+	isLoading: boolean;
 }
 
-const NewEntityModal = ({ setContactModal, close }: propsDestructured) => {
+const NewEntityModal = ({
+	setContactModal,
+	addEntity,
+	close,
+	isLoading,
+}: propsDestructured) => {
 	const { control, handleSubmit } = useForm();
 
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
 		const sendData = Object.assign(data, {
-			status: 'ACTIVA',
-			userId: 1,
+			ownerId: 1,
+			businessId: 6,
 		});
 		console.log(sendData);
 		try {
@@ -40,12 +47,10 @@ const NewEntityModal = ({ setContactModal, close }: propsDestructured) => {
 		} catch (error) {}
 	};
 
-	const { isLoading, addEntity } = useServerEntity();
-
 	return (
 		<main>
 			<div>
-				<h3 className='p-4 text-xl md:text-2xl'>Nueva cuenta</h3>
+				<h3 className='p-4 text-xl md:text-2xl'>Nueva Entidad</h3>
 				<form
 					className='flex flex-col gap-y-3'
 					onSubmit={handleSubmit(onSubmit)}
@@ -79,7 +84,7 @@ const NewEntityModal = ({ setContactModal, close }: propsDestructured) => {
 							control={control}
 							rules={{ required: 'Campo requerido' }}
 							label='Moneda'
-							dataQuery={{ url: '/currency/all' }}
+							dataQuery={{ url: '/currency' }}
 							normalizeData={{ id: 'id', name: 'symbol' }}
 						></AsyncComboBox>
 					</div>

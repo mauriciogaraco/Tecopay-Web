@@ -64,8 +64,8 @@ const DetailEntityEditComponent = ({
 		const WholeData = Object.assign(data, {
 			userId: 1,
 		});
-		editEntity(entity?.data.id, deleteUndefinedAttr(WholeData), reset()).then(
-			() => closeModal(),
+		editEntity(entity?.id, deleteUndefinedAttr(WholeData), reset()).then(() =>
+			closeModal(),
 		);
 	};
 
@@ -89,7 +89,7 @@ const DetailEntityEditComponent = ({
 					<div className='grid grid-cols-2 gap-5'>
 						<Input
 							name='name'
-							defaultValue={entity?.data.name}
+							defaultValue={entity?.name}
 							label='Nombre'
 							control={control}
 							rules={{
@@ -98,7 +98,7 @@ const DetailEntityEditComponent = ({
 						/>
 						<Input
 							name='phone'
-							defaultValue={entity?.data.phone}
+							defaultValue={entity?.phone}
 							label='Telefono'
 							control={control}
 							rules={{
@@ -109,10 +109,10 @@ const DetailEntityEditComponent = ({
 						<AsyncComboBox
 							name='currencyId'
 							defaultItem={{
-								id: entity?.data.currencyId,
+								id: entity?.currencyId,
 								name: desiredCurrencyCodeEntityObject?.currency?.code,
 							}}
-							defaultValue={entity?.data.currencyId}
+							defaultValue={entity?.currencyId}
 							control={control}
 							rules={{ required: 'Campo requerido' }}
 							label='Moneda'
@@ -121,8 +121,8 @@ const DetailEntityEditComponent = ({
 						></AsyncComboBox>
 						<Select
 							name='status'
-							default={entity?.data.status}
-							defaultValue={entity?.data.status}
+							default={entity?.status}
+							defaultValue={entity?.status}
 							label='Estado de la entidad'
 							control={control}
 							data={statusData}
@@ -130,7 +130,7 @@ const DetailEntityEditComponent = ({
 					</div>
 
 					<TextArea
-						defaultValue={entity?.data.address}
+						defaultValue={entity?.address}
 						name='address'
 						control={control}
 						label='Dirección'
@@ -151,9 +151,9 @@ const DetailEntityEditComponent = ({
 			{delAction && (
 				<Modal state={delAction} close={setDelAction}>
 					<AlertContainer
-						onAction={() => deleteEntity(entity?.data.id, closeModal)}
+						onAction={() => deleteEntity(entity?.id, closeModal)}
 						onCancel={setDelAction}
-						title={`Eliminar ${entity?.data.name}`}
+						title={`Eliminar ${entity?.name}`}
 						text='¿Seguro que desea eliminar este usuario del sistema?'
 						loading={isFetching}
 					/>

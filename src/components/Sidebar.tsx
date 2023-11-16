@@ -297,7 +297,14 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 						}`}
 					>
 						{/* Profile dropdown */}
-						<Menu as='div' className='relative ml-4'>
+						<Menu
+							as='div'
+							className={classNames(
+								`relative group flex  ${
+									staticBar ? 'pl-4' : 'self-center group-hover:pl-4'
+								} px-2 py-2 text-sm font-medium rounded-md`,
+							)}
+						>
 							<div>
 								<Menu.Button className='flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
 									<span className='sr-only'>Open user menu</span>
