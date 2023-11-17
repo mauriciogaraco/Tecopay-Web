@@ -7,21 +7,36 @@ import Breadcrumb, {
 	PathInterface,
 } from '../../../components/navigation/Breadcrumb';
 import {
+	PencilSquareIcon,
 	RectangleGroupIcon,
 	UserCircleIcon,
 } from '@heroicons/react/24/outline';
 import SideNav from '../../../components/navigation/SideNav';
 import SelectedAccountDetails from './SelectedAccountDetails';
 import useServerAccounts from '../../../api/userServerAccounts';
+import Button from '../../../components/misc/Button';
+import Modal from '../../../components/modals/GenericModal';
+import EditAccountContainer from '../editAccountWizzard/EditAccountContainer';
 
 const AssociatedCards = () => {
 	const { pathname } = useLocation();
 	const navigate = useNavigate();
-	const { getAccount, isLoading, account } = useServerAccounts();
+	const {
+		getAccount,
+		isLoading,
+		account,
+		isFetching,
+		editAccount,
+		allAccounts,
+		selectedDataToParent,
+		deleteAccount,
+		getAllAccounts,
+	} = useServerAccounts();
 	//TabNav ------------------------------------------------------------
 
 	const [current, setCurrent] = useState<string>('detalles');
 	const changeTab = (to: string) => setCurrent(to);
+	const [editModal, setEditModal] = useState(false);
 
 	const id = useAppSelector((state) => state.account.id);
 
@@ -30,6 +45,10 @@ const AssociatedCards = () => {
 	useEffect(() => {
 		getAccount(id);
 	}, []);
+
+	const showEditModal = () => {
+		setEditModal(!editModal);
+	};
 
 	const stockTabs = [
 		{
@@ -71,10 +90,23 @@ const AssociatedCards = () => {
 
 	return (
 		<>
-			<Breadcrumb
-				icon={<UserCircleIcon className='h-7 text-gray-500' />}
-				paths={paths}
-			/>
+			<div className=' flex'>
+				<Breadcrumb
+					icon={<UserCircleIcon className='h-7 text-gray-500' />}
+					paths={paths}
+				/>
+				<div className='absolute right-9 mt-1 h-7 px-2'>
+					<Button
+						name='Editar'
+						icon={<PencilSquareIcon className=' text-white w-5' />}
+						color='slate-600'
+						type='button'
+						action={() => showEditModal()}
+						loading={isFetching}
+						disabled={isFetching}
+					/>
+				</div>
+			</div>
 			<div className='sm:grid grid-cols-10 gap-3'>
 				<SideNav
 					tabs={stockTabs}
@@ -94,6 +126,21 @@ const AssociatedCards = () => {
 					{/*current === 'opperations' && < />*/}
 				</div>
 			</div>
+			{editModal && (
+				<Modal state={editModal} close={close} size='m'>
+					<EditAccountContainer
+						allAccounts={allAccounts}
+						deleteAccount={deleteAccount}
+						isLoading={isLoading}
+						account={account}
+						getAccount={getAccount}
+						id={id}
+						editAccount={editAccount}
+						isFetching={isFetching}
+						closeModal={close}
+					/>
+				</Modal>
+			)}
 		</>
 	);
 };

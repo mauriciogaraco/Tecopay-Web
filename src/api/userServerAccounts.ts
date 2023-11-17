@@ -77,7 +77,7 @@ const useServerAccounts = () => {
   ) => {
     setIsFetching(true);
     await query
-      .put(`/account/update/${id}`, data)
+      .put(`/account/${id}`, data)
       .then((resp) => {
         const newAccounts:any = [...allAccounts];
         const idx = newAccounts.findIndex((user:any) => user.id === id);
@@ -112,7 +112,7 @@ const useServerAccounts = () => {
   const deleteAccount = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
-      .deleteAPI(`/account/delete/${id}`, {})
+      .deleteAPI(`/account/${id}`, {})
       .then(() => {
         toast.success("Usuario Eliminado con éxito");
         const newAccounts = allAccounts.filter((item:any) => item.id !== id);

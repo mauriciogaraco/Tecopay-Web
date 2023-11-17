@@ -28,15 +28,15 @@ const SelectedAccountDetails = ({
 						'No. cuenta': `${account.address}`,
 
 						'Fecha de emisión': `${formatDate(account?.createdAt)}`,
-						'Creada por': `${account?.createdById}`,
+						'Creada por': `${account?.createdById ?? '-'}`,
 						Dirección: `${account?.address}`,
-						Código: `${account?.code}`,
-						Moneda: account?.currency.name,
+						Código: `${account?.code ?? '-'}`,
+						Moneda: account?.currency ?? '-',
 						Propietario: account?.owner.fullName,
 
 						Entidad: account?.issueEntity.name,
 
-						'Usuarios permitidos': account.allowedUsers,
+						'Usuarios permitidos': account.allowedUsers ?? '-',
 						Descripción: account.description,
 					}}
 				></GenericList>
