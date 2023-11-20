@@ -4,7 +4,7 @@ import GenericTable, {
 	type DataTableInterface,
 	type FilterOpts,
 } from '../../components/misc/GenericTable';
-import useServerAccounts from '../../api/userServerAccounts';
+import useServerUsers from '../../api/userServerUsers';
 
 import Paginate from '../../components/misc/Paginate';
 import Modal from '../../components/modals/GenericModal';
@@ -17,37 +17,42 @@ import {
 } from '../../interfaces/InterfacesLocal';
 
 import { useEffect, useState } from 'react';
-import NewAccountModal from './NewAccount/NewAccountModal';
+//import NewUserModal from './NewUser/NewUserModal';
 import { data } from '../../utils/TemporaryArrayData';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import EditAccountContainer from './editAccountWizzard/EditAccountContainer';
+//import EditUserContainer from './editUserWizzard/EditUserContainer';
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
-import { saveAccountId } from '../../store/slices/accountSlice';
-import { useNavigate } from 'react-router-dom';
 
-const Accounts = () => {
+import { useNavigate } from 'react-router-dom';
+import { Item } from '../../interfaces/UsersInterfaces';
+import NewUserModal from './NewUser/NewUserModal';
+import NewUserModalVariantOne from './NewUser/NewUserModal';
+
+const exists = true;
+
+const Users = () => {
 	const {
 		paginate,
 		isLoading,
 		isFetching,
-		allAccounts,
-		account,
-		getAllAccounts,
-		getAccount,
-		editAccount,
-		deleteAccount,
+		allUsers,
+		user,
+		getAllUsers,
+		getUser,
+		editUser,
+		deleteUser,
 		setSelectedDataToParent,
 		setSelectedDataToParentTwo,
 		selectedDataToParent,
-		addAccount,
-	} = useServerAccounts();
+		addUser,
+	} = useServerUsers();
 
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
-	const [addTicketmodal, setAddTicketmodal] = useState(false);
-	const dispatch = useAppDispatch();
+	const [addUsermodal, setAddUsermodal] = useState(false);
+	const [selectedOption, setSelectedOption] = useState('');
 	// const [exportModal, setExportModal] = useState(false);
 
 	/* useEffect(() => {
@@ -55,37 +60,17 @@ const Accounts = () => {
 			}, [filter]); */
 
 	// Data for table ------------------------------------------------------------------------
-	const tableTitles = [
-		'Código',
-		'Nombre',
-		'Entidad',
-		'Propietario',
-		'Moneda',
-		'',
-	];
+	const tableTitles = ['Nombre', 'Correo Electrónico', 'Entidad', 'Roles'];
 	const tableData: DataTableInterface[] = [];
 
-	allAccounts?.map((item: any) => {
+	allUsers?.map((item: Item) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				'No.': item.id,
-				Código: `${item?.address}`,
-				Nombre: item?.name,
-				Entidad: item?.issueEntity?.name,
-				Propietario: item.owner?.fullName,
-				Moneda: item.currency?.code ?? '-',
-				Dirección: item.address,
-				'': (
-					<span className='flex whitespace-nowrap gap-4'>
-						<BlockedStateForTable currentState={item.isBlocked} />
-						<StateSpanForTable
-							currentState={item?.isActive}
-							greenState='Activa'
-							redState='Inactiva'
-						/>
-					</span>
-				),
+				Nombre: item?.fullName,
+				Entidad: item?.issueEntity?.name ?? '-',
+				'Correo Electrónico': item.account ?? '-',
+				Roles: item.roles[0].name,
 			},
 		});
 	});
@@ -96,25 +81,23 @@ const Accounts = () => {
 		action: (search: string) => {
 			setFilter({ ...filter, search });
 		},
-		placeholder: 'Buscar ticket',
+		placeholder: 'Buscar usuario',
 	};
 	const close = () => {
-		setEditTicketModal({ state: false, id: null });
+		setEditUserModal({ state: false, id: null });
 	};
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
-			title: 'Agregar cuenta',
+			title: 'Agregar usuario',
 			action: () => {
-				setAddTicketmodal(true);
+				setAddUsermodal(true);
 			},
 		},
 	];
 
 	const rowAction = (id: number) => {
-		/*setEditTicketModal({ state: true, id });*/
-		dispatch(saveAccountId(id));
-		navigate('details');
+		setEditUserModal({ state: true, id });
 	};
 
 	// Breadcrumb-----------------------------------------------------------------------------------
@@ -124,19 +107,20 @@ const Accounts = () => {
 		},
 	];
 	// ------------------------------------------------------------------------------------
-	const [nuevoTicketModal, setNuevoTicketModal] = useState(false);
+	const [nuevoUserModal, setNuevoUserModal] = useState(false);
 	const [contactModal, setContactModal] = useState(false);
-	const [editTicketModal, setEditTicketModal] = useState<{
+	const [editUserModal, setEditUserModal] = useState<{
 		state: boolean;
 		id: number | null;
 	}>({ state: false, id: null });
 
-	const closeAddAccount = () => {
-		setAddTicketmodal(false);
+	const closeAddUser = () => {
+		setAddUsermodal(false);
 	};
 
 	useEffect(() => {
-		getAllAccounts(filter);
+		getAllUsers(filter);
+		console.log(allUsers);
 	}, [filter]);
 
 	return (
@@ -163,21 +147,46 @@ const Accounts = () => {
 				}
 			/>
 
-			{addTicketmodal && (
-				<Modal state={addTicketmodal} close={setAddTicketmodal}>
-					<NewAccountModal
-						setContactModal={setContactModal}
-						close={closeAddAccount}
-						contactModal={contactModal}
-						setNuevoTicketModal={setNuevoTicketModal}
-						nuevoTicketModal={nuevoTicketModal}
-						isLoading={isLoading}
-						addAccount={addAccount}
-					/>
+			{addUsermodal && (
+				<Modal state={addUsermodal} close={setAddUsermodal}>
+					<div className='flex flex-col gap-4'>
+						<div className=' flex gap-4 items-center'>
+							<input
+								type='radio'
+								value='option1'
+								checked={selectedOption === 'option1'}
+								onChange={(e) => setSelectedOption(e.target.value)}
+							/>
+							Option 1
+						</div>
+						<div className=' flex gap-4 items-center'>
+							<input
+								type='radio'
+								value='option2'
+								checked={selectedOption === 'option2'}
+								onChange={(e) => setSelectedOption(e.target.value)}
+							/>
+							Option 2
+						</div>
+						{selectedOption === 'option1' && (
+							<NewUserModalVariantOne
+								close={closeAddUser}
+								isLoading={isLoading}
+								addUser={addUser}
+							/>
+						)}
+					</div>
+					{selectedOption === 'option2' && (
+						<NewUserModalVariantOne
+							close={closeAddUser}
+							isLoading={isLoading}
+							addUser={addUser}
+						/>
+					)}
 				</Modal>
 			)}
 		</div>
 	);
 };
 
-export default Accounts;
+export default Users;

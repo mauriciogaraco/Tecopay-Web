@@ -6,13 +6,14 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import AppContainer from '../containers/AppContainer';
 
-import Tickets from '../containers/accounts/Accounts';
+import Accounts from '../containers/accounts/Accounts';
 import { Suspense, lazy } from 'react';
 import Loading from '../components/misc/Loading';
 import Entity from '../containers/entity/Entity';
 import Card from '../containers/card/Card';
 import CardRequests from '../containers/card/CardRequests';
 import AccountDetails from '../containers/accounts/Details/AccountDetails';
+import Users from '../containers/users/Users';
 
 //Almacenes
 /*const ListStocks = lazy(() => import("../containers/areas/ListStocks"));
@@ -34,11 +35,12 @@ const AppRoute = () => {
 		<Routes>
 			<Route path='/' element={<AppContainer />}>
 				<Route index element={<Dashboard />} />
-				<Route path='/accounts' element={<Tickets />} />
+				<Route path='/accounts' element={<Accounts />} />
 				<Route path='/cards/all' element={<Card />} />
 				<Route path='/cards/requests' element={<CardRequests />} />
 				<Route path='/entities' element={<Entity />} />
 				<Route path='/accounts/details' element={<AccountDetails />} />
+				<Route path='/users' element={<Users />} />
 
 				{/**Stocks */}
 				<>

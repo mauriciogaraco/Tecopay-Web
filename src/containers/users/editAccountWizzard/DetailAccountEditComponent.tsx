@@ -5,10 +5,6 @@ import { deleteUndefinedAttr, validateEmail } from '../../../utils/helpers';
 import Toggle from '../../../components/forms/Toggle';
 import { type SubmitHandler, useForm } from 'react-hook-form';
 
-import {
-	AccountData,
-	UserInterface,
-} from '../../../interfaces/ServerInterfaces';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import Modal from '../../../components/modals/GenericModal';
 import AlertContainer from '../../../components/misc/AlertContainer';
