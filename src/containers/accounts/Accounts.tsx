@@ -17,7 +17,6 @@ import {
 } from '../../interfaces/InterfacesLocal';
 
 import { useEffect, useState } from 'react';
-import NewAccountModal from './NewAccount/NewAccountModal';
 import { data } from '../../utils/TemporaryArrayData';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import EditAccountContainer from './editAccountWizzard/EditAccountContainer';
@@ -25,6 +24,7 @@ import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
 import { saveAccountId } from '../../store/slices/accountSlice';
 import { useNavigate } from 'react-router-dom';
+import NewAccountModal from './NewAccount/NewAccountModal';
 
 const Accounts = () => {
 	const {

@@ -12,6 +12,8 @@ import Select from '../../../components/forms/Select';
 import Toggle from '../../../components/forms/Toggle';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 import Button from '../../../components/misc/Button';
+import MultiSelect from '../../../components/forms/Multiselect';
+import AsyncMultiSelect from '../../../components/forms/AsyncMultiselect';
 
 interface propsDestructured {
 	close: Function;
@@ -41,7 +43,6 @@ const NewUserModalVariantOne = ({
 	return (
 		<main>
 			<div>
-				<h3 className='p-4 text-xl md:text-2xl'>Nuevo usuario</h3>
 				<form
 					className='flex flex-col gap-y-3'
 					onSubmit={handleSubmit(onSubmit)}
@@ -54,33 +55,41 @@ const NewUserModalVariantOne = ({
 						rules={{ required: 'Campo requerido' }}
 					></Input>
 
-					<AsyncComboBox
-						name='currencyId'
+					<Input
+						name='email'
+						label='Correo Eletrónico'
+						placeholder='@email.com'
 						control={control}
 						rules={{ required: 'Campo requerido' }}
-						label='Moneda'
-						dataQuery={{ url: '/currency' }}
-						normalizeData={{ id: 'id', name: 'symbol' }}
-					></AsyncComboBox>
+					></Input>
 
-					<AsyncComboBox
-						name='issueEntityId'
+					<Input
+						name='password'
+						label='Contraseña'
+						placeholder='Contraseña'
 						control={control}
 						rules={{ required: 'Campo requerido' }}
-						label='Entidad'
-						dataQuery={{ url: '/entity' }}
+					></Input>
+
+					<AsyncMultiSelect
+						name='entity'
 						normalizeData={{ id: 'id', name: 'name' }}
-					></AsyncComboBox>
+						control={control}
+						label='entidad'
+						dataQuery={{ url: '/user' }}
+					/>
 
-					<div className='h-full'>
-						<TextArea
-							name='description'
-							rules={{ required: 'Campo requerido' }}
-							control={control}
-							paddingInput='py-0'
-							label='Descripción'
-						></TextArea>
-					</div>
+					<MultiSelect
+						data={[
+							{ id: 1, name: 'Admin' },
+							{ id: 2, name: 'Cliente' },
+							{ id: 3, name: 'Creator' },
+						]}
+						control={control}
+						label='Roles'
+						name='role'
+					/>
+
 					<div className='flex self-end'>
 						<Button
 							name='Insertar'

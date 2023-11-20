@@ -119,10 +119,10 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 			current: mainCurrent === 'entities',
 		},
 		{
-			name: 'Configuración',
-			href: 'settings',
-			icon: Cog6ToothIcon,
-			current: mainCurrent === 'settings',
+			name: 'Usuarios',
+			href: 'users',
+			icon: UsersIcon,
+			current: mainCurrent === 'users',
 		},
 	];
 

@@ -1,4 +1,4 @@
-import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, UsersIcon } from '@heroicons/react/24/outline';
 
 import GenericTable, {
 	type DataTableInterface,
@@ -26,8 +26,9 @@ import StateSpanForTable from '../../components/misc/StateSpanForTable';
 
 import { useNavigate } from 'react-router-dom';
 import { Item } from '../../interfaces/UsersInterfaces';
-import NewUserModal from './NewUser/NewUserModal';
-import NewUserModalVariantOne from './NewUser/NewUserModal';
+import NewUserModal from './NewUser/NewUserModalVariantOne';
+import NewUserModalVariantOne from './NewUser/NewUserModalVariantOne';
+import NewUserModalVariantTwo from './NewUser/NewUserModalVariantTwo';
 
 const exists = true;
 
@@ -103,7 +104,7 @@ const Users = () => {
 	// Breadcrumb-----------------------------------------------------------------------------------
 	const paths: PathInterface[] = [
 		{
-			name: 'Cuentas',
+			name: 'Usuarios',
 		},
 	];
 	// ------------------------------------------------------------------------------------
@@ -126,7 +127,7 @@ const Users = () => {
 	return (
 		<div>
 			<Breadcrumb
-				icon={<UserCircleIcon className='h-6 text-gray-500' />}
+				icon={<UsersIcon className='h-6 text-gray-500' />}
 				paths={paths}
 			/>
 			<GenericTable
@@ -150,6 +151,7 @@ const Users = () => {
 			{addUsermodal && (
 				<Modal state={addUsermodal} close={setAddUsermodal}>
 					<div className='flex flex-col gap-4'>
+						<h3 className='p-4 text-xl md:text-2xl'>Nuevo usuario</h3>
 						<div className=' flex gap-4 items-center'>
 							<input
 								type='radio'
@@ -157,7 +159,7 @@ const Users = () => {
 								checked={selectedOption === 'option1'}
 								onChange={(e) => setSelectedOption(e.target.value)}
 							/>
-							Option 1
+							Nuevo registro de usuario
 						</div>
 						<div className=' flex gap-4 items-center'>
 							<input
@@ -166,7 +168,7 @@ const Users = () => {
 								checked={selectedOption === 'option2'}
 								onChange={(e) => setSelectedOption(e.target.value)}
 							/>
-							Option 2
+							Añadir usuario del ecosistema de Tecopos
 						</div>
 						{selectedOption === 'option1' && (
 							<NewUserModalVariantOne
@@ -177,7 +179,7 @@ const Users = () => {
 						)}
 					</div>
 					{selectedOption === 'option2' && (
-						<NewUserModalVariantOne
+						<NewUserModalVariantTwo
 							close={closeAddUser}
 							isLoading={isLoading}
 							addUser={addUser}
