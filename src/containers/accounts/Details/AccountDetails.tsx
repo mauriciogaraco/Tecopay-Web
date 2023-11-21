@@ -137,7 +137,7 @@ const AssociatedCards = () => {
 						id={id}
 						editAccount={editAccount}
 						isFetching={isFetching}
-						closeModal={close}
+						closeModal={()=>setEditModal(false)}
 					/>
 				</Modal>
 			)}
