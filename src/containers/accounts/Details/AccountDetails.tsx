@@ -127,7 +127,7 @@ const AssociatedCards = () => {
 				</div>
 			</div>
 			{editModal && (
-				<Modal state={editModal} close={close} size='m'>
+				<Modal state={editModal} close={setEditModal} size='m'>
 					<EditAccountContainer
 						allAccounts={allAccounts}
 						deleteAccount={deleteAccount}
