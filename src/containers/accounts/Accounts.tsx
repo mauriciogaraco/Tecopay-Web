@@ -17,7 +17,6 @@ import {
 } from '../../interfaces/InterfacesLocal';
 
 import { useEffect, useState } from 'react';
-import NewAccountModal from './NewAccount/NewAccountModal';
 import { data } from '../../utils/TemporaryArrayData';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import EditAccountContainer from './editAccountWizzard/EditAccountContainer';
@@ -25,12 +24,9 @@ import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
 import { saveAccountId } from '../../store/slices/accountSlice';
 import { useNavigate } from 'react-router-dom';
+import NewAccountModal from './NewAccount/NewAccountModal';
 
 const Accounts = () => {
-	const [query, setQuery] = useState<string>('');
-	const [queryText, setQueryText] = useState('');
-	const [post, setPost] = useState(null);
-
 	const {
 		paginate,
 		isLoading,
@@ -78,7 +74,7 @@ const Accounts = () => {
 				Nombre: item?.name,
 				Entidad: item?.issueEntity?.name,
 				Propietario: item.owner?.fullName,
-				Moneda: item.currency?.code,
+				Moneda: item.currency?.code ?? '-',
 				Dirección: item.address,
 				'': (
 					<span className='flex whitespace-nowrap gap-4'>
@@ -177,24 +173,6 @@ const Accounts = () => {
 						nuevoTicketModal={nuevoTicketModal}
 						isLoading={isLoading}
 						addAccount={addAccount}
-					/>
-				</Modal>
-			)}
-			{editTicketModal.state && (
-				<Modal state={editTicketModal.state} close={close} size='m'>
-					<EditAccountContainer
-						allAccounts={allAccounts}
-						selectedDataToParent={selectedDataToParent}
-						deleteAccount={deleteAccount}
-						isLoading={isLoading}
-						account={account}
-						getAccount={getAccount}
-						id={editTicketModal.id}
-						editAccount={editAccount}
-						isFetching={isFetching}
-						closeModal={close}
-						setSelectedDataToParent={setSelectedDataToParent}
-						setSelectedDataToParentTwo={setSelectedDataToParentTwo}
 					/>
 				</Modal>
 			)}

@@ -119,10 +119,10 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 			current: mainCurrent === 'entities',
 		},
 		{
-			name: 'Configuración',
-			href: 'settings',
-			icon: Cog6ToothIcon,
-			current: mainCurrent === 'settings',
+			name: 'Usuarios',
+			href: 'users',
+			icon: UsersIcon,
+			current: mainCurrent === 'users',
 		},
 	];
 
@@ -291,8 +291,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 					<div
 						className={`flex flex-grow flex-col  scrollbar-thumb-tecopay-900 border-r border-tecopay-200 bg-tecopay-800 pt-1 pb-4 ${
 							staticBar
-								? 'pr-3 overflow-y-scroll scrollbar-thin'
-								: 'group-hover:pr-3 group-hover:overflow-auto group-hover:scrollbar-thin'
+								? 'pr-3 scrollbar-thin'
+								: 'group-hover:pr-3 group-hover:scrollbar-thin'
 						}`}
 					>
 						{/* Profile dropdown */}
@@ -325,7 +325,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 								leaveFrom='transform opacity-100 scale-100'
 								leaveTo='transform opacity-0 scale-95'
 							>
-								<Menu.Items className='absolute  overflow-auto z-10 mt-2 w-64 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+								<Menu.Items className='absolute  z-10 mt-2 w-64 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
 									<Menu.Item>
 										<div>
 											<div className='relative flex items-center rounded-lg bg-white px-2 py-2 gap-2'>

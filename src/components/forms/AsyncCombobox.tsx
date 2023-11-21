@@ -56,12 +56,11 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 		callback,
 		nullOpt,
 		setSelectedDataToParent,
-		selectedDataToParent,
 		setSelectedDataToParentTwo,
 	} = props;
 
 	//query management states ----------------------------------------------------------
-	const [query, setQuery] = useState<string | null>(null);
+	const [query, setQuery] = useState<string>('');
 	const [data, setData] = useState<SelectInterface[]>([]);
 	const [selectedData, setSelectedData] = useState<SelectInterface | null>(
 		null,
@@ -150,10 +149,12 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 	const onKeyUp = (e: BaseSyntheticEvent) => {
 		const time = Number(
 			setTimeout(() => {
-				if (e.target.value !== '') {
-					setQuery(e.target.value);
-				} else {
-					setQuery(null);
+				if (e.target.value.length > 2) {
+					if (e.target.value !== '') {
+						setQuery(e.target.value);
+					} else {
+						setQuery('');
+					}
 				}
 			}, 800),
 		);
@@ -223,49 +224,54 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 
 					{data.length > 0 && (
 						<Combobox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm scrollbar-thin scrollbar-thumb-gray-400'>
-							{data.map((person) => (
-								<Combobox.Option
-									key={person.id}
-									value={person}
-									disabled={
-										normalizeData?.disabled?.includes(person?.id ?? '') ?? false
-									}
-									className={({ active, disabled }) =>
-										classNames(
-											'relative cursor-default select-none py-2 pl-3 pr-9',
-											active
-												? 'bg-slate-600 text-white'
-												: disabled
-												? 'text-gray-400 bg-white'
-												: 'text-gray-900',
-										)
-									}
-								>
-									{({ active, selected }) => (
-										<>
-											<span
-												className={classNames(
-													'block truncate',
-													`${selected ? 'font-semibold' : ''}`,
-												)}
-											>
-												{person.name}
-											</span>
-
-											{selected && (
+							{data
+								.filter((person) =>
+									person.name.toLowerCase().includes(query.toLowerCase()),
+								)
+								.map((person) => (
+									<Combobox.Option
+										key={person.id}
+										value={person}
+										disabled={
+											normalizeData?.disabled?.includes(person?.id ?? '') ??
+											false
+										}
+										className={({ active, disabled }) =>
+											classNames(
+												'relative cursor-default select-none py-2 pl-3 pr-9',
+												active
+													? 'bg-slate-600 text-white'
+													: disabled
+													? 'text-gray-400 bg-white'
+													: 'text-gray-900',
+											)
+										}
+									>
+										{({ active, selected }) => (
+											<>
 												<span
 													className={classNames(
-														'absolute inset-y-0 right-0 flex items-center pr-4',
-														active ? 'text-white' : 'text-orange-600',
+														'block truncate',
+														`${selected ? 'font-semibold' : ''}`,
 													)}
 												>
-													<CheckIcon className='h-5 w-5' aria-hidden='true' />
+													{person.name}
 												</span>
-											)}
-										</>
-									)}
-								</Combobox.Option>
-							))}
+
+												{selected && (
+													<span
+														className={classNames(
+															'absolute inset-y-0 right-0 flex items-center pr-4',
+															active ? 'text-white' : 'text-orange-600',
+														)}
+													>
+														<CheckIcon className='h-5 w-5' aria-hidden='true' />
+													</span>
+												)}
+											</>
+										)}
+									</Combobox.Option>
+								))}
 						</Combobox.Options>
 					)}
 					{fieldState.error && (

@@ -1,27 +1,25 @@
 import { useState } from "react";
 import type {
   PaginateInterface,
-  AccountData,
   TicketsInterface,
 } from "../interfaces/ServerInterfaces";
 import query from "./APIServices";
 import useServer from "./useServer";
 import {  toast } from "react-toastify";
 
-import { saveAccount } from "../store/slices/accountSlice";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 import { generateUrlParams } from "../utils/helpers";
 import type { BasicType } from "../interfaces/LocalInterfaces";
-import { SelectInterface } from "../interfaces/InterfacesLocal";
 
-const useServerAccounts = () => {
+import { Item, Items } from "../interfaces/UsersInterfaces";
+
+const useServerUsers = () => {
   const { manageErrors } = useServer();
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
-  const [allAccounts, setAllAccounts] = useState<any[]>([]);
-  const [account, setAccount] = useState<AccountData | null>(null);
+  const [allUsers, setAllUsers] = useState<Items>([]);
+  const [user, setUser] = useState<Item | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
   const [modalWaitingError, setModalWaitingError] = useState<string | null>(
     null
@@ -31,37 +29,35 @@ const useServerAccounts = () => {
   const [selectedDataToParentTwo, setSelectedDataToParentTwo] =
   useState<any>(null);
   const [waiting, setWaiting] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
-  const items = useAppSelector((state)=> state.account.items)
 
 
-  const getAllAccounts = async (filter: BasicType) => {
+  const getAllUsers = async (filter: BasicType) => {
     setIsLoading(true);
     await query
-      .get(`/account${generateUrlParams(filter)}`)
+      .get(`/user${generateUrlParams(filter)}`)
       .then((resp) => {
         setPaginate({
           totalItems: resp.data.totalItems,
           totalPages: resp.data.totalPages,
           currentPage: resp.data.currentPage,
         });
-        setAllAccounts(resp.data.items)
+        setAllUsers(resp.data.items)
 
 
       })
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
-  const addAccount = async (
+  const addUser = async (
     data: any,
     close: Function
   ) => {
     setIsFetching(true);
     setIsLoading(true)
     await query
-    .post("/account", data)
+    .post("/user", data)
       .then((resp) => {   
-   setAllAccounts([...allAccounts, resp.data])
+   setAllUsers([...allUsers, resp.data])
         
         toast.success("Ticket agregado satisfactoriamente");
       }).then(()=>close())
@@ -70,36 +66,36 @@ const useServerAccounts = () => {
     setIsLoading(false)
   };
 
-  const editAccount = async (
+  const editUser = async (
     id: number,
     data: Record<string, string | number | boolean | string[]>,
     callback?: Function
   ) => {
     setIsFetching(true);
     await query
-      .put(`/account/${id}`, data)
+      .put(`/user/${id}`, data)
       .then((resp) => {
-        const newAccounts:any = [...allAccounts];
-        const idx = newAccounts.findIndex((user:any) => user.id === id);
-        const accountWithId = allAccounts.find((card:any) => card.id == id);
-        const wholeData = Object.assign(data, {id, issueEntity:{name: selectedDataToParentTwo?.name}, owner:{fullName:accountWithId?.owner.fullName}, currency: {code: selectedDataToParent?.name}} )
-        newAccounts.splice(idx, 1, wholeData);        
-        setAllAccounts(newAccounts)
+        const newUsers:any = [...allUsers];
+        const idx = newUsers.findIndex((user:any) => user.id === id);
+        const userWithId = allUsers.find((card:any) => card.id == id);
+        //const wholeData = Object.assign(data, {id, issueEntity:{name: selectedDataToParentTwo?.name}, owner:{fullName:userWithId?.owner.fullName}, currency: {code: selectedDataToParent?.name}} )
+        //newUsers.splice(idx, 1, wholeData);        
+        setAllUsers(newUsers)
         callback?.();
       })
       .catch((e) => { manageErrors(e); });
     setIsFetching(false);
   };
 
-  const getAccount = async (id: any): Promise<any> => {
+  const getUser = async (id: any): Promise<any> => {
     try {
       setIsLoading(true);
-      const response = await query.get(`/account/${id}`);
-      const account = response.data;
-      setAccount(account);
+      const response = await query.get(`/user/${id}`);
+      const user = response.data;
+      setUser(user);
   
   
-      return account;
+      return user;
     } catch (error) {
       console.error(error);
       // Display a user-friendly error message.
@@ -109,14 +105,14 @@ const useServerAccounts = () => {
   };
   
 
-  const deleteAccount = async (id: number, callback?: Function) => {
+  const deleteUser = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
-      .deleteAPI(`/account/${id}`, {})
+      .deleteAPI(`/user/${id}`, {})
       .then(() => {
         toast.success("Usuario Eliminado con éxito");
-        const newAccounts = allAccounts.filter((item:any) => item.id !== id);
-        setAllAccounts(newAccounts)
+        const newUsers = allUsers.filter((item:any) => item.id !== id);
+        setAllUsers(newUsers)
         callback?.();
       })
       .catch((error) => { manageErrors(error); });
@@ -128,14 +124,14 @@ const useServerAccounts = () => {
     isFetching,
     waiting,
     modalWaiting,
-    allAccounts,
-    account,
-    getAllAccounts,
-    addAccount,
-    getAccount,
-    editAccount,
-    deleteAccount,
-    setAllAccounts,
+    allUsers,
+    user,
+    getAllUsers,
+    addUser,
+    getUser,
+    editUser,
+    deleteUser,
+    setAllUsers,
     manageErrors,
     modalWaitingError,
     setSelectedDataToParent,
@@ -144,4 +140,4 @@ const useServerAccounts = () => {
 
   };
 };
-export default useServerAccounts;
+export default useServerUsers;

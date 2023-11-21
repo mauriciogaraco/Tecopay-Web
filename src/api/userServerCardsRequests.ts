@@ -34,7 +34,7 @@ const useServerCardsRequests = () => {
   const getAllCardsRequests = async (filter: BasicType) => {
     setIsLoading(true);
     await query
-      .get(`/request/all${generateUrlParams(filter)}`)
+      .get(`/card/request${generateUrlParams(filter)}`)
       .then((resp) => {
         setPaginate({
           totalItems: resp.data.totalItems,

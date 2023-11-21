@@ -21,6 +21,7 @@ import Select from '../../../components/forms/Select';
 import ComboBox from '../../../components/forms/Combobox';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 import useServerAccounts from '../../../api/userServerAccounts';
+import { useNavigate } from 'react-router-dom';
 
 interface EditInterface {
 	account: any;
@@ -29,10 +30,7 @@ interface EditInterface {
 	closeModal: Function;
 	isFetching: boolean;
 	id: number | null;
-	setSelectedDataToParent: Function;
 	allAccounts: any;
-	selectedDataToParent: any;
-	setSelectedDataToParentTwo: any;
 }
 
 const DetailAccountEditComponent = ({
@@ -42,10 +40,7 @@ const DetailAccountEditComponent = ({
 	closeModal,
 	isFetching,
 	id,
-	setSelectedDataToParent,
 	allAccounts,
-	selectedDataToParent,
-	setSelectedDataToParentTwo,
 }: EditInterface) => {
 	const { control, handleSubmit, watch, reset, formState } = useForm<BasicType>(
 		{
@@ -55,6 +50,7 @@ const DetailAccountEditComponent = ({
 	const desiredCurrencyCodeEntityObject: any = allAccounts.find(
 		(item: any) => item.id === id,
 	);
+	const navigate = useNavigate();
 
 	const [delAction, setDelAction] = useState(false);
 
@@ -62,10 +58,10 @@ const DetailAccountEditComponent = ({
 		const WholeData = Object.assign(data, {
 			code: '123456',
 			ownerId: 251,
-			id: account?.data.id,
+			id: account?.id,
 		});
-		editAccount(account?.data.id, deleteUndefinedAttr(WholeData), reset()).then(
-			() => closeModal(),
+		editAccount(account?.id, deleteUndefinedAttr(WholeData), reset()).then(() =>
+			closeModal(),
 		);
 	};
 
@@ -86,75 +82,60 @@ const DetailAccountEditComponent = ({
 							/>
 						</div>
 					</div>
-					<div className='grid grid-cols-2 gap-5'>
-						<Input
-							name='name'
-							defaultValue={account?.data.name}
-							label='Nombre'
-							control={control}
-							rules={{
-								required: 'Campo requerido',
-							}}
-						/>
 
-						<AsyncComboBox
-							name='issueEntityId'
-							defaultItem={{
-								id: account?.data.issueEntityId,
-								name: desiredCurrencyCodeEntityObject?.issueEntity?.name,
-							}}
-							defaultValue={account?.data.issueEntityId}
-							control={control}
-							rules={{ required: 'Campo requerido' }}
-							label='Entidad'
-							setSelectedDataToParentTwo={setSelectedDataToParentTwo}
-							dataQuery={{ url: '/entity/all' }}
-							normalizeData={{ id: 'id', name: 'name' }}
-						></AsyncComboBox>
-						<AsyncComboBox
-							name='currencyId'
-							defaultItem={{
-								id: account?.data.currencyId,
-								name: desiredCurrencyCodeEntityObject?.currency?.code,
-							}}
-							defaultValue={account?.data.currencyId}
-							control={control}
-							rules={{ required: 'Campo requerido' }}
-							label='Moneda'
-							dataQuery={{ url: '/currency/all' }}
-							normalizeData={{ id: 'id', name: 'code' }}
-							setSelectedDataToParent={setSelectedDataToParent}
-							selectedDataToParent={selectedDataToParent}
-						></AsyncComboBox>
-					</div>
+					<Input
+						name='name'
+						defaultValue={account?.name}
+						label='Nombre'
+						control={control}
+						rules={{
+							required: 'Campo requerido',
+						}}
+					/>
+
+					<AsyncComboBox
+						name='issueEntityId'
+						defaultItem={{
+							id: account?.issueEntityId,
+							name: desiredCurrencyCodeEntityObject?.issueEntity?.name,
+						}}
+						defaultValue={account?.issueEntityId}
+						control={control}
+						rules={{ required: 'Campo requerido' }}
+						label='Entidad'
+						dataQuery={{ url: '/entity/all' }}
+						normalizeData={{ id: 'id', name: 'name' }}
+					></AsyncComboBox>
+					<AsyncComboBox
+						name='currencyId'
+						defaultItem={{
+							id: account?.currencyId,
+							name: desiredCurrencyCodeEntityObject?.currency?.code,
+						}}
+						defaultValue={account?.currencyId}
+						control={control}
+						rules={{ required: 'Campo requerido' }}
+						label='Moneda'
+						dataQuery={{ url: '/currency/all' }}
+						normalizeData={{ id: 'id', name: 'code' }}
+					></AsyncComboBox>
+
 					<div className='flex py-5 justify-around gap-5'>
 						<Toggle
 							name='isPrivate'
-							defaultValue={account?.data.isPrivate}
+							defaultValue={account?.isPrivate}
 							title='Cuenta privada'
 							control={control}
 						></Toggle>
 						<Toggle
 							name='isActive'
 							title='Cuenta activa'
-							defaultValue={account?.data.isActive}
-							control={control}
-						></Toggle>
-						<Toggle
-							name='isBlocked'
-							defaultValue={account?.data.isBlocked}
-							title='Cuenta Bloqueada'
+							defaultValue={account?.isActive}
 							control={control}
 						></Toggle>
 					</div>
 					<TextArea
-						defaultValue={account?.data.address}
-						name='address'
-						control={control}
-						label='Dirección'
-					></TextArea>
-					<TextArea
-						defaultValue={account?.data.description}
+						defaultValue={account?.description}
 						name='description'
 						control={control}
 						label='Descripción'
@@ -175,9 +156,9 @@ const DetailAccountEditComponent = ({
 			{delAction && (
 				<Modal state={delAction} close={setDelAction}>
 					<AlertContainer
-						onAction={() => deleteAccount(account?.data.id, closeModal)}
+						onAction={() => deleteAccount(id, navigate('/accounts'))}
 						onCancel={setDelAction}
-						title={`Eliminar ${account?.data.name}`}
+						title={`Eliminar ${account?.name}`}
 						text='¿Seguro que desea eliminar este usuario del sistema?'
 						loading={isFetching}
 					/>
