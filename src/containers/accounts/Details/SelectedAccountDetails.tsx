@@ -32,7 +32,7 @@ const SelectedAccountDetails = ({
 						Dirección: `${account?.address}`,
 						Código: `${account?.code ?? '-'}`,
 						Moneda: account?.currency ?? '-',
-						Propietario: account?.owner.fullName,
+						Propietario: account?.owner?.fullName,
 
 						Entidad: account?.issueEntity.name,
 
