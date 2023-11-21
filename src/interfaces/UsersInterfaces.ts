@@ -15,6 +15,7 @@ export interface Item {
     account: null;
     issueEntity: IssueEntity | null;
     roles: Role[];
+    email: String
 }
 
 export type Items = Item[];

@@ -75,8 +75,8 @@ const NewUserModalVariantOne = ({
 						name='entity'
 						normalizeData={{ id: 'id', name: 'name' }}
 						control={control}
-						label='entidad'
-						dataQuery={{ url: '/user' }}
+						label='Entidad'
+						dataQuery={{ url: '/entity' }}
 					/>
 
 					<MultiSelect

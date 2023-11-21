@@ -29,6 +29,7 @@ import { Item } from '../../interfaces/UsersInterfaces';
 import NewUserModal from './NewUser/NewUserModalVariantOne';
 import NewUserModalVariantOne from './NewUser/NewUserModalVariantOne';
 import NewUserModalVariantTwo from './NewUser/NewUserModalVariantTwo';
+import EditUserModal from './editUseWizzard/EditUserModal';
 
 const exists = true;
 
@@ -70,7 +71,7 @@ const Users = () => {
 			payload: {
 				Nombre: item?.fullName,
 				Entidad: item?.issueEntity?.name ?? '-',
-				'Correo Electrónico': item.account ?? '-',
+				'Correo Electrónico': item.email ?? '-',
 				Roles: item.roles[0].name,
 			},
 		});
@@ -148,6 +149,19 @@ const Users = () => {
 				}
 			/>
 
+			{editUserModal.state && (
+				<Modal state={editUserModal.state} close={setEditUserModal}>
+					<h3 className='p-4 text-xl md:text-2xl'>Editar usuario</h3>
+					<EditUserModal
+						close={closeAddUser}
+						isLoading={isLoading}
+						editUser={editUser}
+						getUser={getUser}
+						id={editUserModal.id}
+						user={user}
+					/>
+				</Modal>
+			)}
 			{addUsermodal && (
 				<Modal state={addUsermodal} close={setAddUsermodal}>
 					<div className='flex flex-col gap-4'>

@@ -100,10 +100,10 @@ export default function AsyncMultiSelect(
 	}, [dependendValue, query]);
 
 	//API query --------------------------------------------------------------------------
-	const apiCall = async (params: BasicType) => {
+	const apiCall = async () => {
 		setLoading(true);
 		await apiQuery
-			.get(`${dataQuery.url}${generateUrlParams(params)}`)
+			.get(`${dataQuery.url}${generateUrlParams()}`)
 			.then((resp) => {
 				const items: SelectInterface[] = resp.data.items.map(
 					(elem: Record<string, string | number | boolean | null>) => {
@@ -121,6 +121,8 @@ export default function AsyncMultiSelect(
 						}
 					},
 				);
+				console.log(resp.data.items);
+				console.log(items);
 				setData(nullOpt ? [nullOpt, ...items] : items);
 				callback && callback(resp.data.items);
 			})
@@ -134,17 +136,10 @@ export default function AsyncMultiSelect(
 			setSelectedData(elemDefault);
 		} else if (defaultItem && !selectedData) {
 			setSelectedData(defaultItem);
-			if (setSelectedDataToParent) setSelectedDataToParent(defaultItem);
-			if (setSelectedDataToParentTwo) setSelectedDataToParentTwo(defaultItem);
+			//if (setSelectedDataToParent) setSelectedDataToParent(defaultItem);
+			//if (setSelectedDataToParentTwo) setSelectedDataToParentTwo(defaultItem);
 		}
-		if (Object.values(allParams).length !== 0 && !disabled) {
-			apiCall(allParams);
-		}
-		if (byDefault) {
-			const values = data.filter((item) => byDefault.includes(item.id!));
-			setSelected(values);
-			field.onChange(values.map((item) => item.id));
-		}
+		apiCall();
 	}, []);
 
 	//Debounce for filter -----------------------------------------------------------------------------

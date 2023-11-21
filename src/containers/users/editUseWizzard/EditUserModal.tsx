@@ -14,17 +14,24 @@ import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 import Button from '../../../components/misc/Button';
 import MultiSelect from '../../../components/forms/Multiselect';
 import AsyncMultiSelect from '../../../components/forms/AsyncMultiselect';
+import { Item } from '../../../interfaces/UsersInterfaces';
 
 interface propsDestructured {
 	close: Function;
-	addUser: Function;
+	editUser: Function;
 	isLoading: boolean;
+	id: number | null;
+	getUser: Function;
+	user: any;
 }
 
-const NewUserModalVariantTwo = ({
-	addUser,
+const EditUserModal = ({
+	editUser,
 	close,
+	id,
+	getUser,
 	isLoading,
+	user,
 }: propsDestructured) => {
 	const { control, handleSubmit } = useForm();
 
@@ -36,9 +43,12 @@ const NewUserModalVariantTwo = ({
 		});
 		console.log(sendData);
 		try {
-			addUser(deleteUndefinedAttr(sendData), close).then(() => close());
+			editUser(deleteUndefinedAttr(sendData), close).then(() => close());
 		} catch (error) {}
 	};
+	useEffect(() => {
+		getUser(id);
+	}, []);
 
 	return (
 		<main>
@@ -48,6 +58,8 @@ const NewUserModalVariantTwo = ({
 					onSubmit={handleSubmit(onSubmit)}
 				>
 					<AsyncComboBox
+						defaultItem={{ id: user?.id, name: user?.fullName }}
+						defaultValue={{ name: user?.fullName }}
 						name='name'
 						control={control}
 						rules={{ required: 'Campo requerido' }}
@@ -71,13 +83,15 @@ const NewUserModalVariantTwo = ({
 							{ id: 3, name: 'Creator' },
 						]}
 						control={control}
+						defaultValue={user.roles.map((stage: any) => stage?.name)}
+						byDefault={user.roles.map((stage: any) => stage?.name)}
 						label='Roles'
 						name='role'
 					/>
 
 					<div className='flex self-end'>
 						<Button
-							name='Insertar'
+							name='Actualizar'
 							color='slate-600'
 							type='submit'
 							loading={isLoading}
@@ -89,4 +103,4 @@ const NewUserModalVariantTwo = ({
 	);
 };
 
-export default NewUserModalVariantTwo;
+export default EditUserModal;
