@@ -44,10 +44,8 @@ const Users = () => {
 		getUser,
 		editUser,
 		deleteUser,
-		setSelectedDataToParent,
-		setSelectedDataToParentTwo,
-		selectedDataToParent,
-		addUser,
+		registerUser,
+		addFromTecopos,
 	} = useServerUsers();
 
 	const [filter, setFilter] = useState<
@@ -188,7 +186,7 @@ const Users = () => {
 							<NewUserModalVariantOne
 								close={closeAddUser}
 								isLoading={isLoading}
-								addUser={addUser}
+								registerUser={registerUser}
 							/>
 						)}
 					</div>
@@ -196,7 +194,7 @@ const Users = () => {
 						<NewUserModalVariantTwo
 							close={closeAddUser}
 							isLoading={isLoading}
-							addUser={addUser}
+							addFromTecopos={addFromTecopos}
 						/>
 					)}
 				</Modal>
@@ -206,3 +204,4 @@ const Users = () => {
 };
 
 export default Users;
+``;

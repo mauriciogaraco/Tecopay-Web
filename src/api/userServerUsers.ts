@@ -48,18 +48,38 @@ const useServerUsers = () => {
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
-  const addUser = async (
+  const registerUser = async (
     data: any,
     close: Function
   ) => {
     setIsFetching(true);
     setIsLoading(true)
     await query
-    .post("/user", data)
+    .post("/user/register", data)
       .then((resp) => {   
+        
    setAllUsers([...allUsers, resp.data])
         
-        toast.success("Ticket agregado satisfactoriamente");
+        toast.success("Usuario registrado satisfactoriamente");
+      }).then(()=>close())
+      .catch((e) => { manageErrors(e); });
+    setIsFetching(false);
+    setIsLoading(false)
+  };
+
+  const addFromTecopos = async (
+    data: any,
+    close: Function
+  ) => {
+    setIsFetching(true);
+    setIsLoading(true)
+    await query
+    .post("/user/add_from_identity", data)
+      .then((resp) => {   
+        
+   setAllUsers([...allUsers, resp.data])
+        
+        toast.success("Usuario registrado satisfactoriamente");
       }).then(()=>close())
       .catch((e) => { manageErrors(e); });
     setIsFetching(false);
@@ -127,16 +147,14 @@ const useServerUsers = () => {
     allUsers,
     user,
     getAllUsers,
-    addUser,
+    registerUser,
     getUser,
     editUser,
     deleteUser,
     setAllUsers,
     manageErrors,
     modalWaitingError,
-    setSelectedDataToParent,
-    selectedDataToParent,
-    setSelectedDataToParentTwo
+    addFromTecopos,
 
   };
 };

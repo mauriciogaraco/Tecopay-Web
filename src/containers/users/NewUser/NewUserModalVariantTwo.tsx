@@ -17,12 +17,12 @@ import AsyncMultiSelect from '../../../components/forms/AsyncMultiselect';
 
 interface propsDestructured {
 	close: Function;
-	addUser: Function;
+	addFromTecopos: Function;
 	isLoading: boolean;
 }
 
 const NewUserModalVariantTwo = ({
-	addUser,
+	addFromTecopos,
 	close,
 	isLoading,
 }: propsDestructured) => {
@@ -31,12 +31,9 @@ const NewUserModalVariantTwo = ({
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
-		const sendData = Object.assign(data, {
-			ownerId: 1,
-		});
-		console.log(sendData);
+		console.log(data);
 		try {
-			addUser(deleteUndefinedAttr(sendData), close).then(() => close());
+			addFromTecopos(deleteUndefinedAttr(data), close).then(() => close());
 		} catch (error) {}
 	};
 
@@ -66,9 +63,13 @@ const NewUserModalVariantTwo = ({
 
 					<MultiSelect
 						data={[
-							{ id: 1, name: 'Admin' },
-							{ id: 2, name: 'Cliente' },
-							{ id: 3, name: 'Creator' },
+							{ id: 1, name: 'Superadministrador' },
+							{ id: 2, name: 'Administrador' },
+							{ id: 3, name: 'Cliente' },
+							{ id: 4, name: 'Encargado de entidad' },
+							{ id: 5, name: 'Supervisor' },
+							{ id: 6, name: 'Operador de tarjetas' },
+							{ id: 7, name: 'Gestor de cuentas' },
 						]}
 						control={control}
 						label='Roles'
