@@ -55,6 +55,10 @@ const AccountDetails = () => {
 		setEditModal(!editModal);
 	};
 
+	const close = () => {
+		setEditModal(false);
+	};
+
 	const stockTabs = [
 		{
 			name: 'Detalles',
@@ -88,7 +92,7 @@ const AccountDetails = () => {
 		},
 
 		{
-			name: account?.owner?.fullName,
+			name: account?.address,
 		},
 	];
 	//--------------------------------------------------------------------------------------
@@ -100,7 +104,7 @@ const AccountDetails = () => {
 					icon={<UserCircleIcon className='h-7 text-gray-500' />}
 					paths={paths}
 				/>
-				<div className='absolute right-9 mt-1 h-7 px-2'>
+				<div className='absolute right-[45px] mt-[6px] h-7 px-2'>
 					<Button
 						name='Editar'
 						icon={<PencilSquareIcon className=' text-white w-5' />}

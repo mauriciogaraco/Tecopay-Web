@@ -99,9 +99,7 @@ const Accounts = () => {
 		},
 		placeholder: 'Buscar ticket',
 	};
-	const close = () => {
-		setEditTicketModal({ state: false, id: null });
-	};
+
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
