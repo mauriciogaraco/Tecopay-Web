@@ -20,7 +20,7 @@ const useServerCards = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
-  const [allCards, setAllCards] = useState<any>([]);
+  const [allCards, setAllCards] = useState<any>();
   const [card, setCard] = useState<AccountData | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
   const [modalWaitingError, setModalWaitingError] = useState<string | null>(
@@ -37,16 +37,17 @@ const useServerCards = () => {
   const getAllCards = async (filter: BasicType) => {
     setIsLoading(true);
     await query
-      .get(`/card/all${generateUrlParams(filter)}`)
+      .get(`/card${generateUrlParams(filter)}`)
       .then((resp) => {
         setPaginate({
+          
           totalItems: resp.data.totalItems,
           totalPages: resp.data.totalPages,
           currentPage: resp.data.currentPage,
         });
-        console.log(resp.data)
         setAllCards(resp.data.items)
-        console.log(resp.data.items)
+
+
 
 
       })
@@ -60,7 +61,7 @@ const useServerCards = () => {
     setIsFetching(true);
     setIsLoading(true)
     await query
-    .post("/card/create", data)
+    .post("/card", data)
       .then((resp) => {
         
         console.log(resp.data.data)
@@ -82,7 +83,7 @@ const useServerCards = () => {
   ) => {
     setIsFetching(true);
     await query
-      .put(`/card/update/${id}`, data)
+      .put(`/card/${id}`, data)
       .then((resp) => {
         console.log(selectedDataToParent)
         const newCards:any = [...allCards];
@@ -101,7 +102,7 @@ const useServerCards = () => {
   const getCard = async (id: any) => {
     setIsLoading(true);
     await query
-      .get(`/card/findById/${id}`)
+      .get(`/card/${id}`)
       .then((resp) => {
         setCard(resp.data);
 
@@ -114,7 +115,7 @@ const useServerCards = () => {
   const deleteCard = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
-      .deleteAPI(`/card/delete/${id}`, {})
+      .deleteAPI(`/card/${id}`, {})
       .then(() => {
         toast.success("Tarjeta Eliminada con éxito");
         const newCard = allCards.filter((item:any) => item.id !== id);

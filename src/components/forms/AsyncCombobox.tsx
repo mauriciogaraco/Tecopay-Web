@@ -149,12 +149,10 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 	const onKeyUp = (e: BaseSyntheticEvent) => {
 		const time = Number(
 			setTimeout(() => {
-				if (e.target.value.length > 2) {
-					if (e.target.value !== '') {
-						setQuery(e.target.value);
-					} else {
-						setQuery('');
-					}
+				if (e.target.value !== '') {
+					setQuery(e.target.value);
+				} else {
+					setQuery('');
 				}
 			}, 800),
 		);
@@ -225,12 +223,13 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 					{data.length > 0 && (
 						<Combobox.Options className='absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm scrollbar-thin scrollbar-thumb-gray-400'>
 							{data
-								.filter((person) =>
-									person.name.toLowerCase().includes(query.toLowerCase()),
+								.filter(
+									(person) =>
+										person?.name.toLowerCase().includes(query.toLowerCase()),
 								)
 								.map((person) => (
 									<Combobox.Option
-										key={person.id}
+										key={person?.id}
 										value={person}
 										disabled={
 											normalizeData?.disabled?.includes(person?.id ?? '') ??
@@ -255,7 +254,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 														`${selected ? 'font-semibold' : ''}`,
 													)}
 												>
-													{person.name}
+													{person?.name}
 												</span>
 
 												{selected && (

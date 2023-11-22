@@ -17,8 +17,10 @@ import useServerAccounts from '../../../api/userServerAccounts';
 import Button from '../../../components/misc/Button';
 import Modal from '../../../components/modals/GenericModal';
 import EditAccountContainer from '../editAccountWizzard/EditAccountContainer';
+import AssociatedCards from './AssociatedCards/AssociatedCards';
+import useServerCards from '../../../api/userServerCards';
 
-const AssociatedCards = () => {
+const AccountDetails = () => {
 	const { pathname } = useLocation();
 	const navigate = useNavigate();
 	const {
@@ -32,6 +34,8 @@ const AssociatedCards = () => {
 		deleteAccount,
 		getAllAccounts,
 	} = useServerAccounts();
+
+	const { getAllCards, paginate, allCards } = useServerCards();
 	//TabNav ------------------------------------------------------------
 
 	const [current, setCurrent] = useState<string>('detalles');
@@ -44,6 +48,7 @@ const AssociatedCards = () => {
 
 	useEffect(() => {
 		getAccount(id);
+		getAllCards({ accountId: id });
 	}, []);
 
 	const showEditModal = () => {
@@ -83,7 +88,7 @@ const AssociatedCards = () => {
 		},
 
 		{
-			name: 'Osvaldo',
+			name: account?.owner?.fullName,
 		},
 	];
 	//--------------------------------------------------------------------------------------
@@ -117,13 +122,14 @@ const AssociatedCards = () => {
 				<div className='sm:col-span-8 pl-3 pt-1'>
 					{current === 'detalles' && (
 						<SelectedAccountDetails
-							getAccount={getAccount}
 							isLoading={isLoading}
 							id={id}
 							account={account}
 						/>
 					)}
-					{/*current === 'opperations' && < />*/}
+					{current === 'cards' && (
+						<AssociatedCards paginate={paginate} allCards={allCards} />
+					)}
 				</div>
 			</div>
 			{editModal && (
@@ -145,4 +151,4 @@ const AssociatedCards = () => {
 	);
 };
 
-export default AssociatedCards;
+export default AccountDetails;

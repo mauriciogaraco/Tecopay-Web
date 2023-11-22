@@ -58,9 +58,6 @@ export default function AsyncMultiSelect(
 		dependendValue,
 		callback,
 		nullOpt,
-		setSelectedDataToParent,
-		selectedDataToParent,
-		setSelectedDataToParentTwo,
 	} = props;
 	const { field, fieldState } = useController(props);
 	const { label, disabled, byDefault } = props;

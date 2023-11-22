@@ -6,14 +6,13 @@ import Loading from '../../../components/misc/Loading';
 
 interface PropsInterface {
 	id: number | string | null;
-	getAccount: Function;
 	isLoading: Boolean;
 	account: any;
 }
 
 const SelectedAccountDetails = ({
 	id,
-	getAccount,
+
 	isLoading,
 	account,
 }: PropsInterface) => {
@@ -32,7 +31,7 @@ const SelectedAccountDetails = ({
 						Dirección: `${account?.address}`,
 						Código: `${account?.code ?? '-'}`,
 						Moneda: account?.currency ?? '-',
-						Propietario: account?.owner.fullName,
+						Propietario: account?.owner?.fullName,
 
 						Entidad: account?.issueEntity.name,
 

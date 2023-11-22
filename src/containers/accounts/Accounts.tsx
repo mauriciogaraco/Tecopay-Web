@@ -25,6 +25,7 @@ import StateSpanForTable from '../../components/misc/StateSpanForTable';
 import { saveAccountId } from '../../store/slices/accountSlice';
 import { useNavigate } from 'react-router-dom';
 import NewAccountModal from './NewAccount/NewAccountModal';
+import useServerCards from '../../api/userServerCards';
 
 const Accounts = () => {
 	const {
