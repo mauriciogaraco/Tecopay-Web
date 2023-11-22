@@ -149,12 +149,10 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 	const onKeyUp = (e: BaseSyntheticEvent) => {
 		const time = Number(
 			setTimeout(() => {
-				if (e.target.value.length > 2) {
-					if (e.target.value !== '') {
-						setQuery(e.target.value);
-					} else {
-						setQuery('');
-					}
+				if (e.target.value !== '') {
+					setQuery(e.target.value);
+				} else {
+					setQuery('');
 				}
 			}, 800),
 		);

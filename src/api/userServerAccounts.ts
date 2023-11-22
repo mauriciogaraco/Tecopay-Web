@@ -21,7 +21,7 @@ const useServerAccounts = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
   const [allAccounts, setAllAccounts] = useState<any[]>([]);
-  const [account, setAccount] = useState<AccountData | null>(null);
+  const [account, setAccount] = useState<any | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
   const [modalWaitingError, setModalWaitingError] = useState<string | null>(
     null
@@ -50,6 +50,7 @@ const useServerAccounts = () => {
 
       })
       .catch((error) => { manageErrors(error); });
+      console.log(allAccounts)
     setIsLoading(false);
   };
   const addAccount = async (

@@ -6,14 +6,13 @@ import Loading from '../../../components/misc/Loading';
 
 interface PropsInterface {
 	id: number | string | null;
-	getAccount: Function;
 	isLoading: Boolean;
 	account: any;
 }
 
 const SelectedAccountDetails = ({
 	id,
-	getAccount,
+
 	isLoading,
 	account,
 }: PropsInterface) => {
