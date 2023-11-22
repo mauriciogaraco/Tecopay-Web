@@ -1,8 +1,7 @@
 import { PlusIcon, UsersIcon } from '@heroicons/react/24/outline';
 
 import GenericTable, {
-	type DataTableInterface,
-	type FilterOpts,
+	DataTableInterface,
 } from '../../components/misc/GenericTable';
 import useServerUsers from '../../api/userServerUsers';
 
@@ -11,22 +10,10 @@ import Modal from '../../components/modals/GenericModal';
 import Breadcrumb, {
 	type PathInterface,
 } from '../../components/navigation/Breadcrumb';
-import {
-	BasicType,
-	type SelectInterface,
-} from '../../interfaces/InterfacesLocal';
-
 import { useEffect, useState } from 'react';
-//import NewUserModal from './NewUser/NewUserModal';
-import { data } from '../../utils/TemporaryArrayData';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-//import EditUserContainer from './editUserWizzard/EditUserContainer';
-import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
-import StateSpanForTable from '../../components/misc/StateSpanForTable';
 
 import { useNavigate } from 'react-router-dom';
 import { Item } from '../../interfaces/UsersInterfaces';
-import NewUserModal from './NewUser/NewUserModalVariantOne';
 import NewUserModalVariantOne from './NewUser/NewUserModalVariantOne';
 import NewUserModalVariantTwo from './NewUser/NewUserModalVariantTwo';
 import EditUserModal from './editUseWizzard/EditUserModal';
@@ -37,7 +24,6 @@ const Users = () => {
 	const {
 		paginate,
 		isLoading,
-		isFetching,
 		allUsers,
 		user,
 		getAllUsers,
@@ -204,4 +190,3 @@ const Users = () => {
 };
 
 export default Users;
-``;
