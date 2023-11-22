@@ -38,12 +38,8 @@ const EditUserModal = ({
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
-		const sendData = Object.assign(data, {
-			ownerId: 1,
-		});
-		console.log(sendData);
 		try {
-			editUser(deleteUndefinedAttr(sendData), close).then(() => close());
+			editUser(deleteUndefinedAttr(data), close).then(() => close());
 		} catch (error) {}
 	};
 	useEffect(() => {
@@ -78,15 +74,17 @@ const EditUserModal = ({
 
 					<MultiSelect
 						data={[
-							{ id: 1, name: 'Admin' },
-							{ id: 2, name: 'Cliente' },
-							{ id: 3, name: 'Creator' },
+							{ id: 1, name: 'Superadministrador' },
+							{ id: 2, name: 'Administrador' },
+							{ id: 3, name: 'Cliente' },
+							{ id: 4, name: 'Encargado de entidad' },
+							{ id: 5, name: 'Supervisor' },
+							{ id: 6, name: 'Operador de tarjetas' },
+							{ id: 7, name: 'Gestor de cuentas' },
 						]}
 						control={control}
-						defaultValue={user.roles.map((stage: any) => stage?.name)}
-						byDefault={user.roles.map((stage: any) => stage?.name)}
 						label='Roles'
-						name='role'
+						name='rolesId'
 					/>
 
 					<div className='flex self-end'>

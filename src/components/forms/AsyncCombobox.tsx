@@ -200,7 +200,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 						} border relative w-full rounded-md bg-white py-2 pl-3 pr-10 text-left shadow-sm sm:text-sm`}
 						onKeyDownCapture={onKeyDown}
 						onKeyUp={onKeyUp}
-						displayValue={(person: SelectInterface) => person?.name}
+						displayValue={(person: SelectInterface) => person?.name ?? ''}
 						onChange={(e) => null}
 						placeholder='Criterio de búsqueda'
 					/>
@@ -225,6 +225,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 							{data
 								.filter(
 									(person) =>
+										person.name !== null &&
 										person?.name.toLowerCase().includes(query.toLowerCase()),
 								)
 								.map((person) => (
