@@ -51,13 +51,7 @@ const EditDetailCardComponent = ({
 	const [delAction, setDelAction] = useState(false);
 
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
-		const date = Card?.data.expiratedAt;
-		const WholeData = Object.assign(data, {
-			holderId: 251,
-			expiratedAt: date,
-			code: Card?.data.code,
-		});
-		editCard(Card?.data.id, deleteUndefinedAttr(WholeData), reset()).then(() =>
+		editCard(Card?.data.id, deleteUndefinedAttr(data), reset()).then(() =>
 			closeModal(),
 		);
 	};
@@ -69,7 +63,7 @@ const EditDetailCardComponent = ({
 	return (
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<div className='h-96 overflow-auto scrollbar-thin scrollbar-thumb-slate-100 pr-5 pl-2'>
+				<div className='h-96 overflow-auto w-full scrollbar-thin scrollbar-thumb-slate-100 pr-5 pl-2'>
 					<div className='flex justify-end'>
 						<div className='bg-red-200 hover:bg-red-300 transition-all duration-200 ease-in-out  rounded-lg'>
 							<Button
@@ -83,59 +77,40 @@ const EditDetailCardComponent = ({
 							/>
 						</div>
 					</div>
-					<div className='grid grid-cols-2 gap-5'>
-						<Input
-							name='securityPin'
-							label='Pin'
-							defaultValue={Card?.data.securityPin}
-							placeholder='Telefono'
-							control={control}
-							rules={{ required: 'Campo requerido' }}
-						></Input>
-						<Input
-							name='minAmountWithoutConfirmation'
-							label='Cantidad sin confirmar'
-							defaultValue={Card?.data.minAmountWithoutConfirmation}
-							placeholder='Telefono'
-							control={control}
-							rules={{ required: 'Campo requerido' }}
-						></Input>
-						<AsyncComboBox
-							name='currencyId'
-							defaultItem={{
-								id: Card?.data.currencyId,
-								name: desiredCurrencyCodeEntityObject?.currency?.code,
-							}}
-							defaultValue={Card?.data.currencyId}
-							control={control}
-							rules={{ required: 'Campo requerido' }}
-							label='Moneda'
-							dataQuery={{ url: '/currency/all' }}
-							normalizeData={{ id: 'id', name: 'code' }}
-							setSelectedDataToParent={setSelectedDataToParent}
-						></AsyncComboBox>
-					</div>
-					<div className='flex py-5 justify-around gap-5'></div>
-
-					<TextArea
-						defaultValue={Card?.data.address}
-						name='address'
+					<Input
+						name='securityPin'
+						label='Nombre'
+						defaultValue={Card?.data.securityPin}
+						placeholder='Nombre de la tarjeta'
 						control={control}
-						label='Dirección'
-					></TextArea>
+						rules={{ required: 'Campo requerido' }}
+					></Input>
+
+					<div className='flex py-2 justify-around gap-5'></div>
 					<TextArea
 						defaultValue={Card?.data.description}
 						name='description'
 						control={control}
 						label='description'
 					></TextArea>
-					<Toggle
-						title='Tarjeta bloqueada'
-						control={control}
-						defaultValue={Card?.data.isBlocked}
-						name='isBlocked'
-					></Toggle>
-					<div className='flex justify-end mt-5'>
+					<div className=' w-full mt-5 justify-between flex'>
+						<Toggle
+							title='Tarjeta bloqueada'
+							control={control}
+							defaultValue={Card?.data.isBlocked}
+							name='isBlocked'
+						></Toggle>
+
+						<Button
+							name='Resetear PIN'
+							color='slate-600'
+							type='submit'
+							loading={isFetching}
+							disabled={isFetching}
+						/>
+					</div>
+
+					<div className='flex justify-end mt-16'>
 						<Button
 							name='Insertar'
 							color='slate-600'

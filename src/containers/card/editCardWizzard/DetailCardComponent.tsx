@@ -1,6 +1,8 @@
 import { title } from 'process';
 import GenericList from '../../../components/misc/GenericList';
 import { formatDate } from '../../../utils/helpersAdmin';
+import { useEffect } from 'react';
+import Card from '../Card';
 
 interface EditInterface {
 	Card: any;
@@ -8,28 +10,24 @@ interface EditInterface {
 	id: number | null;
 }
 
-const DetailCardComponent = ({ Card, id, allCards }: EditInterface) => {
-	const desiredCurrencyCodeEntityObject: any = allCards.find(
-		(item: any) => item.id === id,
-	);
+const DetailCardComponent = ({ id, allCards }: EditInterface) => {
+	const desiredObject: any = allCards.find((item: any) => item.id === id);
 	return (
 		<>
 			<GenericList
 				header={{ title: `Detalles de tarjeta ${id}` }}
 				body={{
-					Nombre: desiredCurrencyCodeEntityObject?.holder?.fullName,
-					'Creada por': '>????????</',
-					'Fecha de emisión': formatDate(Card?.data.createdAt),
-					'Fecha de expiración': formatDate(
-						desiredCurrencyCodeEntityObject?.expiratedAt,
-					),
-					Propietario: '********',
-					Cuenta: '******',
-					Moneda: desiredCurrencyCodeEntityObject?.currency?.name,
+					'No. Tarjeta': desiredObject?.address ?? '-',
+					Nombre: desiredObject?.holderName ?? '-',
+					'Creada por': desiredObject?.issueEntity ?? '-',
+					'Fecha de emisión': 'No existe',
+					'Fecha de expiración': formatDate(desiredObject?.expiratedAt) ?? '-',
+					Propietario: 'No existe',
+					Cuenta: desiredObject.account.name ?? '-',
+					Moneda: desiredObject?.currency ?? '-',
 					'Monto mínimo sin confirmar':
-						desiredCurrencyCodeEntityObject?.minAmountWithoutConfirmation,
-					Descripción:
-						desiredCurrencyCodeEntityObject?.minAmountWithoutConfirmation,
+						desiredObject?.minAmountWithoutConfirmation ?? '-',
+					Descripción: desiredObject?.description ?? '-',
 				}}
 			></GenericList>
 		</>

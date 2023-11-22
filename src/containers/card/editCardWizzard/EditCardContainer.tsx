@@ -35,9 +35,6 @@ const EditCardContainer = ({
 	isLoading,
 	setSelectedDataToParent,
 }: UserWizzardInterface) => {
-	useEffect(() => {
-		id && getCard(id);
-	}, []);
 	const [editModal, setEditModal] = useState(false);
 	const [currentTab, setCurrentTab] = useState('details');
 
