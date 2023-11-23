@@ -45,7 +45,7 @@ const NewUserModalVariantOne = ({
 					onSubmit={handleSubmit(onSubmit)}
 				>
 					<Input
-						name='name'
+						name='fullName'
 						label='Nombre'
 						placeholder='Nombre del usuario'
 						control={control}

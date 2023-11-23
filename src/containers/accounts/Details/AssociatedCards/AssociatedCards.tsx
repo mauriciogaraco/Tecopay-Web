@@ -47,9 +47,9 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 					rowId: item.id,
 					payload: {
 						'No. Tarjeta': item.address,
-						Nombre: item?.holderName ?? '-',
-						Propietario: item.owner?.fullName,
-						Moneda: item.currency ?? '-',
+						Nombre: item?.account.name ?? '-',
+						Propietario: item?.holderName ?? '-',
+						Moneda: item.account.currency ?? '-',
 						'Fecha de Expiración': formatCalendar(item?.expiratedAt),
 						'': (
 							<span className='flex whitespace-nowrap gap-4'>

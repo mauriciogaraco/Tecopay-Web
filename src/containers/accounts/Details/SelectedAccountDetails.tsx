@@ -29,7 +29,7 @@ const SelectedAccountDetails = ({
 						'No. cuenta': `${account.address}`,
 
 						'Fecha de emisión': `${formatDate(account?.createdAt)}`,
-						'Creada por': `${account?.createdById ?? '-'}`,
+						'Creada por': `${account?.createdBy.fullName ?? '-'}`,
 
 						Código: `${account?.code ?? '-'}`,
 						Moneda: account?.currency ?? '-',

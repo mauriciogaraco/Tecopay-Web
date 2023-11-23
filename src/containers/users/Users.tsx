@@ -151,12 +151,13 @@ const Users = () => {
 				<Modal state={editUserModal.state} close={setEditUserModal}>
 					<h3 className='p-4 text-xl md:text-2xl'>Editar usuario</h3>
 					<EditUserModal
-						close={closeAddUser}
+						close={close}
 						isLoading={isLoading}
 						editUser={editUser}
 						getUser={getUser}
 						id={editUserModal.id}
 						user={user}
+						allUsers={allUsers}
 					/>
 				</Modal>
 			)}

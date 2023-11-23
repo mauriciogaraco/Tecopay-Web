@@ -34,7 +34,7 @@ const useServerCardsRequests = () => {
   const getAllCardsRequests = async (filter: BasicType) => {
     setIsLoading(true);
     await query
-      .get(`/card/request${generateUrlParams(filter)}`)
+      .get(`/cardRequest${generateUrlParams(filter)}`)
       .then((resp) => {
         setPaginate({
           totalItems: resp.data.totalItems,
@@ -57,7 +57,7 @@ const useServerCardsRequests = () => {
     setIsFetching(true);
     setIsLoading(true)
     await query
-    .post("/request/create", data)
+    .post("/cardRequest", data)
       .then((resp) => {
         
         console.log(resp.data.data)
@@ -79,7 +79,7 @@ const useServerCardsRequests = () => {
   ) => {
     setIsFetching(true);
     await query
-      .put(`/request/update/${id}`, data)
+      .patch(`/cardRequest/${id}`, data)
       .then((resp) => {
         console.log(selectedDataToParent)
         const newCardsRequests:any = [...allCardsRequests];
@@ -98,7 +98,7 @@ const useServerCardsRequests = () => {
   const getCardRequest = async (id: any) => {
     setIsLoading(true);
     await query
-      .get(`/request/findById/${id}`)
+      .get(`/cardRequest/${id}`)
       .then((resp) => {
         setCardRequest(resp.data);
         console.log(resp.data)
@@ -111,7 +111,7 @@ const useServerCardsRequests = () => {
   const deleteCardRequest = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
-      .deleteAPI(`/request/delete/${id}`, {})
+      .deleteAPI(`/cardRequest/${id}`, {})
       .then(() => {
         toast.success("Tarjeta Eliminada con éxito");
         const newCard = allCardsRequests.filter((item:any) => item.id !== id);

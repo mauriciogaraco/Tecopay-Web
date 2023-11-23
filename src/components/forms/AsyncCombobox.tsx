@@ -40,6 +40,7 @@ interface InputProps {
 	setSelectedDataToParent?: Function;
 	selectedDataToParent?: any;
 	setSelectedDataToParentTwo?: Function;
+	string?: boolean;
 }
 
 export default function AsyncComboBox(props: UseControllerProps & InputProps) {
@@ -57,6 +58,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 		nullOpt,
 		setSelectedDataToParent,
 		setSelectedDataToParentTwo,
+		string,
 	} = props;
 
 	//query management states ----------------------------------------------------------
@@ -167,7 +169,9 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 				value={selectedData}
 				onChange={(e: SelectInterface) => {
 					setSelectedData(e);
-					field.onChange(e.id);
+					{
+						string ? field.onChange(e.name) : field.onChange(e.id);
+					}
 					{
 						if (dataQuery.url !== '/entity/all')
 							setSelectedDataToParent && setSelectedDataToParent(e);

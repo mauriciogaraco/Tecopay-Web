@@ -4,7 +4,7 @@ import ComboBox from '../../../components/forms/Combobox';
 import TextArea from '../../../components/forms/TextArea';
 import { SelectInterface } from '../../../interfaces/LocalInterfaces';
 import { useAppSelector, useAppDispatch } from '../../../store/hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from '../../../components/misc/GenericModal';
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import Input from '../../../components/forms/Input';
@@ -14,7 +14,7 @@ import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 import Button from '../../../components/misc/Button';
 import MultiSelect from '../../../components/forms/Multiselect';
 import AsyncMultiSelect from '../../../components/forms/AsyncMultiselect';
-import { Item } from '../../../interfaces/UsersInterfaces';
+import { Item, Items } from '../../../interfaces/UsersInterfaces';
 
 interface propsDestructured {
 	close: Function;
@@ -23,6 +23,7 @@ interface propsDestructured {
 	id: number | null;
 	getUser: Function;
 	user: any;
+	allUsers: Items;
 }
 
 const EditUserModal = ({
@@ -32,6 +33,7 @@ const EditUserModal = ({
 	getUser,
 	isLoading,
 	user,
+	allUsers,
 }: propsDestructured) => {
 	const { control, handleSubmit } = useForm();
 
@@ -39,12 +41,13 @@ const EditUserModal = ({
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
 		try {
-			editUser(deleteUndefinedAttr(data), close).then(() => close());
-		} catch (error) {}
+			editUser(id, deleteUndefinedAttr(data), close).then(() => close());
+		} catch (error) {
+			console.log(error);
+		}
 	};
-	useEffect(() => {
-		getUser(id);
-	}, []);
+
+	const userData: any = allUsers.find((item: Item) => item.id === id);
 
 	return (
 		<main>
@@ -54,18 +57,19 @@ const EditUserModal = ({
 					onSubmit={handleSubmit(onSubmit)}
 				>
 					<AsyncComboBox
-						defaultItem={{ id: user?.id, name: user?.fullName }}
-						defaultValue={{ name: user?.fullName }}
-						name='name'
+						defaultItem={{ id: userData?.id, name: userData?.fullName }}
+						defaultValue={{ name: userData?.fullName }}
+						name='fullName'
 						control={control}
 						rules={{ required: 'Campo requerido' }}
 						label='Nombre'
 						dataQuery={{ url: '/user' }}
 						normalizeData={{ id: 'id', name: 'fullName' }}
+						string={true}
 					></AsyncComboBox>
 
 					<AsyncMultiSelect
-						name='entity'
+						name='issueEntityId'
 						normalizeData={{ id: 'id', name: 'address' }}
 						control={control}
 						label='Entidad'

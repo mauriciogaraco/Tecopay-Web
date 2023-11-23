@@ -30,6 +30,7 @@ import useServerCardsRequests from '../../api/userServerCardsRequests';
 import CreatedStateForTable from '../../components/misc/CreatedStateForTable';
 import NewCardRequestModal from './newCardRequest/NewCardRequestModal';
 import EditCardRequestContainer from './editCardRequestWizzard/EditCardRequestContainer';
+import StatusForCardRequest from '../../components/misc/StatusForCardRequest';
 
 const CardRequests = () => {
 	const [query, setQuery] = useState<string>('');
@@ -60,23 +61,28 @@ const CardRequests = () => {
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
 
 	//Data for table ------------------------------------------------------------------------
-	const tableTitles = ['Tipo', 'Propietario', 'Estado'];
+	const tableTitles = [
+		'No. Solicitud',
+		'Tipo',
+
+		'Propietario',
+		'Moneda',
+		'Cuenta',
+		'Estado',
+	];
 	const tableData: DataTableInterface[] = [];
 
 	allCardsRequests?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
+				'No. Solicitud': item?.queryNumber ?? '-',
 				Tipo: item?.priority,
-				Propietario: item.user?.fullName,
+				Propietario: item?.holderName,
+				Moneda: 'No Existe',
+				Cuenta: item?.account ?? '-',
 
-				Estado: (
-					<CreatedStateForTable
-						greenState='CREADA'
-						redState='SIN CREAR'
-						currentState={item.status}
-					/>
-				),
+				Estado: <StatusForCardRequest currentState={item.status} />,
 			},
 		});
 	});
