@@ -68,13 +68,24 @@ const EditUserModal = ({
 						string={true}
 					></AsyncComboBox>
 
-					<AsyncMultiSelect
+					<AsyncComboBox
+						defaultItem={{ id: userData?.id, name: userData?.fullName }}
+						defaultValue={{ name: userData?.fullName }}
+						rules={{ required: 'Campo requerido' }}
+						string={true}
 						name='issueEntityId'
-						normalizeData={{ id: 'id', name: 'address' }}
+						normalizeData={{ id: 'id', name: 'name' }}
 						control={control}
 						label='Entidad'
 						dataQuery={{ url: '/entity' }}
-					/>
+					></AsyncComboBox>
+					{/*<AsyncMultiSelect
+						name='issueEntityId'
+						normalizeData={{ id: 'id', name: 'name' }}
+						control={control}
+						label='Entidad'
+						dataQuery={{ url: '/entity' }}
+	/>*/}
 
 					<MultiSelect
 						data={[
@@ -85,6 +96,9 @@ const EditUserModal = ({
 							{ id: 5, name: 'Supervisor' },
 							{ id: 6, name: 'Operador de tarjetas' },
 							{ id: 7, name: 'Gestor de cuentas' },
+						]}
+						defaultValue={[
+							{ id: userData?.roles.id, name: userData?.roles.name },
 						]}
 						control={control}
 						label='Roles'
