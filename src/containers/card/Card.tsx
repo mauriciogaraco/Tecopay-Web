@@ -73,10 +73,6 @@ const Card = () => {
 		});
 	});
 
-	const searching = {
-		action: (search: string) => setFilter({ ...filter, search }),
-		placeholder: 'Buscar ticket',
-	};
 	const close = () => setEditTicketModal({ state: false, id: null });
 	const actions = [
 		{
@@ -120,7 +116,6 @@ const Card = () => {
 				tableData={tableData}
 				tableTitles={tableTitles}
 				loading={isLoading}
-				searching={searching}
 				actions={actions}
 				rowAction={rowAction}
 				//filterComponent={{ availableFilters, filterAction }}

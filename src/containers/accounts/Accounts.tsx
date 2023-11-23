@@ -93,12 +93,6 @@ const Accounts = () => {
 
 	const navigate = useNavigate();
 
-	const searching = {
-		action: (search: string) => {
-			setFilter({ ...filter, search });
-		},
-		placeholder: 'Buscar ticket',
-	};
 
 	const actions = [
 		{
@@ -148,7 +142,6 @@ const Accounts = () => {
 				tableData={tableData}
 				tableTitles={tableTitles}
 				loading={isLoading}
-				searching={searching}
 				actions={actions}
 				rowAction={rowAction}
 				// filterComponent={{ availableFilters, filterAction }}
