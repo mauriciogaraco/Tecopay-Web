@@ -17,6 +17,7 @@ const useServerCardsRequests = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
   const [allCardsRequests, setAllCardsRequests] = useState<any>([]);
+  const [cardRequestRecords, setCardRequestRecords] = useState<any>([]);
   const [cardRequest, setCardRequest] = useState<AccountData | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
   const [modalWaitingError, setModalWaitingError] = useState<string | null>(
@@ -44,6 +45,18 @@ const useServerCardsRequests = () => {
         console.log(resp.data.items)
 
 
+      })
+      .catch((error) => { manageErrors(error); });
+    setIsLoading(false);
+  };
+
+  const GetRequestRecord = async (id:number,  filter: BasicType) => {
+    setIsLoading(true);
+    await query
+      .get(`/cardRequest/${id}/record${generateUrlParams(filter)}`)
+      .then((resp) => {
+        console.log(resp.data)
+        setCardRequestRecords(resp.data)
       })
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);
@@ -175,7 +188,9 @@ const useServerCardsRequests = () => {
     setAllCardsRequests,
     addBulkCardRequest,
     setSelectedDataToParent,
-    acceptRequest
+    acceptRequest,
+    GetRequestRecord,
+    cardRequestRecords
   };
 };
 export default useServerCardsRequests;

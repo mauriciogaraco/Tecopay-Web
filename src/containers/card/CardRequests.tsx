@@ -55,6 +55,8 @@ const CardRequests = () => {
 		allCardsRequests,
 		setAllCardsRequests,
 		setSelectedDataToParent,
+		GetRequestRecord,
+		cardRequestRecords,
 	} = useServerCardsRequests();
 
 	const [filter, setFilter] = useState<
@@ -91,7 +93,7 @@ const CardRequests = () => {
 		action: (search: string) => setFilter({ ...filter, search }),
 		placeholder: 'Buscar Solicitud',
 	};
-	const close = () => setEditTicketModal({ state: false, id: null });
+	const close = () => setEditCardRequestModal({ state: false, id: null });
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
@@ -99,10 +101,6 @@ const CardRequests = () => {
 			action: () => setAddTicketmodal(true),
 		},
 	];
-
-	const rowAction = (id: number) => {
-		setEditTicketModal({ state: true, id });
-	};
 
 	//Breadcrumb-----------------------------------------------------------------------------------
 	const paths: PathInterface[] = [
@@ -114,12 +112,17 @@ const CardRequests = () => {
 		},
 	];
 	//------------------------------------------------------------------------------------
-	const [nuevoTicketModal, setNuevoTicketModal] = useState(false);
+	const [nuevoCardRequestModal, setNuevoCardRequestModal] = useState(false);
 	const [contactModal, setContactModal] = useState(false);
-	const [editTicketModal, setEditTicketModal] = useState<{
+	const [editCardRequestModal, setEditCardRequestModal] = useState<{
 		state: boolean;
 		id: number | null;
 	}>({ state: false, id: null });
+
+	const rowAction = (id: number) => {
+		setEditCardRequestModal({ state: true, id });
+		GetRequestRecord(id, filter);
+	};
 
 	const closeAddAccount = () => setAddTicketmodal(false);
 
@@ -155,19 +158,20 @@ const CardRequests = () => {
 						setContactModal={setContactModal}
 						close={closeAddAccount}
 						contactModal={contactModal}
-						setNuevoTicketModal={setNuevoTicketModal}
-						nuevoTicketModal={nuevoTicketModal}
+						setNuevoCardRequestModal={setNuevoCardRequestModal}
+						nuevoCardRequestModal={nuevoCardRequestModal}
 						addBulkCardRequest={addBulkCardRequest}
 						isFetching={isFetching}
 						addSimpleCardRequest={addSimpleCardRequest}
 					/>
 				</Modal>
 			)}
-			{editTicketModal.state && (
-				<Modal state={editTicketModal.state} close={close} size='m'>
+			{editCardRequestModal.state && (
+				<Modal state={editCardRequestModal.state} close={close} size='m'>
 					<EditCardRequestContainer
+						cardRequestRecords={cardRequestRecords}
 						acceptRequest={acceptRequest}
-						id={editTicketModal.id}
+						id={editCardRequestModal.id}
 						editCardRequest={editCardRequest}
 						deleteCardRequest={deleteCardRequest}
 						isFetching={isFetching}

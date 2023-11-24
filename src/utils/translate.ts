@@ -174,6 +174,10 @@ export const translateOrderState = (status: string | null) => {
     case "CREATED":
       return "Creada";
 
+      case 'MODIFIED':
+        return 'Modificada'
+
+
       case "ACCEPTED":
         return "Aceptada";
         
@@ -222,6 +226,9 @@ export const translateOrderState = (status: string | null) => {
 
     case "DELIVERED":
       return "Entregada";
+
+    case 'DENIED':
+     return 'Denegada'
 
     default:
       return "";

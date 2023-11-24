@@ -102,8 +102,10 @@ const DetailCardRequestComponent = ({
 							name='status'
 							label='Estado'
 							data={[
-								{ id: 1, name: 'CREATED' },
+								{ id: 1, name: 'PRINTED' },
 								{ id: 2, name: 'IN_PROCESS' },
+								{ id: 3, name: 'DELIVERED' },
+								{ id: 4, name: 'DENIED' },
 							]}
 						></Select>
 					</div>

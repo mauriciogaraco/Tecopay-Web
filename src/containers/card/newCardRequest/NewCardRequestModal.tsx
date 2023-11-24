@@ -16,8 +16,8 @@ import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 interface propsDestructured {
 	setContactModal: (contactModal: boolean) => void;
 	contactModal: boolean;
-	setNuevoTicketModal: (contactModal: boolean) => void;
-	nuevoTicketModal: boolean;
+	setNuevoCardRequestModal: (contactModal: boolean) => void;
+	nuevoCardRequestModal: boolean;
 	close: Function;
 	addSimpleCardRequest: Function;
 	addBulkCardRequest: Function;
@@ -26,7 +26,9 @@ interface propsDestructured {
 
 const NewCardRequestModal = ({
 	setContactModal,
+	setNuevoCardRequestModal,
 	addSimpleCardRequest,
+	nuevoCardRequestModal,
 	close,
 	addBulkCardRequest,
 	isFetching,

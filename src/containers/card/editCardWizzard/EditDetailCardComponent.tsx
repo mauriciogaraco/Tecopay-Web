@@ -23,7 +23,6 @@ import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 import useServerCards from '../../../api/userServerCards';
 
 interface EditInterface {
-	Card: any;
 	editCard: Function;
 	deleteCard: Function;
 	closeModal: Function;
@@ -36,7 +35,7 @@ interface EditInterface {
 const EditDetailCardComponent = ({
 	editCard,
 	deleteCard,
-	Card,
+
 	closeModal,
 	isFetching,
 	id,
@@ -51,14 +50,12 @@ const EditDetailCardComponent = ({
 	const [delAction, setDelAction] = useState(false);
 
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
-		editCard(Card?.data.id, deleteUndefinedAttr(data), reset()).then(() =>
+		editCard(card?.id, deleteUndefinedAttr(data), reset()).then(() =>
 			closeModal(),
 		);
 	};
 
-	const desiredCurrencyCodeEntityObject: any = allCards.find(
-		(item: any) => item.id === id,
-	);
+	const card: any = allCards.find((item: any) => item.id === id);
 
 	return (
 		<>
@@ -80,7 +77,7 @@ const EditDetailCardComponent = ({
 					<Input
 						name='securityPin'
 						label='Nombre'
-						defaultValue={Card?.data.securityPin}
+						defaultValue={card?.securityPin}
 						placeholder='Nombre de la tarjeta'
 						control={control}
 						rules={{ required: 'Campo requerido' }}
@@ -88,7 +85,7 @@ const EditDetailCardComponent = ({
 
 					<div className='flex py-2 justify-around gap-5'></div>
 					<TextArea
-						defaultValue={Card?.data.description}
+						defaultValue={card?.description}
 						name='description'
 						control={control}
 						label='description'
@@ -97,7 +94,7 @@ const EditDetailCardComponent = ({
 						<Toggle
 							title='Tarjeta bloqueada'
 							control={control}
-							defaultValue={Card?.data.isBlocked}
+							defaultValue={card?.isBlocked}
 							name='isBlocked'
 						></Toggle>
 
@@ -125,9 +122,9 @@ const EditDetailCardComponent = ({
 			{delAction && (
 				<Modal state={delAction} close={setDelAction}>
 					<AlertContainer
-						onAction={() => deleteCard(Card?.data.id, closeModal)}
+						onAction={() => deleteCard(id, closeModal)}
 						onCancel={setDelAction}
-						title={`Eliminar ${Card?.data.name}`}
+						title={`Eliminar tarjeta ${id}`}
 						text='¿Seguro que desea eliminar este usuario del sistema?'
 						loading={isFetching}
 					/>

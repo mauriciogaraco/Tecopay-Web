@@ -67,7 +67,7 @@ const Card = () => {
 	// @ts-ignore
 	allCards?.map((item: any) => {
 		tableData.push({
-			rowId: item.id,
+			rowId: item?.id,
 			payload: {
 				'No. Cuenta': item?.address,
 				Nombre: item?.account.name ?? '-',

@@ -25,6 +25,7 @@ interface UserWizzardInterface {
 	isLoading: Boolean;
 	setSelectedDataToParent: any;
 	acceptRequest: Function;
+	cardRequestRecords: any;
 }
 
 const EditCardRequestContainer = ({
@@ -39,6 +40,7 @@ const EditCardRequestContainer = ({
 	isLoading,
 	setSelectedDataToParent,
 	acceptRequest,
+	cardRequestRecords,
 }: UserWizzardInterface) => {
 	const [editModal, setEditModal] = useState(false);
 	const [currentTab, setCurrentTab] = useState('details');
@@ -81,6 +83,7 @@ const EditCardRequestContainer = ({
 				/>
 			) : (
 				<EditDetailCardRequestComponent
+					cardRequestRecords={cardRequestRecords}
 					id={id}
 					editCardRequest={editCardRequest}
 					deleteCardRequest={deleteCardRequest}

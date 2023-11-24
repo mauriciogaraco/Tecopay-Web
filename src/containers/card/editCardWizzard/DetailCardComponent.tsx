@@ -2,10 +2,8 @@ import { title } from 'process';
 import GenericList from '../../../components/misc/GenericList';
 import { formatDate } from '../../../utils/helpersAdmin';
 import { useEffect } from 'react';
-import Card from '../Card';
 
 interface EditInterface {
-	Card: any;
 	allCards: any;
 	id: number | null;
 }
