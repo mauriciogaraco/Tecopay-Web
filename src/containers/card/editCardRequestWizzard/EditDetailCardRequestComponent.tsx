@@ -63,7 +63,7 @@ const EditDetailCardRequestComponent = ({
 						currentState={item.status}
 					/>
 				),
-				'Resgistrado Por': item.id,
+				'Resgistrado Por': item?.requestedBy?.fullName ?? '-',
 			},
 		});
 	});

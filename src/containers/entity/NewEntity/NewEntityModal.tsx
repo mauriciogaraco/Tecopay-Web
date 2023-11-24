@@ -64,13 +64,6 @@ const NewEntityModal = ({
 					></Input>
 
 					<div className='h-full'>
-						<TextArea
-							name='address'
-							rules={{ required: 'Campo requerido' }}
-							control={control}
-							label='Dirección'
-						></TextArea>
-
 						<Input
 							name='phone'
 							label='Telefono'
@@ -87,6 +80,29 @@ const NewEntityModal = ({
 							dataQuery={{ url: '/currency' }}
 							normalizeData={{ id: 'id', name: 'symbol' }}
 						></AsyncComboBox>
+						<AsyncComboBox
+							name='ownerId'
+							control={control}
+							rules={{ required: 'Campo requerido' }}
+							label='Dueño'
+							dataQuery={{ url: '/user' }}
+							normalizeData={{ id: 'id', name: 'fullName' }}
+						></AsyncComboBox>
+						<AsyncComboBox
+							name='businessId'
+							control={control}
+							rules={{ required: 'Campo requerido' }}
+							label='Negocio'
+							dataQuery={{ url: '/business' }}
+							normalizeData={{ id: 'id', name: 'name' }}
+						></AsyncComboBox>
+
+						<TextArea
+							name='address'
+							rules={{ required: 'Campo requerido' }}
+							control={control}
+							label='Dirección'
+						></TextArea>
 					</div>
 					<div className='flex self-end'>
 						<Button

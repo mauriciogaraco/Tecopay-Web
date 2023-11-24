@@ -72,7 +72,8 @@ const Card = () => {
 				'No. Cuenta': item?.address,
 				Nombre: item?.account.name ?? '-',
 				Propietario: item?.holderName ?? '-',
-				Moneda: item?.currency,
+				Moneda: item?.account.currency,
+				Cuenta: item?.account.address,
 				'': <BlockedStateForTable currentState={item.isBlocked} />,
 			},
 		});

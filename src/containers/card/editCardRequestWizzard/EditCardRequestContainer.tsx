@@ -24,6 +24,7 @@ interface UserWizzardInterface {
 	getCardRequest: Function;
 	isLoading: Boolean;
 	setSelectedDataToParent: any;
+	acceptRequest: Function;
 }
 
 const EditCardRequestContainer = ({
@@ -37,10 +38,8 @@ const EditCardRequestContainer = ({
 	getCardRequest,
 	isLoading,
 	setSelectedDataToParent,
+	acceptRequest,
 }: UserWizzardInterface) => {
-	useEffect(() => {
-		id && getCardRequest(id);
-	}, []);
 	const [editModal, setEditModal] = useState(false);
 	const [currentTab, setCurrentTab] = useState('details');
 
@@ -71,10 +70,10 @@ const EditCardRequestContainer = ({
 			<TabNav action={setCurrentTab} tabs={tabs} />
 			{currentTab == 'details' ? (
 				<DetailCardRequestComponent
+					acceptRequest={acceptRequest}
 					id={id}
 					editCardRequest={editCardRequest}
 					deleteCardRequest={deleteCardRequest}
-					cardRequest={cardRequest}
 					closeModal={closeModal}
 					isFetching={isFetching}
 					allCardsRequests={allCardsRequests}

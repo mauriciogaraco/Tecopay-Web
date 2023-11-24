@@ -26,8 +26,6 @@ const useServerCardsRequests = () => {
   useState<SelectInterface | null>(null);
 
   const [waiting, setWaiting] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
-  const items = useAppSelector((state)=> state.account.items)
 
 
 
@@ -50,27 +48,53 @@ const useServerCardsRequests = () => {
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
-  const addCardRequest = async (
+  const addSimpleCardRequest = async (
     data: any,
     close: Function
   ) => {
     setIsFetching(true);
     setIsLoading(true)
     await query
-    .post("/cardRequest", data)
+    .post("/cardRequest/simple", data)
       .then((resp) => {
         
-        console.log(resp.data.data)
-        console.log(items)
-        setAllCardsRequests([...items, resp.data.data])
+        console.log(resp.data)
+        console.log(data)
+        console.log(allCardsRequests)
+        setAllCardsRequests([...allCardsRequests, resp.data])
 
         
-        toast.success("Ticket agregado satisfactoriamente");
+        toast.success("Solicitud agregada satisfactoriamente");
       }).then(()=>close())
       .catch((e) => { manageErrors(e); });
     setIsFetching(false);
     setIsLoading(false)
   };
+
+  const addBulkCardRequest = async (
+    data: any,
+    close: Function
+  ) => {
+    setIsFetching(true);
+    setIsLoading(true)
+    await query
+    .post("/cardRequest/bulk", data)
+      .then((resp) => {
+        
+        console.log(resp.data)
+        console.log(data)
+        console.log(allCardsRequests)
+        setAllCardsRequests([...allCardsRequests, resp.data])
+
+        
+        toast.success("Solicitudes agregadas satisfactoriamente");
+      }).then(()=>close())
+      .catch((e) => { manageErrors(e); });
+    setIsFetching(false);
+    setIsLoading(false)
+  };
+
+  
 
   const editCardRequest = async (
     id: number,
@@ -84,9 +108,7 @@ const useServerCardsRequests = () => {
         console.log(selectedDataToParent)
         const newCardsRequests:any = [...allCardsRequests];
         const idx = newCardsRequests.findIndex((card:any) => card.id === id);
-        const cardWithId = allCardsRequests.find((card:any) => card.id == id);
-        const wholeData = Object.assign(data, {id, issueEntity:{name:cardWithId.issueEntity.name}, card: {currency: cardWithId?.card.currency.code}, user: {currency: cardWithId?.user.fullName}} )
-        newCardsRequests.splice(idx, 1, wholeData);
+        newCardsRequests.splice(idx, 1, data);
         
         setAllCardsRequests(newCardsRequests)
         callback?.();
@@ -121,6 +143,20 @@ const useServerCardsRequests = () => {
       .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
+
+  const acceptRequest = async (id: number, data: Record<string, string | number | boolean | string[]>, callback?: Function) => {
+    setIsFetching(true);
+    await query
+      .post(`/cardRequest/accept`, data)
+      .then(() => {
+        toast.success("Tarjeta Aceptada con éxito");
+        const newCard = allCardsRequests.filter((item:any) => item.id !== id);
+        setAllCardsRequests(newCard)
+        callback?.();
+      })
+      .catch((error) => { manageErrors(error); });
+    setIsFetching(false);
+  };
   return {
     paginate,
     isLoading,
@@ -129,7 +165,7 @@ const useServerCardsRequests = () => {
     modalWaiting,
     cardRequest,
     getAllCardsRequests,
-    addCardRequest,
+    addSimpleCardRequest,
     getCardRequest,
     editCardRequest,
     deleteCardRequest,
@@ -137,7 +173,9 @@ const useServerCardsRequests = () => {
     modalWaitingError,
     allCardsRequests,
     setAllCardsRequests,
+    addBulkCardRequest,
     setSelectedDataToParent,
+    acceptRequest
   };
 };
 export default useServerCardsRequests;

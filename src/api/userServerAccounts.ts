@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { generateUrlParams } from "../utils/helpers";
 import type { BasicType } from "../interfaces/LocalInterfaces";
 import { SelectInterface } from "../interfaces/InterfacesLocal";
+import { da } from "date-fns/locale";
 
 const useServerAccounts = () => {
   const { manageErrors } = useServer();
@@ -50,7 +51,6 @@ const useServerAccounts = () => {
 
       })
       .catch((error) => { manageErrors(error); });
-      console.log(allAccounts)
     setIsLoading(false);
   };
   const addAccount = async (
@@ -78,13 +78,14 @@ const useServerAccounts = () => {
   ) => {
     setIsFetching(true);
     await query
-      .put(`/account/${id}`, data)
+      .patch(`/account/${id}`, data)
       .then((resp) => {
         const newAccounts:any = [...allAccounts];
         const idx = newAccounts.findIndex((user:any) => user.id === id);
         const accountWithId = allAccounts.find((card:any) => card.id == id);
         const wholeData = Object.assign(data, {id, issueEntity:{name: selectedDataToParentTwo?.name}, owner:{fullName:accountWithId?.owner.fullName}, currency: {code: selectedDataToParent?.name}} )
-        newAccounts.splice(idx, 1, wholeData);        
+        console.log(resp.data)
+        newAccounts.splice(idx, 1, resp.data);        
         setAllAccounts(newAccounts)
         callback?.();
       })

@@ -11,6 +11,7 @@ import Button from '../../../components/misc/Button';
 import Select from '../../../components/forms/Select';
 import { useState } from 'react';
 import useServerCardsRequests from '../../../api/userServerCardsRequests';
+import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 
 interface propsDestructured {
 	setContactModal: (contactModal: boolean) => void;
@@ -18,45 +19,57 @@ interface propsDestructured {
 	setNuevoTicketModal: (contactModal: boolean) => void;
 	nuevoTicketModal: boolean;
 	close: Function;
+	addSimpleCardRequest: Function;
+	addBulkCardRequest: Function;
+	isFetching: boolean;
 }
 
-const NewCardRequestModal = ({ setContactModal, close }: propsDestructured) => {
+const NewCardRequestModal = ({
+	setContactModal,
+	addSimpleCardRequest,
+	close,
+	addBulkCardRequest,
+	isFetching,
+}: propsDestructured) => {
 	const { control, handleSubmit } = useForm();
+	const [createManyState, setCreateManyState] = useState(false);
 
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
-		const sendData = Object.assign(data, {
-			isBlocked: false,
-			code: '123456',
-			ownerId: 251,
-		});
-		console.log(sendData);
-		try {
-			addCardRequest(deleteUndefinedAttr(sendData), close).then(() => close());
-		} catch (error) {}
+		if (createManyState == false) {
+			try {
+				addSimpleCardRequest(deleteUndefinedAttr(data), close).then(() =>
+					close(),
+				);
+			} catch (error) {}
+		} else {
+			try {
+				addBulkCardRequest(deleteUndefinedAttr(data), close).then(() =>
+					close(),
+				);
+			} catch (error) {}
+		}
 	};
-
-	const { isFetching, addCardRequest } = useServerCardsRequests();
-	const [createManyState, setCreateManyState] = useState(false);
 
 	return (
 		<main>
 			<div>
 				<h3 className='p-4 text-xl md:text-2xl'>Nueva solicitud</h3>
+				<Toggle
+					name=''
+					title='Crear por bulto'
+					control={control}
+					changeState={setCreateManyState}
+				></Toggle>
+
 				<form
 					className='flex flex-col gap-y-3'
 					onSubmit={handleSubmit(onSubmit)}
 				>
-					<Toggle
-						name='CreateMany'
-						title='Crear por bulto'
-						control={control}
-						changeState={setCreateManyState}
-					></Toggle>
 					{createManyState == false ? (
 						<Input
-							name='name'
+							name='holderName'
 							label='Propietario'
 							placeholder='Nombre del Propietario'
 							control={control}
@@ -81,6 +94,24 @@ const NewCardRequestModal = ({ setContactModal, close }: propsDestructured) => {
 							{ id: 2, name: 'Express' },
 						]}
 					></Select>
+					{createManyState == false && (
+						<AsyncComboBox
+							name='ownerId'
+							normalizeData={{ id: 'id', name: 'fullName' }}
+							control={control}
+							label='Dueño'
+							dataQuery={{ url: '/user' }}
+						/>
+					)}
+
+					<AsyncComboBox
+						rules={{ required: 'Campo requerido' }}
+						name='issueEntityId'
+						normalizeData={{ id: 'id', name: 'name' }}
+						control={control}
+						label='Entidad'
+						dataQuery={{ url: '/entity' }}
+					></AsyncComboBox>
 
 					<div className='h-full'>
 						<TextArea

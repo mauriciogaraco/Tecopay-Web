@@ -21,7 +21,7 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 	>({});
 	const [tableData, setTableData] = useState<DataTableInterface[]>([]);
 
-	const [addTicketmodal, setAddTicketmodal] = useState(false);
+	const [addAssociatedCard, setAddAssociatedCard] = useState(false);
 	const [loadedPaginate, setLoadedPaginate] = useState(null);
 	// const [exportModal, setExportModal] = useState(false);
 
@@ -78,9 +78,9 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
-			title: 'Agregar cuenta',
+			title: 'Agregar tarjeta',
 			action: () => {
-				setAddTicketmodal(true);
+				setAddAssociatedCard(true);
 			},
 		},
 	];
@@ -96,7 +96,7 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 	}>({ state: false, id: null });
 
 	const closeAddAccount = () => {
-		setAddTicketmodal(false);
+		setAddAssociatedCard(false);
 	};
 
 	const id = useAppSelector((state) => state.account.id);

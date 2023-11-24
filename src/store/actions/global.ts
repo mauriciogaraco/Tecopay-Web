@@ -9,7 +9,7 @@ import { generateUrlParams } from "../../utils/helpers";
 
 import { AxiosResponse } from "axios";
 
-export const initSystem = createAction<any>("general/initSystem");
+export const initSystem = createAction<any>("/user/myuser");
 
 export const closeSystem = createAction<any>("general/closeSystem");
 

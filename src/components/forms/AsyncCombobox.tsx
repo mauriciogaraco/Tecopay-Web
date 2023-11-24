@@ -118,6 +118,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 						}
 					},
 				);
+
 				setData(nullOpt ? [nullOpt, ...items] : items);
 				callback && callback(resp.data.items);
 			})
@@ -137,7 +138,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 		if (Object.values(allParams).length !== 0 && !disabled) {
 			apiCall(allParams);
 		}
-
+		console.log(data);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [query, allParams]);
 	//-------------------------------------------------------------------------

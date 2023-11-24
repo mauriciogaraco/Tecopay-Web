@@ -37,6 +37,7 @@ const CardRequests = () => {
 	const [post, setPost] = useState(null);
 
 	const {
+		acceptRequest,
 		paginate,
 		isLoading,
 		isFetching,
@@ -44,8 +45,9 @@ const CardRequests = () => {
 		modalWaiting,
 		cardRequest,
 		getAllCardsRequests,
-		addCardRequest,
+		addSimpleCardRequest,
 		getCardRequest,
+		addBulkCardRequest,
 		editCardRequest,
 		deleteCardRequest,
 		manageErrors,
@@ -66,7 +68,6 @@ const CardRequests = () => {
 		'Tipo',
 
 		'Propietario',
-		'Moneda',
 		'Cuenta',
 		'Estado',
 	];
@@ -78,8 +79,7 @@ const CardRequests = () => {
 			payload: {
 				'No. Solicitud': item?.queryNumber ?? '-',
 				Tipo: item?.priority,
-				Propietario: item?.holderName,
-				Moneda: 'No Existe',
+				Propietario: item?.holderName ?? '-',
 				Cuenta: item?.account ?? '-',
 
 				Estado: <StatusForCardRequest currentState={item.status} />,
@@ -157,12 +157,16 @@ const CardRequests = () => {
 						contactModal={contactModal}
 						setNuevoTicketModal={setNuevoTicketModal}
 						nuevoTicketModal={nuevoTicketModal}
+						addBulkCardRequest={addBulkCardRequest}
+						isFetching={isFetching}
+						addSimpleCardRequest={addSimpleCardRequest}
 					/>
 				</Modal>
 			)}
 			{editTicketModal.state && (
 				<Modal state={editTicketModal.state} close={close} size='m'>
 					<EditCardRequestContainer
+						acceptRequest={acceptRequest}
 						id={editTicketModal.id}
 						editCardRequest={editCardRequest}
 						deleteCardRequest={deleteCardRequest}
