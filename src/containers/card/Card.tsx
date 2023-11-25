@@ -22,7 +22,7 @@ import NuevoTicketModal from '../accounts/NewAccount/NewAccountModal';
 
 import { useAppSelector } from '../../store/hooks';
 import useServerCards from '../../api/userServerCards';
-import { formatCalendar } from '../../utils/helpers';
+import { formatCalendar, formatCardNumber } from '../../utils/helpers';
 
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 import EditCardContainer from './editCardWizzard/EditCardContainer';
@@ -69,11 +69,11 @@ const Card = () => {
 		tableData.push({
 			rowId: item?.id,
 			payload: {
-				'No. Cuenta': item?.address,
+				'No. Cuenta': formatCardNumber(item?.address),
 				Nombre: item?.account.name ?? '-',
 				Propietario: item?.holderName ?? '-',
 				Moneda: item?.account.currency,
-				Cuenta: item?.account.address,
+				Cuenta: formatCardNumber(item?.account.address),
 				'': <BlockedStateForTable currentState={item.isBlocked} />,
 			},
 		});
