@@ -13,7 +13,6 @@ import Entity from '../containers/entity/Entity';
 import Card from '../containers/card/Card';
 import CardRequests from '../containers/card/CardRequests';
 
-import Users from '../containers/users/Users';
 import { setFullUser } from '../store/slices/initSlice';
 import { useAppDispatch } from '../store/hooks';
 import useInitialLoad from '../api/useInitialLoad';
