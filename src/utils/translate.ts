@@ -174,6 +174,8 @@ export const translateOrderState = (status: string | null) => {
     case "CREATED":
       return "Creada";
 
+      case 'PRINTED':
+        return 'Impresa'
       case 'MODIFIED':
         return 'Modificada'
 

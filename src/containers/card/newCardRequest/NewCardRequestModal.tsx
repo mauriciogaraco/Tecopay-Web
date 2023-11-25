@@ -72,7 +72,7 @@ const NewCardRequestModal = ({
 					{createManyState == false ? (
 						<Input
 							name='holderName'
-							label='Propietario'
+							label='Nombre'
 							placeholder='Nombre del Propietario'
 							control={control}
 							rules={{ required: 'Campo requerido' }}

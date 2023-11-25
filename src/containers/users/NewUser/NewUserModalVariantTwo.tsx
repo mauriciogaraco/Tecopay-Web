@@ -45,21 +45,22 @@ const NewUserModalVariantTwo = ({
 					onSubmit={handleSubmit(onSubmit)}
 				>
 					<AsyncComboBox
-						name='name'
+						name='userId'
 						control={control}
 						rules={{ required: 'Campo requerido' }}
 						label='Nombre'
-						dataQuery={{ url: '/user' }}
-						normalizeData={{ id: 'id', name: 'fullName' }}
+						dataQuery={{ url: '/user/external' }}
+						normalizeData={{ id: 'id', name: 'displayName' }}
 					></AsyncComboBox>
 
-					<AsyncMultiSelect
-						name='entity'
-						normalizeData={{ id: 'id', name: 'address' }}
+					<AsyncComboBox
+						name='issueEntityId'
 						control={control}
+						rules={{ required: 'Campo requerido' }}
 						label='Entidad'
 						dataQuery={{ url: '/entity' }}
-					/>
+						normalizeData={{ id: 'id', name: 'name' }}
+					></AsyncComboBox>
 
 					<MultiSelect
 						data={[
@@ -73,7 +74,7 @@ const NewUserModalVariantTwo = ({
 						]}
 						control={control}
 						label='Roles'
-						name='role'
+						name='rolesId'
 					/>
 
 					<div className='flex self-end'>

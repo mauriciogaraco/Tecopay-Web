@@ -36,6 +36,7 @@ const useServerCardsRequests = () => {
       .get(`/cardRequest${generateUrlParams(filter)}`)
       .then((resp) => {
         setPaginate({
+          
           totalItems: resp.data.totalItems,
           totalPages: resp.data.totalPages,
           currentPage: resp.data.currentPage,
@@ -43,7 +44,7 @@ const useServerCardsRequests = () => {
         console.log(resp.data)
         setAllCardsRequests(resp.data.items)
         console.log(resp.data.items)
-
+        console.log(resp.data.totalItems)
 
       })
       .catch((error) => { manageErrors(error); });
@@ -118,10 +119,9 @@ const useServerCardsRequests = () => {
     await query
       .patch(`/cardRequest/${id}`, data)
       .then((resp) => {
-        console.log(selectedDataToParent)
         const newCardsRequests:any = [...allCardsRequests];
         const idx = newCardsRequests.findIndex((card:any) => card.id === id);
-        newCardsRequests.splice(idx, 1, data);
+        newCardsRequests.splice(idx, 1, resp.data);
         
         setAllCardsRequests(newCardsRequests)
         callback?.();

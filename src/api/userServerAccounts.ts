@@ -23,6 +23,8 @@ const useServerAccounts = () => {
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
   const [allAccounts, setAllAccounts] = useState<any[]>([]);
   const [account, setAccount] = useState<any | null>(null);
+  const [records, setRecords] = useState<any | null>(null);
+  const [operations, setOperations] = useState<any | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
   const [modalWaitingError, setModalWaitingError] = useState<string | null>(
     null
@@ -109,6 +111,40 @@ const useServerAccounts = () => {
       setIsLoading(false);
     }
   };
+
+  const getAccountRecords = async (id: any): Promise<any> => {
+    try {
+      setIsLoading(true);
+      const response = await query.get(`/account/${id}/records`);
+      const account = response.data;
+      setRecords(account);
+  
+  
+      return account;
+    } catch (error) {
+      console.error(error);
+      // Display a user-friendly error message.
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getAccountOperations = async (id: any): Promise<any> => {
+    try {
+      setIsLoading(true);
+      const response = await query.get(`/account/${id}/operations`);
+      const account = response.data;
+      setOperations(account);
+  
+  
+      return account;
+    } catch (error) {
+      console.error(error);
+      // Display a user-friendly error message.
+    } finally {
+      setIsLoading(false);
+    }
+  };
   
 
   const deleteAccount = async (id: number, callback?: Function) => {
@@ -142,7 +178,11 @@ const useServerAccounts = () => {
     modalWaitingError,
     setSelectedDataToParent,
     selectedDataToParent,
-    setSelectedDataToParentTwo
+    setSelectedDataToParentTwo,
+    getAccountOperations,
+    getAccountRecords,
+    records,
+    operations,
 
   };
 };

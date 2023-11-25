@@ -171,7 +171,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 				onChange={(e: SelectInterface) => {
 					setSelectedData(e);
 					{
-						string ? field.onChange(e.name) : field.onChange(e.id);
+						string == true ? field.onChange(e.name) : field.onChange(e.id);
 					}
 					{
 						if (dataQuery.url !== '/entity/all')

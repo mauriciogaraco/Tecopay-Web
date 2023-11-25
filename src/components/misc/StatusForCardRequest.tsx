@@ -10,6 +10,7 @@ const StatusForCardRequest = ({ currentState }: StateSpanProp) => {
 		case 'ACCEPTED':
 		case 'CREATED':
 		case 'DELIVERED':
+		case 'PRINTED':
 			color = 'green';
 			text = translateOrderState(currentState);
 			break;
@@ -17,7 +18,7 @@ const StatusForCardRequest = ({ currentState }: StateSpanProp) => {
 		case 'REQUESTED':
 		case 'IN_PROCESS':
 		case 'MODIFIED':
-			color = 'yellow';
+			color = 'gray';
 			text = translateOrderState(currentState);
 			break;
 		case 'DENIED':
@@ -31,7 +32,7 @@ const StatusForCardRequest = ({ currentState }: StateSpanProp) => {
 	}
 	return (
 		<span
-			className={`py-1 px-2 rounded-full h-10 bg-${color}-200 text-${color}-700 font-semibold text-center`}
+			className={`py-1 px-2 rounded-full  h-10 bg-${color}-200 text-${color}-700 font-semibold text-center`}
 		>
 			{text}
 		</span>

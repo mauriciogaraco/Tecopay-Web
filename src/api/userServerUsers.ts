@@ -96,7 +96,8 @@ const useServerUsers = () => {
       .patch(`/user/${id}`, data)
       .then((resp) => {
         const newUsers:any = [...allUsers];
-        const idx = newUsers.findIndex((user:any) => user.id === id);        
+        const idx = newUsers.findIndex((user:any) => user.id === id);
+        newUsers.splice(idx, 1, resp.data);      
         setAllUsers(newUsers)
         callback?.();
       })

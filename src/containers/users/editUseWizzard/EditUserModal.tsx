@@ -58,7 +58,7 @@ const EditUserModal = ({
 				>
 					<AsyncComboBox
 						defaultItem={{ id: userData?.id, name: userData?.fullName }}
-						defaultValue={{ name: userData?.fullName }}
+						defaultValue={userData?.fullName}
 						name='fullName'
 						control={control}
 						rules={{ required: 'Campo requerido' }}
@@ -69,10 +69,12 @@ const EditUserModal = ({
 					></AsyncComboBox>
 
 					<AsyncComboBox
-						defaultItem={{ id: userData?.id, name: userData?.fullName }}
-						defaultValue={{ name: userData?.fullName }}
+						defaultItem={{
+							id: userData?.id ?? '-',
+							name: userData?.issueEntity?.name ?? '-',
+						}}
+						defaultValue={userData?.issueEntity?.id ?? '-'}
 						rules={{ required: 'Campo requerido' }}
-						string={true}
 						name='issueEntityId'
 						normalizeData={{ id: 'id', name: 'name' }}
 						control={control}

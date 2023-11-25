@@ -68,7 +68,6 @@ const CardRequests = () => {
 	const tableTitles = [
 		'No. Solicitud',
 		'Tipo',
-
 		'Propietario',
 		'Cuenta',
 		'Estado',
@@ -128,6 +127,7 @@ const CardRequests = () => {
 
 	useEffect(() => {
 		getAllCardsRequests(filter);
+		console.log(paginate);
 	}, [filter]);
 
 	return (
