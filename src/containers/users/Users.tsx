@@ -50,15 +50,17 @@ const Users = () => {
 	const tableData: DataTableInterface[] = [];
 
 	allUsers?.map((item: Item) => {
-		tableData.push({
-			rowId: item.id,
-			payload: {
-				Nombre: item?.fullName,
-				Entidad: item?.issueEntity?.name ?? '-',
-				'Correo Electrónico': item.email ?? '-',
-				Roles: item.roles[0].name,
-			},
-		});
+		if (item.roles && Array.isArray(item.roles)) {
+			tableData.push({
+				rowId: item.id,
+				payload: {
+					Nombre: item?.fullName,
+					Entidad: item?.issueEntity?.name ?? '-',
+					'Correo Electrónico': item.email ?? '-',
+					Roles: item.roles[0].name ?? '-',
+				},
+			});
+		}
 	});
 
 	const navigate = useNavigate();
@@ -137,12 +139,13 @@ const Users = () => {
 				<Modal state={editUserModal.state} close={setEditUserModal}>
 					<h3 className='p-4 text-xl md:text-2xl'>Editar usuario</h3>
 					<EditUserModal
-						close={closeAddUser}
+						close={close}
 						isLoading={isLoading}
 						editUser={editUser}
 						getUser={getUser}
 						id={editUserModal.id}
 						user={user}
+						allUsers={allUsers}
 					/>
 				</Modal>
 			)}

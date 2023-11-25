@@ -14,6 +14,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { generateUrlParams } from "../utils/helpers";
 import type { BasicType } from "../interfaces/LocalInterfaces";
 import { SelectInterface } from "../interfaces/InterfacesLocal";
+import { da } from "date-fns/locale";
 
 const useServerAccounts = () => {
   const { manageErrors } = useServer();
@@ -22,6 +23,8 @@ const useServerAccounts = () => {
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
   const [allAccounts, setAllAccounts] = useState<any[]>([]);
   const [account, setAccount] = useState<any | null>(null);
+  const [records, setRecords] = useState<any | null>(null);
+  const [operations, setOperations] = useState<any | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
   const [modalWaitingError, setModalWaitingError] = useState<string | null>(
     null
@@ -50,7 +53,6 @@ const useServerAccounts = () => {
 
       })
       .catch((error) => { manageErrors(error); });
-      console.log(allAccounts)
     setIsLoading(false);
   };
   const addAccount = async (
@@ -78,13 +80,14 @@ const useServerAccounts = () => {
   ) => {
     setIsFetching(true);
     await query
-      .put(`/account/${id}`, data)
+      .patch(`/account/${id}`, data)
       .then((resp) => {
         const newAccounts:any = [...allAccounts];
         const idx = newAccounts.findIndex((user:any) => user.id === id);
         const accountWithId = allAccounts.find((card:any) => card.id == id);
         const wholeData = Object.assign(data, {id, issueEntity:{name: selectedDataToParentTwo?.name}, owner:{fullName:accountWithId?.owner.fullName}, currency: {code: selectedDataToParent?.name}} )
-        newAccounts.splice(idx, 1, wholeData);        
+        console.log(resp.data)
+        newAccounts.splice(idx, 1, resp.data);        
         setAllAccounts(newAccounts)
         callback?.();
       })
@@ -98,6 +101,40 @@ const useServerAccounts = () => {
       const response = await query.get(`/account/${id}`);
       const account = response.data;
       setAccount(account);
+  
+  
+      return account;
+    } catch (error) {
+      console.error(error);
+      // Display a user-friendly error message.
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getAccountRecords = async (id: any): Promise<any> => {
+    try {
+      setIsLoading(true);
+      const response = await query.get(`/account/${id}/records`);
+      const account = response.data;
+      setRecords(account);
+  
+  
+      return account;
+    } catch (error) {
+      console.error(error);
+      // Display a user-friendly error message.
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getAccountOperations = async (id: any): Promise<any> => {
+    try {
+      setIsLoading(true);
+      const response = await query.get(`/account/${id}/operations`);
+      const account = response.data;
+      setOperations(account);
   
   
       return account;
@@ -141,7 +178,11 @@ const useServerAccounts = () => {
     modalWaitingError,
     setSelectedDataToParent,
     selectedDataToParent,
-    setSelectedDataToParentTwo
+    setSelectedDataToParentTwo,
+    getAccountOperations,
+    getAccountRecords,
+    records,
+    operations,
 
   };
 };

@@ -65,12 +65,7 @@ const Entity = () => {
 		});
 	});
 
-	const searching = {
-		action: (search: string) => {
-			setFilter({ ...filter, search });
-		},
-		placeholder: 'Buscar ticket',
-	};
+	
 	const close = () => {
 		setEditTicketModal({ state: false, id: null });
 	};
@@ -132,7 +127,6 @@ const Entity = () => {
 				tableData={tableData}
 				tableTitles={tableTitles}
 				loading={isLoading}
-				searching={searching}
 				actions={actions}
 				rowAction={rowAction}
 				// filterComponent={{ availableFilters, filterAction }}
@@ -178,3 +172,4 @@ const Entity = () => {
 };
 
 export default Entity;
+

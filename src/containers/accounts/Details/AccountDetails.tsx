@@ -19,6 +19,8 @@ import Modal from '../../../components/modals/GenericModal';
 import EditAccountContainer from '../editAccountWizzard/EditAccountContainer';
 import AssociatedCards from './AssociatedCards/AssociatedCards';
 import useServerCards from '../../../api/userServerCards';
+import AssociatedOperations from './AssociatedOperations/AssociatedOperations';
+import AssociatedRecords from './AssociatedRecords/AssociatedRecords';
 
 const AccountDetails = () => {
 	const { pathname } = useLocation();
@@ -33,6 +35,10 @@ const AccountDetails = () => {
 		selectedDataToParent,
 		deleteAccount,
 		getAllAccounts,
+		getAccountRecords,
+		getAccountOperations,
+		records,
+		operations,
 	} = useServerAccounts();
 
 	const { getAllCards, paginate, allCards } = useServerCards();
@@ -49,10 +55,16 @@ const AccountDetails = () => {
 	useEffect(() => {
 		getAccount(id);
 		getAllCards({ accountId: id });
+		getAccountRecords(id);
+		getAccountOperations(id);
 	}, []);
 
 	const showEditModal = () => {
 		setEditModal(!editModal);
+	};
+
+	const close = () => {
+		setEditModal(false);
 	};
 
 	const stockTabs = [
@@ -68,13 +80,13 @@ const AccountDetails = () => {
 		},
 		{
 			name: 'Registros',
-			href: 'registros',
-			current: current === 'registros',
+			href: 'records',
+			current: current === 'records',
 		},
 		{
 			name: 'Operaciones',
-			href: 'operaciones',
-			current: current === 'operaciones',
+			href: 'operations',
+			current: current === 'operations',
 		},
 	];
 
@@ -88,7 +100,7 @@ const AccountDetails = () => {
 		},
 
 		{
-			name: account?.owner?.fullName,
+			name: account?.address,
 		},
 	];
 	//--------------------------------------------------------------------------------------
@@ -100,7 +112,7 @@ const AccountDetails = () => {
 					icon={<UserCircleIcon className='h-7 text-gray-500' />}
 					paths={paths}
 				/>
-				<div className='absolute right-9 mt-1 h-7 px-2'>
+				<div className='absolute right-[45px] mt-[6px] h-7 px-2'>
 					<Button
 						name='Editar'
 						icon={<PencilSquareIcon className=' text-white w-5' />}
@@ -129,6 +141,12 @@ const AccountDetails = () => {
 					)}
 					{current === 'cards' && (
 						<AssociatedCards paginate={paginate} allCards={allCards} />
+					)}
+					{current === 'records' && (
+						<AssociatedRecords paginate={paginate} records={records} />
+					)}
+					{current === 'operations' && (
+						<AssociatedOperations paginate={paginate} operations={operations} />
 					)}
 				</div>
 			</div>

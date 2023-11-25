@@ -15,7 +15,7 @@ import BlockedStateForTable from '../../../../components/misc/BlockedStateForTab
 import { formatCalendar } from '../../../../utils/helpers';
 import { json } from 'stream/consumers';
 
-const AssociatedCards = (allCards: any, paginate: any) => {
+const AssociatedOperations = (operations: any, paginate: any) => {
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
@@ -26,52 +26,40 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 	// const [exportModal, setExportModal] = useState(false);
 
 	// Data for table ------------------------------------------------------------------------
-	const tableTitles = [
-		'No. Tarjeta',
-		'Nombre',
-		'Propietario',
-		'Moneda',
-		'Fecha de Expiración',
-	];
+	const tableTitles = ['Fecha', 'Operación', 'Monto', 'Concepto'];
 
 	const cardMapping = async () => {
-		const loadedAllCards = await allCards;
+		const loadedAllCards = await operations;
 
 		setLoadedPaginate(loadedAllCards.paginate);
-		const items = loadedAllCards.allCards;
+		const items = loadedAllCards.operations;
 
-		items.map((item: any) => {
-			setTableData((prevTableData) => [
-				...prevTableData,
-				{
-					rowId: item.id,
-					payload: {
-						'No. Tarjeta': item.address,
-						Nombre: item?.account.name ?? '-',
-						Propietario: item?.holderName ?? '-',
-						Moneda: item.account.currency ?? '-',
-						'Fecha de Expiración': formatCalendar(item?.expiratedAt),
-						'': (
-							<span className='flex whitespace-nowrap gap-4'>
-								<BlockedStateForTable currentState={item.isBlocked} />
-							</span>
-						),
-					},
-				},
-			]);
-		});
+		//items.map((item: any) => {
+		//setTableData((prevTableData) => [
+		//	...prevTableData,
+		//	{
+		//			rowId: item.id,
+		//			payload: {
+		//				'Fecha',
+		//				'Operación',
+		//				'Monto',
+		//				'Concepto',
+		//			},
+		//		},
+		//	]);
+		//});
 	};
 
 	useEffect(() => {
 		cardMapping();
 	}, []);
 
-	// const searching = {
-	// 	action: (search: string) => {
-	// 		setFilter({ ...filter, search });
-	// 	},
-	// 	placeholder: 'Buscar ticket',
-	// };
+	const searching = {
+		action: (search: string) => {
+			setFilter({ ...filter, search });
+		},
+		placeholder: 'Buscar ticket',
+	};
 	const close = () => {
 		setEditTicketModal({ state: false, id: null });
 	};
@@ -106,18 +94,18 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 			<GenericTable
 				tableData={tableData}
 				tableTitles={tableTitles}
-				// searching={searching}
+				searching={searching}
 				//actions={actions}
 				rowAction={rowAction}
 				// filterComponent={{ availableFilters, filterAction }}
-				paginateComponent={
-					<Paginate
-						action={(page: number) => {
-							setFilter({ ...filter, page });
-						}}
-						data={loadedPaginate}
-					/>
-				}
+				//paginateComponent={
+				//<Paginate
+				//		action={(page: number) => {
+				//			setFilter({ ...filter, page });
+				//		}}
+				//		data={loadedPaginate}
+				//	/>
+				//}
 			/>
 		</div>
 	) : (
@@ -125,4 +113,4 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 	);
 };
 
-export default AssociatedCards;
+export default AssociatedOperations;

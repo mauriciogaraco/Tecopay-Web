@@ -75,7 +75,7 @@ const Accounts = () => {
 				Nombre: item?.name,
 				Entidad: item?.issueEntity?.name,
 				Propietario: item.owner?.fullName,
-				Moneda: item.currency?.code ?? '-',
+				Moneda: item.currency ?? '-',
 				Dirección: item.address,
 				'': (
 					<span className='flex whitespace-nowrap gap-4'>
@@ -93,15 +93,7 @@ const Accounts = () => {
 
 	const navigate = useNavigate();
 
-	const searching = {
-		action: (search: string) => {
-			setFilter({ ...filter, search });
-		},
-		placeholder: 'Buscar ticket',
-	};
-	const close = () => {
-		setEditTicketModal({ state: false, id: null });
-	};
+
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
@@ -150,7 +142,6 @@ const Accounts = () => {
 				tableData={tableData}
 				tableTitles={tableTitles}
 				loading={isLoading}
-				searching={searching}
 				actions={actions}
 				rowAction={rowAction}
 				// filterComponent={{ availableFilters, filterAction }}
