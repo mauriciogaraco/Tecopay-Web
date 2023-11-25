@@ -11,7 +11,7 @@ import EditCurrencyModal from './EditCurrencyModal';
 
 const CurrencyList = () => {
 
-    const { isLoading, getAllCurrencys, allCurrencys, paginate, registerNewCurrency, isFetching, updateCurrency } = useServerCurrency()
+    const { isLoading, getAllCurrencys, allCurrencys, paginate, registerNewCurrency, isFetching, updateCurrency, deleteCurrency } = useServerCurrency()
 
     const [addCurrencyModal, setAddCurrencyModal] = useState(false);
 
@@ -62,9 +62,6 @@ const CurrencyList = () => {
     ];
 
     const rowAction = (id: number) => {
-        console.log({ id })
-        console.log(tableData.find(element => element.rowId === id)?.payload)
-        console.log(allCurrencys.find(elem => elem.id === id))
         setEditCurrencyModal({ state: true, id });
     };
 
@@ -109,7 +106,7 @@ const CurrencyList = () => {
             {
                 editCurrencyModal.state && (
                     <Modal state={editCurrencyModal.state} close={setEditCurrencyModal}>
-                        <EditCurrencyModal id={editCurrencyModal.id!} close={closeNewCurrency} updateCurrency={updateCurrency} isFetching={isFetching} allCurrencys={allCurrencys} />
+                        <EditCurrencyModal id={editCurrencyModal.id!} close={closeNewCurrency} updateCurrency={updateCurrency} isFetching={isFetching} allCurrencys={allCurrencys} deleteCurrency={deleteCurrency}/>
                     </Modal>
                 )
             }

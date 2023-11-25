@@ -30,7 +30,9 @@ const AddNewCurrencyModal = ({
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col items-stretch h-full"
         >
-            <div className="">
+            <p className='mb-4 font-semibold text-lg text-center'>Nueva moneda</p>
+
+            <div className="my-1">
                 <Input
                     label="Nombre"
                     name="name"
@@ -39,7 +41,7 @@ const AddNewCurrencyModal = ({
                 />
             </div>
 
-            <div className="">
+            <div className="my-1">
                 <Input
                     label="Código"
                     name="code"
@@ -49,7 +51,7 @@ const AddNewCurrencyModal = ({
                 />
             </div>
 
-            <div className="">
+            <div className="my-1">
                 <Input
                     label="Símbolo"
                     name="symbol"

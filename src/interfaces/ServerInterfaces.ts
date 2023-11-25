@@ -324,3 +324,23 @@ export interface CurrencyInterface {
 	code: string;
 	symbol: string;
 }
+
+export interface ExchangeRateInterface {
+	id: number;
+	sellRate: number;
+	buyRate: number;
+	createdAt: string;
+	updatedAt: string;
+	baseCurrency: {
+		name: string;
+		code: string;
+	};
+	dependentCurrency: {
+		name: string;
+		code: string;
+	};
+	exchangeRateRecords: {
+		name: string;
+		code: string;
+	}[];
+}
