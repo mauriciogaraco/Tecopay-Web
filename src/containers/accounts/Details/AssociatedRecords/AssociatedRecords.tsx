@@ -103,7 +103,7 @@ const AssociatedRecords = (records: any, paginate: any) => {
 				tableData={tableData}
 				tableTitles={tableTitles}
 				searching={searching}
-				actions={actions}
+				//actions={actions}
 				rowAction={rowAction}
 				// filterComponent={{ availableFilters, filterAction }}
 				//paginateComponent={

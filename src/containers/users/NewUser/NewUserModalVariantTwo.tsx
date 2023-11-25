@@ -64,13 +64,12 @@ const NewUserModalVariantTwo = ({
 
 					<MultiSelect
 						data={[
-							{ id: 1, name: 'Superadministrador' },
-							{ id: 2, name: 'Administrador' },
-							{ id: 3, name: 'Cliente' },
-							{ id: 4, name: 'Encargado de entidad' },
-							{ id: 5, name: 'Supervisor' },
-							{ id: 6, name: 'Operador de tarjetas' },
-							{ id: 7, name: 'Gestor de cuentas' },
+							{ id: 1, name: 'Administrador' },
+							{ id: 2, name: 'Cliente' },
+							{ id: 3, name: 'Encargado de entidad' },
+							{ id: 4, name: 'Supervisor' },
+							{ id: 5, name: 'Operador de tarjetas' },
+							{ id: 6, name: 'Gestor de cuentas' },
 						]}
 						control={control}
 						label='Roles'
