@@ -66,12 +66,12 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 		cardMapping();
 	}, []);
 
-	const searching = {
-		action: (search: string) => {
-			setFilter({ ...filter, search });
-		},
-		placeholder: 'Buscar ticket',
-	};
+	// const searching = {
+	// 	action: (search: string) => {
+	// 		setFilter({ ...filter, search });
+	// 	},
+	// 	placeholder: 'Buscar ticket',
+	// };
 	const close = () => {
 		setEditTicketModal({ state: false, id: null });
 	};
@@ -106,7 +106,7 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 			<GenericTable
 				tableData={tableData}
 				tableTitles={tableTitles}
-				searching={searching}
+				// searching={searching}
 				//actions={actions}
 				rowAction={rowAction}
 				// filterComponent={{ availableFilters, filterAction }}

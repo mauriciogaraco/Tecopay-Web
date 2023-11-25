@@ -330,7 +330,7 @@ const GenericTable = ({
                     }`}
                   >
                     <div className='relative w-full text-gray-400'>
-                      {/*<div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 z-0'>
+                      <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 z-0'>
                         <MagnifyingGlassIcon
                           className='h-5 w-5'
                           aria-hidden='true'
@@ -350,7 +350,7 @@ const GenericTable = ({
                         onMouseOut={() =>
                           searchValue === '' && setSearchValue(null)
                         }
-                      />*/}
+                      />
                     </div>
                   </div>
                 </>

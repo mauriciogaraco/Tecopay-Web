@@ -1,119 +1,100 @@
-import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, HomeModernIcon } from '@heroicons/react/24/outline';
 
 import GenericTable, {
 	type DataTableInterface,
-	type FilterOpts,
 } from '../../components/misc/GenericTable';
-import useServerAccounts from '../../api/userServerAccounts';
 
 import Paginate from '../../components/misc/Paginate';
 import Modal from '../../components/modals/GenericModal';
 import Breadcrumb, {
 	type PathInterface,
 } from '../../components/navigation/Breadcrumb';
-import {
-	BasicType,
-	type SelectInterface,
-} from '../../interfaces/InterfacesLocal';
 
 import { useEffect, useState } from 'react';
-import { data } from '../../utils/TemporaryArrayData';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import EditAccountContainer from './editAccountWizzard/EditAccountContainer';
-import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
-import StateSpanForTable from '../../components/misc/StateSpanForTable';
-import { saveAccountId } from '../../store/slices/accountSlice';
-import { useNavigate } from 'react-router-dom';
-import NewAccountModal from './NewAccount/NewAccountModal';
-import useServerCards from '../../api/userServerCards';
 
-const Accounts = () => {
+import { useAppSelector } from '../../store/hooks';
+import useServerEntity from '../../api/userServerEntity';
+import { formatCalendar } from '../../utils/helpers';
+
+import NewEntityModal from '../entity/NewEntity/NewEntityModal';
+import EditEntityContainer from '../entity/editEntityWizzard/EditEntityContainer';
+
+const Entity = () => {
+	const [query, setQuery] = useState<string>('');
 	const {
+		getAllEntity,
+		editEntity,
+		deleteEntity,
+		getEntity,
+		setAllEntity,
 		paginate,
 		isLoading,
 		isFetching,
-		allAccounts,
-		account,
-		getAllAccounts,
-		getAccount,
-		editAccount,
-		deleteAccount,
-		setSelectedDataToParent,
-		setSelectedDataToParentTwo,
-		selectedDataToParent,
-		addAccount,
-	} = useServerAccounts();
+		allEntity,
+		entity,
+	} = useServerEntity();
 
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
-	const dispatch = useAppDispatch();
 	// const [exportModal, setExportModal] = useState(false);
 
 	/* useEffect(() => {
-			  getAllClients(filter);
-			}, [filter]); */
+              getAllClients(filter);
+            }, [filter]); */
 
 	// Data for table ------------------------------------------------------------------------
-	const tableTitles = [
-		'Código',
-		'Nombre',
-		'Entidad',
-		'Propietario',
-		'Moneda',
-		'',
-	];
+	const tableTitles = ['ID', 'Nombre', 'Dirección', 'Telefono', 'Fecha'];
 	const tableData: DataTableInterface[] = [];
+	// eslint-disable-next-line array-callback-return
 
-	allAccounts?.map((item: any) => {
+	const items = useAppSelector((state) => state.Entity.Entity);
+
+	// @ts-expect-error
+	items?.items.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				'No.': item.id,
-				Código: `${item?.address}`,
+				ID: item.id,
 				Nombre: item?.name,
-				Entidad: item?.issueEntity?.name,
-				Propietario: item.owner?.fullName,
-				Moneda: item.currency ?? '-',
+				Telefono: item.phone,
+				Fecha: formatCalendar(item.createdAt),
 				Dirección: item.address,
-				'': (
-					<span className='flex whitespace-nowrap gap-4'>
-						<BlockedStateForTable currentState={item.isBlocked} />
-						<StateSpanForTable
-							currentState={item?.isActive}
-							greenState='Activa'
-							redState='Inactiva'
-						/>
-					</span>
-				),
 			},
 		});
 	});
 
-	const navigate = useNavigate();
-
-
+	
+	const close = () => {
+		setEditTicketModal({ state: false, id: null });
+	};
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
-			title: 'Agregar cuenta',
+			title: 'Agregar entidad',
 			action: () => {
 				setAddTicketmodal(true);
 			},
 		},
+		/* {
+                title: "Exportar a excel",
+                action: () => setExportModal(true),
+                icon: <BsFiletypeXlsx />,
+              }, */
 	];
 
 	const rowAction = (id: number) => {
-		/*setEditTicketModal({ state: true, id });*/
-		dispatch(saveAccountId(id));
-		navigate('details');
+		setEditTicketModal({ state: true, id });
 	};
+
+	// const filterAction = (data: BasicType) => setFilter(data);
+	// ----------------------------------------------------------------------------------
 
 	// Breadcrumb-----------------------------------------------------------------------------------
 	const paths: PathInterface[] = [
 		{
-			name: 'Cuentas',
+			name: 'Entidades',
 		},
 	];
 	// ------------------------------------------------------------------------------------
@@ -129,13 +110,17 @@ const Accounts = () => {
 	};
 
 	useEffect(() => {
-		getAllAccounts(filter);
+		void getAllEntity(filter);
 	}, [filter]);
 
+	// @ts-expect-error
+	const totalItems = allTickets?.length;
+	const totalPages = 1;
+	const currentPage = 1;
 	return (
 		<div>
 			<Breadcrumb
-				icon={<UserCircleIcon className='h-6 text-gray-500' />}
+				icon={<HomeModernIcon className='h-6 text-gray-500' />}
 				paths={paths}
 			/>
 			<GenericTable
@@ -150,21 +135,35 @@ const Accounts = () => {
 						action={(page: number) => {
 							setFilter({ ...filter, page });
 						}}
-						data={paginate}
+						data={{ totalItems, currentPage, totalPages }}
 					/>
 				}
 			/>
 
-			{addTicketmodal && (
+			{/*addTicketmodal && (
 				<Modal state={addTicketmodal} close={setAddTicketmodal}>
-					<NewAccountModal
+					<NewEntityModal
 						setContactModal={setContactModal}
 						close={closeAddAccount}
 						contactModal={contactModal}
 						setNuevoTicketModal={setNuevoTicketModal}
 						nuevoTicketModal={nuevoTicketModal}
+					/>
+				</Modal>
+			)*/}
+			{editTicketModal.state && (
+				<Modal state={editTicketModal.state} close={close} size='m'>
+					<EditEntityContainer
+						id={editTicketModal.id}
+						editEntity={editEntity}
+						deleteEntity={deleteEntity}
+						isFetching={isFetching}
+						closeModal={close}
+						getEntity={getEntity}
+						setAllEntity={setAllEntity}
 						isLoading={isLoading}
-						addAccount={addAccount}
+						entity={entity}
+						allEntity={allEntity}
 					/>
 				</Modal>
 			)}
@@ -172,4 +171,5 @@ const Accounts = () => {
 	);
 };
 
-export default Accounts;
+export default Entity;
+
