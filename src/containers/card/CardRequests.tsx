@@ -30,12 +30,14 @@ import useServerCardsRequests from '../../api/userServerCardsRequests';
 import CreatedStateForTable from '../../components/misc/CreatedStateForTable';
 import NewCardRequestModal from './newCardRequest/NewCardRequestModal';
 import EditCardRequestContainer from './editCardRequestWizzard/EditCardRequestContainer';
+import StatusForCardRequest from '../../components/misc/StatusForCardRequest';
 
 const CardRequests = () => {
 	const [query, setQuery] = useState<string>('');
 	const [post, setPost] = useState(null);
 
 	const {
+		acceptRequest,
 		paginate,
 		isLoading,
 		isFetching,
@@ -43,8 +45,9 @@ const CardRequests = () => {
 		modalWaiting,
 		cardRequest,
 		getAllCardsRequests,
-		addCardRequest,
+		addSimpleCardRequest,
 		getCardRequest,
+		addBulkCardRequest,
 		editCardRequest,
 		deleteCardRequest,
 		manageErrors,
@@ -52,6 +55,8 @@ const CardRequests = () => {
 		allCardsRequests,
 		setAllCardsRequests,
 		setSelectedDataToParent,
+		GetRequestRecord,
+		cardRequestRecords,
 	} = useServerCardsRequests();
 
 	const [filter, setFilter] = useState<
@@ -60,23 +65,25 @@ const CardRequests = () => {
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
 
 	//Data for table ------------------------------------------------------------------------
-	const tableTitles = ['Tipo', 'Propietario', 'Estado'];
+	const tableTitles = [
+		'No. Solicitud',
+		'Tipo',
+		'Propietario',
+		'Cuenta',
+		'Estado',
+	];
 	const tableData: DataTableInterface[] = [];
 
 	allCardsRequests?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
+				'No. Solicitud': item?.queryNumber ?? '-',
 				Tipo: item?.priority,
-				Propietario: item.user?.fullName,
+				Propietario: item?.holderName ?? '-',
+				Cuenta: item?.account ?? '-',
 
-				Estado: (
-					<CreatedStateForTable
-						greenState='CREADA'
-						redState='SIN CREAR'
-						currentState={item.status}
-					/>
-				),
+				Estado: <StatusForCardRequest currentState={item.status} />,
 			},
 		});
 	});
@@ -85,7 +92,7 @@ const CardRequests = () => {
 		action: (search: string) => setFilter({ ...filter, search }),
 		placeholder: 'Buscar Solicitud',
 	};
-	const close = () => setEditTicketModal({ state: false, id: null });
+	const close = () => setEditCardRequestModal({ state: false, id: null });
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
@@ -93,10 +100,6 @@ const CardRequests = () => {
 			action: () => setAddTicketmodal(true),
 		},
 	];
-
-	const rowAction = (id: number) => {
-		setEditTicketModal({ state: true, id });
-	};
 
 	//Breadcrumb-----------------------------------------------------------------------------------
 	const paths: PathInterface[] = [
@@ -108,17 +111,23 @@ const CardRequests = () => {
 		},
 	];
 	//------------------------------------------------------------------------------------
-	const [nuevoTicketModal, setNuevoTicketModal] = useState(false);
+	const [nuevoCardRequestModal, setNuevoCardRequestModal] = useState(false);
 	const [contactModal, setContactModal] = useState(false);
-	const [editTicketModal, setEditTicketModal] = useState<{
+	const [editCardRequestModal, setEditCardRequestModal] = useState<{
 		state: boolean;
 		id: number | null;
 	}>({ state: false, id: null });
+
+	const rowAction = (id: number) => {
+		setEditCardRequestModal({ state: true, id });
+		GetRequestRecord(id, filter);
+	};
 
 	const closeAddAccount = () => setAddTicketmodal(false);
 
 	useEffect(() => {
 		getAllCardsRequests(filter);
+		console.log(paginate);
 	}, [filter]);
 
 	return (
@@ -149,15 +158,20 @@ const CardRequests = () => {
 						setContactModal={setContactModal}
 						close={closeAddAccount}
 						contactModal={contactModal}
-						setNuevoTicketModal={setNuevoTicketModal}
-						nuevoTicketModal={nuevoTicketModal}
+						setNuevoCardRequestModal={setNuevoCardRequestModal}
+						nuevoCardRequestModal={nuevoCardRequestModal}
+						addBulkCardRequest={addBulkCardRequest}
+						isFetching={isFetching}
+						addSimpleCardRequest={addSimpleCardRequest}
 					/>
 				</Modal>
 			)}
-			{editTicketModal.state && (
-				<Modal state={editTicketModal.state} close={close} size='m'>
+			{editCardRequestModal.state && (
+				<Modal state={editCardRequestModal.state} close={close} size='m'>
 					<EditCardRequestContainer
-						id={editTicketModal.id}
+						cardRequestRecords={cardRequestRecords}
+						acceptRequest={acceptRequest}
+						id={editCardRequestModal.id}
 						editCardRequest={editCardRequest}
 						deleteCardRequest={deleteCardRequest}
 						isFetching={isFetching}

@@ -93,13 +93,11 @@ const useServerUsers = () => {
   ) => {
     setIsFetching(true);
     await query
-      .put(`/user/${id}`, data)
+      .patch(`/user/${id}`, data)
       .then((resp) => {
         const newUsers:any = [...allUsers];
         const idx = newUsers.findIndex((user:any) => user.id === id);
-        const userWithId = allUsers.find((card:any) => card.id == id);
-        //const wholeData = Object.assign(data, {id, issueEntity:{name: selectedDataToParentTwo?.name}, owner:{fullName:userWithId?.owner.fullName}, currency: {code: selectedDataToParent?.name}} )
-        //newUsers.splice(idx, 1, wholeData);        
+        newUsers.splice(idx, 1, resp.data);      
         setAllUsers(newUsers)
         callback?.();
       })

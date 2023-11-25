@@ -75,7 +75,7 @@ const Accounts = () => {
 				Nombre: item?.name,
 				Entidad: item?.issueEntity?.name,
 				Propietario: item.owner?.fullName,
-				Moneda: item.currency?.code ?? '-',
+				Moneda: item.currency ?? '-',
 				Dirección: item.address,
 				'': (
 					<span className='flex whitespace-nowrap gap-4'>
@@ -99,9 +99,7 @@ const Accounts = () => {
 		},
 		placeholder: 'Buscar ticket',
 	};
-	const close = () => {
-		setEditTicketModal({ state: false, id: null });
-	};
+
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,

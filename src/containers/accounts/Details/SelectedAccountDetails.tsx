@@ -17,7 +17,9 @@ const SelectedAccountDetails = ({
 	account,
 }: PropsInterface) => {
 	return isLoading ? (
-		<Loading />
+		<div className='relative bottom-20'>
+			<Loading />
+		</div>
 	) : (
 		<>
 			{account && (
@@ -27,8 +29,8 @@ const SelectedAccountDetails = ({
 						'No. cuenta': `${account.address}`,
 
 						'Fecha de emisión': `${formatDate(account?.createdAt)}`,
-						'Creada por': `${account?.createdById ?? '-'}`,
-						Dirección: `${account?.address}`,
+						'Creada por': `${account?.createdBy.fullName ?? '-'}`,
+
 						Código: `${account?.code ?? '-'}`,
 						Moneda: account?.currency ?? '-',
 						Propietario: account?.owner?.fullName,

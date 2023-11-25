@@ -14,8 +14,9 @@ import StateSpanForTable from '../../../../components/misc/StateSpanForTable';
 import BlockedStateForTable from '../../../../components/misc/BlockedStateForTable';
 import { formatCalendar } from '../../../../utils/helpers';
 import { json } from 'stream/consumers';
+import { formatDate } from '../../../../utils/helpersAdmin';
 
-const AssociatedCards = (allCards: any, paginate: any) => {
+const AssociatedRecords = (records: any, paginate: any) => {
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
@@ -27,18 +28,18 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 
 	// Data for table ------------------------------------------------------------------------
 	const tableTitles = [
-		'No. Tarjeta',
+		'Fecha',
 		'Nombre',
-		'Propietario',
-		'Moneda',
-		'Fecha de Expiración',
+		'Acción',
+		'Detalles',
+		'Observaciones',
 	];
 
-	const cardMapping = async () => {
-		const loadedAllCards = await allCards;
+	const recordMapping = async () => {
+		const loadedAllCards = await records;
 
 		setLoadedPaginate(loadedAllCards.paginate);
-		const items = loadedAllCards.allCards;
+		const items = loadedAllCards.records;
 
 		items.map((item: any) => {
 			setTableData((prevTableData) => [
@@ -46,16 +47,11 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 				{
 					rowId: item.id,
 					payload: {
-						'No. Tarjeta': item.address,
-						Nombre: item?.account.name ?? '-',
-						Propietario: item?.holderName ?? '-',
-						Moneda: item.account.currency ?? '-',
-						'Fecha de Expiración': formatCalendar(item?.expiratedAt),
-						'': (
-							<span className='flex whitespace-nowrap gap-4'>
-								<BlockedStateForTable currentState={item.isBlocked} />
-							</span>
-						),
+						Fecha: formatDate(item?.createdAt),
+						Nombre: item?.title ?? '-',
+						Acción: item?.action,
+						Detalles: item?.details ?? '-',
+						Observaciones: item?.observations ?? '-',
 					},
 				},
 			]);
@@ -63,7 +59,7 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 	};
 
 	useEffect(() => {
-		cardMapping();
+		recordMapping();
 	}, []);
 
 	const searching = {
@@ -110,14 +106,14 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 				//actions={actions}
 				rowAction={rowAction}
 				// filterComponent={{ availableFilters, filterAction }}
-				paginateComponent={
-					<Paginate
-						action={(page: number) => {
-							setFilter({ ...filter, page });
-						}}
-						data={loadedPaginate}
-					/>
-				}
+				//paginateComponent={
+				//	<Paginate
+				//		action={(page: number) => {
+				//			setFilter({ ...filter, page });
+				//		}}
+				//		data={loadedPaginate}
+				//	/>
+				//}
 			/>
 		</div>
 	) : (
@@ -125,4 +121,4 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 	);
 };
 
-export default AssociatedCards;
+export default AssociatedRecords;

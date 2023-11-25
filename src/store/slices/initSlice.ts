@@ -21,7 +21,7 @@ interface RolesStateInterface {
 
 interface InitialInterface {
   business: BusinessInterface | null;
-  user: UserInterface | null;
+  user: any;
   roles: RolesStateInterface | null;
   branches: any[];
   loading: boolean;
@@ -40,23 +40,7 @@ const initSlice = createSlice({
   name: "init",
   reducers: {
     //Business --------------------------------------------------------------------------------------
-    setFullBusiness: (state, action) => ({
-      ...state,
-      business: action.payload,
-    }),
-    updateBusiness: (state, action) => ({
-      ...state,
-      business: { ...state.business, ...action.payload },
-    }),
-    updateSpecificElementBussiness: (state, action) => {
-      let new_elements: ConfigUpdate[] = action.payload;
-
-      state.business?.configurationsKey?.forEach((item:any) => {
-        new_elements.forEach((new_value) => {
-          if (new_value.key === item.key) item.value = new_value.value;
-        });
-      });
-    },
+   
     //Users--------------------------------------------------------------------------------------
     setFullUser: (state, action) => ({ ...state, user: action.payload }),
     updateUser: (state, action) => ({
@@ -96,28 +80,19 @@ const initSlice = createSlice({
         };
         return {
           ...state,
-          business: action.payload.business,
           user,
           roles,
           branches: action.payload.branches,
         };
       })
-      .addCase(changeBusiness.pending, (state) => ({ ...state, loading: true }))
-      .addCase(changeBusiness.fulfilled, (state, action) => ({
-        ...state,
-        loading: false,
-        business: action.payload.business,
-      }));
+     
   },
 });
 
 export const {
   setBranches,
-  setFullBusiness,
   setFullUser,
-  updateBusiness,
   updateUser,
-  updateSpecificElementBussiness,
 } = initSlice.actions;
 
 export default initSlice.reducer;

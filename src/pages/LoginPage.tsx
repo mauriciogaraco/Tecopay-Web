@@ -2,6 +2,8 @@ import useServer from '../api/useServer';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import Logo from '../assets/png/logo-tecopay.png';
 import Input from '../components/forms/Input';
+import { EyeIcon } from '@heroicons/react/20/solid';
+import { useState } from 'react';
 
 export default function Login() {
 	const { control, handleSubmit } = useForm();
@@ -11,7 +13,7 @@ export default function Login() {
 	const onSubmit: SubmitHandler<Record<string, string>> = (values) => {
 		logIn(values);
 	};
-
+	const [showPsw, setShowPsw] = useState(false);
 	return (
 		<>
 			<div className='flex min-h-screen items-center justify-center px-4 sm:px-6 lg:px-8'>
@@ -45,13 +47,20 @@ export default function Login() {
 								inputClass='border border-gray-500 rounded-md text-center w-full placeholder:text-center focus:ring-tecopay-600 focus:border-tecopay-600'
 								placeholder='Nombre de usuario'
 							/>
-							<Input
-								name='password'
-								type='password'
-								inputClass='border border-gray-500 rounded-md text-center w-full placeholder:text-center focus:ring-tecopay-600 focus:border-tecopay-600'
-								control={control}
-								placeholder='Contraseña'
-							/>
+							<div className='relative'>
+								<EyeIcon
+									className='h-5 text-gray-500 absolute top-[15px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+									onClick={() => setShowPsw(!showPsw)}
+								/>
+
+								<Input
+									name='password'
+									control={control}
+									inputClass='border border-gray-500 rounded-md text-center w-full placeholder:text-center focus:ring-tecopay-600 focus:border-tecopay-600'
+									type={showPsw ? 'text' : 'password'}
+									placeholder={showPsw ? 'Nueva contraseña' : '******'}
+								/>
+							</div>
 						</div>
 
 						<div className='flex items-center justify-center'>

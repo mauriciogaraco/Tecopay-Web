@@ -7,13 +7,17 @@ import 'react-toastify/dist/ReactToastify.css';
 import AppContainer from '../containers/AppContainer';
 
 import Accounts from '../containers/accounts/Accounts';
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import Loading from '../components/misc/Loading';
 import Entity from '../containers/entity/Entity';
 import Card from '../containers/card/Card';
 import CardRequests from '../containers/card/CardRequests';
-import AccountDetails from '../containers/accounts/Details/AccountDetails';
+
 import Users from '../containers/users/Users';
+import { setFullUser } from '../store/slices/initSlice';
+import { useAppDispatch } from '../store/hooks';
+import useInitialLoad from '../api/useInitialLoad';
+import AccountDetails from '../containers/accounts/Details/AccountDetails';
 
 //Almacenes
 /*const ListStocks = lazy(() => import("../containers/areas/ListStocks"));
@@ -31,6 +35,11 @@ const ReportContainer = lazy(
 );*/
 
 const AppRoute = () => {
+	const { init } = useInitialLoad();
+
+	useEffect(() => {
+		init();
+	}, []);
 	return (
 		<Routes>
 			<Route path='/' element={<AppContainer />}>

@@ -26,6 +26,8 @@ import GenericTable, {
 } from '../../../components/misc/GenericTable';
 import BlockedStateForTable from '../../../components/misc/BlockedStateForTable';
 import CreatedStateForTable from '../../../components/misc/CreatedStateForTable';
+import StatusForCardRequest from '../../../components/misc/StatusForCardRequest';
+import { formatDate } from '../../../utils/helpersAdmin';
 
 interface EditInterface {
 	cardRequest: any;
@@ -36,6 +38,7 @@ interface EditInterface {
 	id: number | null;
 	allCardsRequests: any;
 	setSelectedDataToParent: any;
+	cardRequestRecords: any;
 }
 
 const EditDetailCardRequestComponent = ({
@@ -46,24 +49,18 @@ const EditDetailCardRequestComponent = ({
 	isFetching,
 	id,
 	allCardsRequests,
-	setSelectedDataToParent,
+	cardRequestRecords,
 }: EditInterface) => {
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = ['Fecha', 'Estado', 'Resgistrado Por'];
 	const tableData: DataTableInterface[] = [];
-	allCardsRequests?.map((item: any) => {
+	cardRequestRecords?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				Fecha: item.id,
-				Estado: (
-					<CreatedStateForTable
-						greenState='CREADA'
-						redState='SIN CREAR'
-						currentState={item.status}
-					/>
-				),
-				'Resgistrado Por': item.id,
+				Fecha: formatDate(item.createdAt),
+				Estado: <StatusForCardRequest currentState={item.status} />,
+				'Resgistrado Por': item?.issuedBy?.fullName ?? '-',
 			},
 		});
 	});

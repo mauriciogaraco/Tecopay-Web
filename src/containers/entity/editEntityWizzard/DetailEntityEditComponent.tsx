@@ -106,28 +106,28 @@ const DetailEntityEditComponent = ({
 							}}
 						/>
 
-						<AsyncComboBox
+						{/*<AsyncComboBox
 							name='currencyId'
 							defaultItem={{
 								id: entity?.currencyId,
 								name: desiredCurrencyCodeEntityObject?.currency?.code,
 							}}
-							defaultValue={entity?.code}
+							defaultValue={entity?.id}
 							control={control}
 							rules={{ required: 'Campo requerido' }}
 							label='Moneda'
 							dataQuery={{ url: '/currency' }}
 							normalizeData={{ id: 'id', name: 'code' }}
-						></AsyncComboBox>
-						<Select
-							name='status'
-							default={desiredCurrencyCodeEntityObject?.status}
-							defaultValue={desiredCurrencyCodeEntityObject?.status}
-							label='Estado de la entidad'
-							control={control}
-							data={statusData}
-						></Select>
+						></AsyncComboBox>*/}
 					</div>
+					<Select
+						name='status'
+						default={desiredCurrencyCodeEntityObject?.status}
+						defaultValue={desiredCurrencyCodeEntityObject?.status}
+						label='Estado de la entidad'
+						control={control}
+						data={statusData}
+					></Select>
 
 					<TextArea
 						defaultValue={entity?.address}
