@@ -35,9 +35,6 @@ const EditCardContainer = ({
 	isLoading,
 	setSelectedDataToParent,
 }: UserWizzardInterface) => {
-	useEffect(() => {
-		id && getCard(id);
-	}, []);
 	const [editModal, setEditModal] = useState(false);
 	const [currentTab, setCurrentTab] = useState('details');
 
@@ -69,7 +66,7 @@ const EditCardContainer = ({
 				{currentTab == 'details' ? (
 					<div>
 						<div className=''>
-							<DetailCardComponent id={id} allCards={allCards} Card={card} />
+							<DetailCardComponent id={id} allCards={allCards} />
 						</div>
 					</div>
 				) : (
@@ -77,7 +74,6 @@ const EditCardContainer = ({
 						id={id}
 						editCard={editCard}
 						deleteCard={deleteCard}
-						Card={card}
 						closeModal={closeModal}
 						isFetching={isFetching}
 						allCards={allCards}

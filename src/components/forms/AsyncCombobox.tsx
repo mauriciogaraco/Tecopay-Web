@@ -40,6 +40,7 @@ interface InputProps {
 	setSelectedDataToParent?: Function;
 	selectedDataToParent?: any;
 	setSelectedDataToParentTwo?: Function;
+	string?: boolean;
 }
 
 export default function AsyncComboBox(props: UseControllerProps & InputProps) {
@@ -57,6 +58,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 		nullOpt,
 		setSelectedDataToParent,
 		setSelectedDataToParentTwo,
+		string,
 	} = props;
 
 	//query management states ----------------------------------------------------------
@@ -116,6 +118,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 						}
 					},
 				);
+
 				setData(nullOpt ? [nullOpt, ...items] : items);
 				callback && callback(resp.data.items);
 			})
@@ -135,7 +138,7 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 		if (Object.values(allParams).length !== 0 && !disabled) {
 			apiCall(allParams);
 		}
-
+		console.log(data);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [query, allParams]);
 	//-------------------------------------------------------------------------
@@ -167,7 +170,9 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 				value={selectedData}
 				onChange={(e: SelectInterface) => {
 					setSelectedData(e);
-					field.onChange(e.id);
+					{
+						string == true ? field.onChange(e.name) : field.onChange(e.id);
+					}
 					{
 						if (dataQuery.url !== '/entity/all')
 							setSelectedDataToParent && setSelectedDataToParent(e);

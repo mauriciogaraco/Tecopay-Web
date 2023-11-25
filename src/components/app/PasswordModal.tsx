@@ -35,7 +35,7 @@ const PasswordModal = ({ closeModal }: PasswordModal) => {
 			<div className='grid grid-cols-2 gap-3 my-3'>
 				<div className='relative'>
 					<EyeIcon
-						className='h-5 text-gray-500 absolute top-10 right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+						className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
 						onClick={() => setShowPsw(!showPsw)}
 					/>
 
@@ -50,7 +50,7 @@ const PasswordModal = ({ closeModal }: PasswordModal) => {
 
 				<div className='relative'>
 					<EyeIcon
-						className='h-5 text-gray-500 absolute top-10 right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+						className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
 						onClick={() => setShowPsw(!showPsw)}
 					/>
 					<Input
@@ -70,7 +70,7 @@ const PasswordModal = ({ closeModal }: PasswordModal) => {
 				</div>
 				<div className='col-span-2 relative'>
 					<EyeIcon
-						className='h-5 text-gray-500 absolute top-10 right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+						className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
 						onClick={() => setShowPin(!showPin)}
 					/>
 					<Input

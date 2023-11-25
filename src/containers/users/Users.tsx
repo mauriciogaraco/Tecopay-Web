@@ -1,8 +1,7 @@
 import { PlusIcon, UsersIcon } from '@heroicons/react/24/outline';
 
 import GenericTable, {
-	type DataTableInterface,
-	type FilterOpts,
+	DataTableInterface,
 } from '../../components/misc/GenericTable';
 import useServerUsers from '../../api/userServerUsers';
 
@@ -11,22 +10,10 @@ import Modal from '../../components/modals/GenericModal';
 import Breadcrumb, {
 	type PathInterface,
 } from '../../components/navigation/Breadcrumb';
-import {
-	BasicType,
-	type SelectInterface,
-} from '../../interfaces/InterfacesLocal';
-
 import { useEffect, useState } from 'react';
-//import NewUserModal from './NewUser/NewUserModal';
-import { data } from '../../utils/TemporaryArrayData';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-//import EditUserContainer from './editUserWizzard/EditUserContainer';
-import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
-import StateSpanForTable from '../../components/misc/StateSpanForTable';
 
 import { useNavigate } from 'react-router-dom';
 import { Item } from '../../interfaces/UsersInterfaces';
-import NewUserModal from './NewUser/NewUserModalVariantOne';
 import NewUserModalVariantOne from './NewUser/NewUserModalVariantOne';
 import NewUserModalVariantTwo from './NewUser/NewUserModalVariantTwo';
 import EditUserModal from './editUseWizzard/EditUserModal';
@@ -37,7 +24,6 @@ const Users = () => {
 	const {
 		paginate,
 		isLoading,
-		isFetching,
 		allUsers,
 		user,
 		getAllUsers,
@@ -64,15 +50,17 @@ const Users = () => {
 	const tableData: DataTableInterface[] = [];
 
 	allUsers?.map((item: Item) => {
-		tableData.push({
-			rowId: item.id,
-			payload: {
-				Nombre: item?.fullName,
-				Entidad: item?.issueEntity?.name ?? '-',
-				'Correo Electrónico': item.email ?? '-',
-				Roles: item.roles[0].name,
-			},
-		});
+		if (item.roles && Array.isArray(item.roles)) {
+			tableData.push({
+				rowId: item.id,
+				payload: {
+					Nombre: item?.fullName,
+					Entidad: item?.issueEntity?.name ?? '-',
+					'Correo Electrónico': item.email ?? '-',
+					Roles: item.roles[0].name ?? '-',
+				},
+			});
+		}
 	});
 
 	const navigate = useNavigate();
@@ -151,12 +139,13 @@ const Users = () => {
 				<Modal state={editUserModal.state} close={setEditUserModal}>
 					<h3 className='p-4 text-xl md:text-2xl'>Editar usuario</h3>
 					<EditUserModal
-						close={closeAddUser}
+						close={close}
 						isLoading={isLoading}
 						editUser={editUser}
 						getUser={getUser}
 						id={editUserModal.id}
 						user={user}
+						allUsers={allUsers}
 					/>
 				</Modal>
 			)}

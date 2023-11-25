@@ -22,6 +22,7 @@ import ComboBox from '../../../components/forms/Combobox';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 import useServerAccounts from '../../../api/userServerAccounts';
 import { useNavigate } from 'react-router-dom';
+import AsyncMultiSelect from '../../../components/forms/AsyncMultiselect';
 
 interface EditInterface {
 	account: any;
@@ -55,12 +56,7 @@ const DetailAccountEditComponent = ({
 	const [delAction, setDelAction] = useState(false);
 
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
-		const WholeData = Object.assign(data, {
-			code: '123456',
-			ownerId: 251,
-			id: account?.id,
-		});
-		editAccount(account?.id, deleteUndefinedAttr(WholeData), reset()).then(() =>
+		editAccount(account?.id, deleteUndefinedAttr(data), reset()).then(() =>
 			closeModal(),
 		);
 	};
@@ -82,73 +78,66 @@ const DetailAccountEditComponent = ({
 							/>
 						</div>
 					</div>
-
-					<Input
-						name='name'
-						defaultValue={account?.name}
-						label='Nombre'
-						control={control}
-						rules={{
-							required: 'Campo requerido',
-						}}
-					/>
-
-					<AsyncComboBox
-						name='issueEntityId'
-						defaultItem={{
-							id: account?.issueEntityId,
-							name: desiredCurrencyCodeEntityObject?.issueEntity?.name,
-						}}
-						defaultValue={account?.issueEntityId}
-						control={control}
-						rules={{ required: 'Campo requerido' }}
-						label='Entidad'
-						dataQuery={{ url: '/entity/all' }}
-						normalizeData={{ id: 'id', name: 'name' }}
-					></AsyncComboBox>
-					<AsyncComboBox
-						name='currencyId'
-						defaultItem={{
-							id: account?.currencyId,
-							name: desiredCurrencyCodeEntityObject?.currency?.code,
-						}}
-						defaultValue={account?.currencyId}
-						control={control}
-						rules={{ required: 'Campo requerido' }}
-						label='Moneda'
-						dataQuery={{ url: '/currency/all' }}
-						normalizeData={{ id: 'id', name: 'code' }}
-					></AsyncComboBox>
-
-					<div className='flex py-5 justify-around gap-5'>
-						<Toggle
-							name='isPrivate'
-							defaultValue={account?.isPrivate}
-							title='Cuenta privada'
+					<div>
+						<Input
+							name='name'
+							defaultValue={account?.name}
+							label='Nombre'
 							control={control}
-						></Toggle>
-						<Toggle
-							name='isActive'
-							title='Cuenta activa'
-							defaultValue={account?.isActive}
-							control={control}
-						></Toggle>
-					</div>
-					<TextArea
-						defaultValue={account?.description}
-						name='description'
-						control={control}
-						label='Descripción'
-					></TextArea>
-
-					<div className='flex justify-end mt-5'>
-						<Button
-							name='Insertar'
-							color='slate-600'
-							type='submit'
-							loading={isFetching}
-							disabled={isFetching}
+							rules={{
+								required: 'Campo requerido',
+							}}
 						/>
+
+						<AsyncMultiSelect
+							name='allowedUsersId'
+							normalizeData={{ id: 'id', name: 'fullName' }}
+							defaultItem={{
+								id: account?.id,
+								name: account?.allowedUsers,
+							}}
+							control={control}
+							label='Usuarios permitidos'
+							dataQuery={{ url: '/user' }}
+						/>
+
+						<div className='flex justify-around gap-5'>
+							<Toggle
+								name='isPrivate'
+								defaultValue={account?.isPrivate}
+								title='Cuenta privada'
+								control={control}
+							></Toggle>
+
+							<Toggle
+								name='isBlocked'
+								defaultValue={account?.isBlocked}
+								title='Cuenta bloqueada'
+								control={control}
+							></Toggle>
+							<Toggle
+								name='isActive'
+								title='Cuenta activa'
+								defaultValue={account?.isActive}
+								control={control}
+							></Toggle>
+						</div>
+						<TextArea
+							defaultValue={account?.description}
+							name='description'
+							control={control}
+							label='Descripción'
+						></TextArea>
+
+						<div className='flex justify-end mt-5'>
+							<Button
+								name='Insertar'
+								color='slate-600'
+								type='submit'
+								loading={isFetching}
+								disabled={isFetching}
+							/>
+						</div>
 					</div>
 				</div>
 			</form>

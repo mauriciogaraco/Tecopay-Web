@@ -51,7 +51,14 @@ const Card = () => {
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
 
 	//Data for table ------------------------------------------------------------------------
-	const tableTitles = ['Expiración', 'Propietario', 'Moneda', 'Dirección', ''];
+	const tableTitles = [
+		'No. Cuenta',
+		'Nombre',
+		'Propietario',
+		'Moneda',
+		'Cuenta',
+		'',
+	];
 	const tableData: DataTableInterface[] = [];
 	// eslint-disable-next-line array-callback-return
 
@@ -60,27 +67,19 @@ const Card = () => {
 	// @ts-ignore
 	allCards?.map((item: any) => {
 		tableData.push({
-			rowId: item.id,
+			rowId: item?.id,
 			payload: {
-				Código: `${item?.code}`,
-				Expiración: formatCalendar(item?.expiratedAt),
-				Propietario: item.holder?.fullName,
-				Moneda: item.currency?.code,
-
-				Dirección: item.address,
+				'No. Cuenta': item?.address,
+				Nombre: item?.account.name ?? '-',
+				Propietario: item?.holderName ?? '-',
+				Moneda: item?.account.currency,
+				Cuenta: item?.account.address,
 				'': <BlockedStateForTable currentState={item.isBlocked} />,
 			},
 		});
 	});
 
 	const close = () => setEditTicketModal({ state: false, id: null });
-	const actions = [
-		{
-			icon: <PlusIcon className='h-5' />,
-			title: 'Agregar tarjeta',
-			action: () => setAddTicketmodal(true),
-		},
-	];
 
 	const rowAction = (id: number) => {
 		setEditTicketModal({ state: true, id });
@@ -116,7 +115,6 @@ const Card = () => {
 				tableData={tableData}
 				tableTitles={tableTitles}
 				loading={isLoading}
-				actions={actions}
 				rowAction={rowAction}
 				//filterComponent={{ availableFilters, filterAction }}
 				paginateComponent={
