@@ -52,15 +52,7 @@ const EditExchangeRateModal = ({
 
                 <div className='flex justify-between items-center'>
                     <p className='mb-4 font-semibold text-lg text-center'>Editar tasa</p>
-                    <Button
-                        name="Eliminar"
-                        icon={<TrashIcon className="h-5" />}
-                        color="red-600"
-                        type="button"
-                        textColor="white"
-                        loading={isFetching}
-                        action={() => setAlert(true)}
-                    />
+
                 </div>
 
 
@@ -112,6 +104,19 @@ const EditExchangeRateModal = ({
                 </div>
 
                 <div className="flex justify-end pt-10 self-end">
+
+                    <div className='mr-2'>
+                        <Button
+                            name="Eliminar"
+                            icon={<TrashIcon className="h-5" />}
+                            color="red-600"
+                            type="button"
+                            textColor="white"
+                            loading={isFetching}
+                            action={() => setAlert(true)}
+                        />
+                    </div>
+
                     <Button name="Actualizar" color="slate-600" type="submit" loading={isFetching} />
                 </div>
             </form>

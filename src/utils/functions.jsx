@@ -23,7 +23,7 @@ import {
   faBoxes,
   faPallet,
 } from "@fortawesome/free-solid-svg-icons";
-import { infoPages } from "./dummy";
+// import { infoPages } from "./dummy";
 import moment from "moment";
 
 export const translateOptions = (options) => {
@@ -54,6 +54,23 @@ export const getMeasureSpanish = (value) => {
       break;
     case "LITRE":
       spanish = "Litro";
+      break;
+    default:
+      spanish = value;
+  }
+
+  return spanish;
+};
+
+export const getAccountAction = (value) => {
+  let spanish = "";
+
+  switch (value) {
+    case "ACCOUNT_CREATED":
+      spanish = "Cuenta creada";
+      break;
+    case "CARD_CREATED":
+      spanish = "Tarjeta creada";
       break;
     default:
       spanish = value;
@@ -277,38 +294,38 @@ export const getNewProductTittle = (value) => {
   return spanish;
 };
 
-export const getAreaTypePlanFree = (value) => {
-  let area = {};
+// export const getAreaTypePlanFree = (value) => {
+//   let area = {};
 
-  switch (value) {
-    case "SALE":
-      area = {
-        image: infoPages.PuntosDeVenta.image,
-        title: infoPages.PuntosDeVenta.title,
-        text: infoPages.PuntosDeVenta.text,
-      };
-      break;
-    case "STOCK":
-      area = {
-        image: infoPages.Almacenes.image,
-        title: infoPages.Almacenes.title,
-        text: infoPages.Almacenes.text,
-      };
-      break;
-    case "MANUFACTURER":
-      area = {
-        image: infoPages.Procesados.image,
-        title: infoPages.Procesados.title,
-        text: infoPages.Procesados.text,
-      };
-      break;
+//   switch (value) {
+//     case "SALE":
+//       area = {
+//         image: infoPages.PuntosDeVenta.image,
+//         title: infoPages.PuntosDeVenta.title,
+//         text: infoPages.PuntosDeVenta.text,
+//       };
+//       break;
+//     case "STOCK":
+//       area = {
+//         image: infoPages.Almacenes.image,
+//         title: infoPages.Almacenes.title,
+//         text: infoPages.Almacenes.text,
+//       };
+//       break;
+//     case "MANUFACTURER":
+//       area = {
+//         image: infoPages.Procesados.image,
+//         title: infoPages.Procesados.title,
+//         text: infoPages.Procesados.text,
+//       };
+//       break;
 
-    default:
-      area = value;
-  }
+//     default:
+//       area = value;
+//   }
 
-  return area;
-};
+//   return area;
+// };
 
 export const getOperationIcon = (value) => {
   let icon = "";
