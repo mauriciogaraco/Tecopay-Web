@@ -26,19 +26,23 @@ const SelectedAccountDetails = ({
 				<GenericList
 					header={{ title: `Detalles de cuenta ${id}` }}
 					body={{
-						'No. cuenta': `${account.address}`,
+						'No. cuenta': `${account?.address ?? '-'}`,
 
-						'Fecha de emisión': `${formatDate(account?.createdAt)}`,
+						'Fecha de emisión': `${formatDate(account?.createdAt ?? '-')}`,
 						'Creada por': `${account?.createdBy.fullName ?? '-'}`,
 
 						Código: `${account?.code ?? '-'}`,
 						Moneda: account?.currency ?? '-',
-						Propietario: account?.owner?.fullName,
+						Propietario: account?.owner?.fullName ?? '-',
 
-						Entidad: account?.issueEntity.name,
+						Entidad: account?.issueEntity.name ?? '-',
 
-						'Usuarios permitidos': account.allowedUsers ?? '-',
-						Descripción: account.description,
+						'Usuarios permitidos':
+							account.allowedUsers.map((user: any) => (
+								<p key={user.id}>{user.fullName}</p>
+							)) ?? '-',
+
+						Descripción: account?.description ?? '-',
 					}}
 				></GenericList>
 			)}

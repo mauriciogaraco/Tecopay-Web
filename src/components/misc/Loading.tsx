@@ -15,13 +15,14 @@ extend:{
 
 interface LoadingProps {
 	loading?: boolean;
+	h?: number;
 }
 
-const Loading = ({ loading = true }: LoadingProps) => {
+const Loading = ({ loading = true, h }: LoadingProps) => {
 	return (
 		<div
 			className={`flex ${
-				loading ? 'h-screen' : 'h-full'
+				loading ? ` ${!h ? 'h-screen' : `h-${h}`}` : 'h-full'
 			} justify-center items-center`}
 		>
 			<div className='relative h-20 w-20 grid grid-cols-2 grid-rows-2 gap-3 shadow-inner'>

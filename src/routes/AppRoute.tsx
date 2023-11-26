@@ -7,7 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import AppContainer from '../containers/AppContainer';
 
 import Accounts from '../containers/accounts/Accounts';
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import Loading from '../components/misc/Loading';
 import Entity from '../containers/entity/Entity';
 import Card from '../containers/card/Card';
@@ -23,10 +23,20 @@ import CurrencyExchangeRate from '../containers/currencys/currencyExchangeRate/C
 
 const AppRoute = () => {
 	const { init } = useInitialLoad();
+	const [isInitialized, setIsInitialized] = useState(false);
 
 	useEffect(() => {
-		init();
+		const initialize = async () => {
+			await init();
+			setIsInitialized(true);
+		};
+		initialize();
 	}, []);
+
+	if (!isInitialized) {
+		return <Loading></Loading>; // or return a loading spinner
+	}
+
 	return (
 		<Routes>
 			<Route path='/' element={<AppContainer />}>

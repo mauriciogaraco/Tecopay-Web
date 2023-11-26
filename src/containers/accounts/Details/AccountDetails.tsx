@@ -112,17 +112,19 @@ const AccountDetails = () => {
 					icon={<UserCircleIcon className='h-7 text-gray-500' />}
 					paths={paths}
 				/>
-				<div className='absolute right-[45px] mt-[6px] h-7 px-2'>
-					<Button
-						name='Editar'
-						icon={<PencilSquareIcon className=' text-white w-5' />}
-						color='slate-600'
-						type='button'
-						action={() => showEditModal()}
-						loading={isFetching}
-						disabled={isFetching}
-					/>
-				</div>
+				{current === 'detalles' && (
+					<div className='absolute right-[45px] mt-[6px] h-7 px-2'>
+						<Button
+							name='Editar'
+							icon={<PencilSquareIcon className=' text-white w-5' />}
+							color='slate-600'
+							type='button'
+							action={() => showEditModal()}
+							loading={isFetching}
+							disabled={isFetching}
+						/>
+					</div>
+				)}
 			</div>
 			<div className='sm:grid grid-cols-10 gap-3'>
 				<SideNav
@@ -161,7 +163,7 @@ const AccountDetails = () => {
 						id={id}
 						editAccount={editAccount}
 						isFetching={isFetching}
-						closeModal={()=>setEditModal(false)}
+						closeModal={() => setEditModal(false)}
 					/>
 				</Modal>
 			)}

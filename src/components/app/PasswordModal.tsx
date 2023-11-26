@@ -77,7 +77,7 @@ const PasswordModal = ({ closeModal }: PasswordModal) => {
 						name='pinPassword'
 						label='Nuevo PIN'
 						control={control}
-						placeholder={showPin ? 'PIN' : pinUnicode}
+						placeholder={showPin ? 'PIN' : '******'}
 						type={showPin ? 'text' : 'password'}
 						rules={{
 							maxLength: {

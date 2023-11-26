@@ -29,7 +29,7 @@ interface InitialInterface {
 
 const initialState: InitialInterface = {
   business: null,
-  user: null,
+  user: {fullName:'nonono'},
   roles: null,
   branches: [],
   loading: false,

@@ -4,7 +4,7 @@ import ComboBox from '../../../components/forms/Combobox';
 import TextArea from '../../../components/forms/TextArea';
 import { SelectInterface } from '../../../interfaces/LocalInterfaces';
 import { useAppSelector, useAppDispatch } from '../../../store/hooks';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Modal from '../../../components/misc/GenericModal';
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import Input from '../../../components/forms/Input';
@@ -14,6 +14,7 @@ import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 import Button from '../../../components/misc/Button';
 import MultiSelect from '../../../components/forms/Multiselect';
 import AsyncMultiSelect from '../../../components/forms/AsyncMultiselect';
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/20/solid';
 
 interface propsDestructured {
 	close: Function;
@@ -36,6 +37,8 @@ const NewUserModalVariantOne = ({
 			registerUser(deleteUndefinedAttr(data), close).then(() => close());
 		} catch (error) {}
 	};
+
+	const [showPsw, setShowPsw] = useState(false);
 
 	return (
 		<main>
@@ -60,13 +63,27 @@ const NewUserModalVariantOne = ({
 						rules={{ required: 'Campo requerido' }}
 					></Input>
 
-					<Input
-						name='password'
-						label='Contraseña'
-						placeholder='Contraseña'
-						control={control}
-						rules={{ required: 'Campo requerido' }}
-					></Input>
+					<div className='relative'>
+						{showPsw ? (
+							<EyeIcon
+								className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+								onClick={() => setShowPsw(!showPsw)}
+							/>
+						) : (
+							<EyeSlashIcon
+								className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+								onClick={() => setShowPsw(!showPsw)}
+							/>
+						)}
+
+						<Input
+							name='password'
+							label='Contraseña'
+							control={control}
+							type={showPsw ? 'text' : 'password'}
+							placeholder={showPsw ? '' : '******'}
+						/>
+					</div>
 
 					<AsyncMultiSelect
 						name='entity'
