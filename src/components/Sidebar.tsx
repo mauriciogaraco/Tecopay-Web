@@ -68,14 +68,13 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 	const { pathname } = useLocation();
 	const mainCurrent = pathname.split('/')[1];
 	const secondaryCurrent = pathname.split('/')[2];
-	const { business, branches, user, roles } = useAppSelector(
-		(state) => state.init,
-	);
+	const { user } = useAppSelector((state) => state.init);
 	const { logOut, isFetching } = useServer();
 	const [userModal, setUserModal] = useState(false);
 	const [passwModal, setPasswModal] = useState(false);
 	const { staticBar } = useAppSelector((state) => state.session);
-	const { fullName } = useAppSelector((state) => state.init.user);
+	// @ts-ignore
+	const { fullName } = useAppSelector((state) => state.Roles.roles);
 
 	const dispatch = useAppDispatch();
 
@@ -151,9 +150,6 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 	const [changeBusinessModal, setChangeBusinessModal] = useState(false);
 
 	const [disclosure, setDisclosure] = useState<number | null>(null);
-	useEffect(() => {
-		console.log(fullName);
-	}, []);
 
 	return (
 		<>
@@ -329,7 +325,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 								} px-2 py-2 text-sm font-medium rounded-md`,
 							)}
 						>
-							<div>
+							<div className='flex items-center justify-center gap-5'>
 								<Menu.Button className='flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
 									<span className='sr-only'>Open user menu</span>
 									<img
@@ -340,12 +336,14 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 										alt=''
 									/>
 								</Menu.Button>
+
+								{!fullName ? (
+									<div className=' text-white text-md'>null</div>
+								) : (
+									<div className=' text-white text-md'>{fullName}</div>
+								)}
 							</div>
-							{!fullName ? (
-								<div className=' text-gray-900 text-md'>null</div>
-							) : (
-								<div className=' text-gray-900 text-md'>{fullName} hola</div>
-							)}
+
 							<Transition
 								as={Fragment}
 								enter='transition ease-out duration-100'
