@@ -9,6 +9,7 @@ import {
 	PencilSquareIcon,
 } from '@heroicons/react/24/outline';
 import TabNav from '../../../components/navigation/TabNav';
+import Loading from '../../../components/misc/Loading';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -55,8 +56,8 @@ const EditCardContainer = ({
 
 	if (isLoading)
 		return (
-			<div className='h-96'>
-				<Fetching />
+			<div className='relative top-0'>
+				<Loading />
 			</div>
 		);
 	else

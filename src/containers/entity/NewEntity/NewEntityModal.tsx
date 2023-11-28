@@ -41,7 +41,7 @@ const NewEntityModal = ({
 			ownerId: 1,
 			businessId: 6,
 		});
-		console.log(sendData);
+
 		try {
 			addEntity(deleteUndefinedAttr(sendData), close).then(() => close());
 		} catch (error) {}

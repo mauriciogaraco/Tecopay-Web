@@ -108,7 +108,7 @@ const Users = () => {
 
 	useEffect(() => {
 		getAllUsers(filter);
-		console.log(allUsers);
+
 	}, [filter]);
 
 	return (

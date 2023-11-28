@@ -70,7 +70,7 @@ export const truncateValue = (
 
     return Number(truncateValue(result.getValue(), precission));
   } catch (error: any) {
-    console.log(error);
+
     return 0;
   }
 };*/

@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition, Disclosure, Menu } from '@headlessui/react';
 import {
 	LockClosedIcon,
@@ -68,13 +68,13 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 	const { pathname } = useLocation();
 	const mainCurrent = pathname.split('/')[1];
 	const secondaryCurrent = pathname.split('/')[2];
-	const { business, branches, user, roles } = useAppSelector(
-		(state) => state.init,
-	);
+	const { user } = useAppSelector((state) => state.init);
 	const { logOut, isFetching } = useServer();
 	const [userModal, setUserModal] = useState(false);
 	const [passwModal, setPasswModal] = useState(false);
 	const { staticBar } = useAppSelector((state) => state.session);
+	// @ts-ignore
+	const { fullName } = useAppSelector((state) => state.Roles.roles);
 
 	const dispatch = useAppDispatch();
 
@@ -140,7 +140,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 				{
 					name: 'Tasa de cambio',
 					href: `/coins/exchangeRate`,
-					current: secondaryCurrent === 'exchangeRate' && mainCurrent === 'coins',
+					current:
+						secondaryCurrent === 'exchangeRate' && mainCurrent === 'coins',
 				},
 			],
 		},
@@ -299,8 +300,9 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 
 			{/* Static sidebar for desktop */}
 			<div
-				className={`hidden transition-all ease-in-out duration-200 group md:fixed md:inset-y-0 md:flex ${staticBar ? 'md:w-64' : 'md:w-20 hover:w-64 active:w-64'
-					} md:flex-col md:pt-16 shadow-[25px_0_25px_-20px_#10101048] z-30 h-full`}
+				className={`hidden transition-all ease-in-out duration-200 group md:fixed md:inset-y-0 md:flex ${
+					staticBar ? 'md:w-64' : 'md:w-20 hover:w-64 active:w-64'
+				} md:flex-col md:pt-16 shadow-[25px_0_25px_-20px_#10101048] z-30 h-full`}
 				onMouseLeave={() =>
 					setDisclosure(navigation.findIndex((item) => item.current))
 				}
@@ -308,20 +310,26 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 				{/* Sidebar component, swap this element with another sidebar if you like */}
 				<div className='relative flex min-h-0 flex-1 flex-col bg-tecopay-800'>
 					<div
-						className={`flex flex-grow flex-col  scrollbar-thumb-tecopay-900 border-r border-tecopay-200 bg-tecopay-800 pt-1 pb-4 ${staticBar
+						className={`flex flex-grow flex-col  scrollbar-thumb-tecopay-900 border-r border-tecopay-200 bg-tecopay-800 pt-1 pb-4 ${
+							staticBar
 								? 'pr-3 scrollbar-thin'
 								: 'group-hover:pr-3 group-hover:scrollbar-thin'
-							}`}
+						}`}
 					>
 						{/* Profile dropdown */}
 						<Menu
 							as='div'
 							className={classNames(
-								`relative group flex ${staticBar ? '' : 'pl-6'} ${staticBar ? 'pl-4 ' : ' group-hover:pl-4'
+								`relative group flex ${staticBar ? '' : 'pl-4'} ${
+									staticBar ? 'pl-4 ' : ' group-hover:pl-4'
 								} px-2 py-2 text-sm font-medium rounded-md`,
 							)}
 						>
-							<div>
+							<div
+								className={`flex items-center justify-center group-hover:gap-5 ${
+									staticBar ? 'gap-5' : ''
+								} `}
+							>
 								<Menu.Button className='flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
 									<span className='sr-only'>Open user menu</span>
 									<img
@@ -332,7 +340,14 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 										alt=''
 									/>
 								</Menu.Button>
+
+								{!fullName ? (
+									<div className=' text-white text-md'>null</div>
+								) : (
+									<div className=' text-white text-md'>{fullName}</div>
+								)}
 							</div>
+
 							<Transition
 								as={Fragment}
 								enter='transition ease-out duration-100'
@@ -434,9 +449,10 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 													item.current
 														? 'bg-tecopay-900 text-white'
 														: 'text-white hover:bg-tecopay-700 hover:text-white',
-													`relative group flex items-center ${staticBar
-														? ''
-														: 'justify-center group-hover:justify-start'
+													`relative group flex items-center ${
+														staticBar
+															? ''
+															: 'justify-center group-hover:justify-start'
 													} px-2 py-2 text-sm font-medium rounded-md`,
 												)}
 											>
@@ -445,23 +461,26 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 														item.current
 															? 'text-white'
 															: 'text-white group-hover:text-white',
-														`${staticBar ? 'mr-3' : 'group-hover:mr-3'
+														`${
+															staticBar ? 'mr-3' : 'group-hover:mr-3'
 														} flex-shrink-0 h-6 w-6`,
 													)}
 													aria-hidden='true'
 												/>
 												<span
-													className={`${staticBar ? 'flex' : 'hidden group-hover:flex'
-														} flex-shrink-0`}
+													className={`${
+														staticBar ? 'flex' : 'hidden group-hover:flex'
+													} flex-shrink-0`}
 												>
 													{item.name}
 												</span>
 												{item.block && (
 													<LockClosedIcon
-														className={`${staticBar
+														className={`${
+															staticBar
 																? 'absolute'
 																: 'hidden group-hover:absolute'
-															} h-4 right-2`}
+														} h-4 right-2`}
 													/>
 												)}
 											</Link>
@@ -482,9 +501,10 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 																item.current
 																	? 'bg-tecopay-900 text-white'
 																	: 'text-white hover:bg-tecopay-900 hover:text-white',
-																`relative group w-full flex  items-center ${staticBar
-																	? ''
-																	: 'items-center justify-center group-hover:justify-start'
+																`relative group w-full flex  items-center ${
+																	staticBar
+																		? ''
+																		: 'items-center justify-center group-hover:justify-start'
 																} px-2 py-2 text-left text-sm font-medium rounded-md focus:outline-none`,
 															)}
 															onClickCapture={() => setDisclosure(idxMaster)}
@@ -494,31 +514,35 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 																	item.current
 																		? 'text-white'
 																		: 'text-white group-hover:text-white',
-																	`${staticBar ? 'mr-3' : 'group-hover:mr-3'
+																	`${
+																		staticBar ? 'mr-3' : 'group-hover:mr-3'
 																	} flex-shrink-0 h-6 w-6 text-center`,
 																)}
 																aria-hidden='true'
 															/>
 															<span
-																className={`${staticBar
+																className={`${
+																	staticBar
 																		? 'flex'
 																		: 'hidden group-hover:flex flex-shrink-0'
-																	}`}
+																}`}
 															>
 																{item.name}
 															</span>
 															<ChevronRightIcon
 																className={classNames(
 																	open ? 'text-white rotate-90' : 'text-white',
-																	`h-4 w-4 flex-shrink-0 transform transition-colors duration-150 ease-in-out group-hover:text-white ${staticBar ? '' : 'hidden group-hover:block'
+																	`h-4 w-4 flex-shrink-0 transform transition-colors duration-150 ease-in-out group-hover:text-white ${
+																		staticBar ? '' : 'hidden group-hover:block'
 																	} absolute right-1`,
 																)}
 															/>
 														</Disclosure.Button>
 
 														<Disclosure.Panel
-															className={`${staticBar ? '' : 'hidden group-hover:block'
-																} space-y-1 pl-4`}
+															className={`${
+																staticBar ? '' : 'hidden group-hover:block'
+															} space-y-1 pl-4`}
 														>
 															{item.children &&
 																item.children.map((subItem) => (
@@ -551,8 +575,9 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 
 							<div className='flex justify-center items-center mt-16'>
 								<BsPin
-									className={`text-white hover:text-white cursor-pointer ${staticBar ? '' : 'rotate-90'
-										}`}
+									className={`text-white hover:text-white cursor-pointer ${
+										staticBar ? '' : 'rotate-90'
+									}`}
 									onClick={() => dispatch(changeStaticBar())}
 								/>
 							</div>
