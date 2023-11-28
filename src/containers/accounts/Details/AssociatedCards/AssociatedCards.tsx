@@ -12,7 +12,7 @@ import { useAppSelector } from '../../../../store/hooks';
 import useServerCards from '../../../../api/userServerCards';
 import StateSpanForTable from '../../../../components/misc/StateSpanForTable';
 import BlockedStateForTable from '../../../../components/misc/BlockedStateForTable';
-import { formatCalendar } from '../../../../utils/helpers';
+import { formatCalendar, formatCardNumber } from '../../../../utils/helpers';
 import { json } from 'stream/consumers';
 
 const AssociatedCards = (allCards: any, paginate: any) => {
@@ -46,7 +46,7 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 				{
 					rowId: item.id,
 					payload: {
-						'No. Tarjeta': item.address,
+						'No. Tarjeta': formatCardNumber(item.address),
 						Nombre: item?.account.name ?? '-',
 						Propietario: item?.holderName ?? '-',
 						Moneda: item.account.currency ?? '-',

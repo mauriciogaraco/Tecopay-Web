@@ -129,3 +129,8 @@ export const validateEmail = (email: string | null) => {
   }
   return true;
 };
+
+export function formatCardNumber(inputNumber: string): string {
+  // Utilizamos expresiones regulares para dividir el número en grupos de cuatro dígitos y luego agregar espacios entre ellos
+  return inputNumber.replace(/(.{4})/g, '$1 ').trim();
+}
