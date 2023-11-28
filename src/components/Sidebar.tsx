@@ -320,12 +320,16 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 						<Menu
 							as='div'
 							className={classNames(
-								`relative group flex ${staticBar ? '' : 'pl-6'} ${
+								`relative group flex ${staticBar ? '' : 'pl-4'} ${
 									staticBar ? 'pl-4 ' : ' group-hover:pl-4'
 								} px-2 py-2 text-sm font-medium rounded-md`,
 							)}
 						>
-							<div className='flex items-center justify-center gap-5'>
+							<div
+								className={`flex items-center justify-center group-hover:gap-5 ${
+									staticBar ? 'gap-5' : ''
+								} `}
+							>
 								<Menu.Button className='flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
 									<span className='sr-only'>Open user menu</span>
 									<img
