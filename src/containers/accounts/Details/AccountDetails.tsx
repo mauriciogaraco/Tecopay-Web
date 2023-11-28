@@ -101,7 +101,7 @@ const AccountDetails = () => {
 		},
 
 		{
-			name: formatCardNumber(account?.address),
+			name: formatCardNumber(account?.address ?? '-'),
 		},
 	];
 	//--------------------------------------------------------------------------------------

@@ -43,7 +43,7 @@ const EditUserModal = ({
 		try {
 			editUser(id, deleteUndefinedAttr(data), close).then(() => close());
 		} catch (error) {
-			console.log(error);
+
 		}
 	};
 

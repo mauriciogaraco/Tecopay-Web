@@ -41,10 +41,9 @@ const useServerCardsRequests = () => {
           totalPages: resp.data.totalPages,
           currentPage: resp.data.currentPage,
         });
-        console.log(resp.data)
+
         setAllCardsRequests(resp.data.items)
-        console.log(resp.data.items)
-        console.log(resp.data.totalItems)
+
 
       })
       .catch((error) => { manageErrors(error); });
@@ -56,7 +55,7 @@ const useServerCardsRequests = () => {
     await query
       .get(`/cardRequest/${id}/record${generateUrlParams(filter)}`)
       .then((resp) => {
-        console.log(resp.data)
+
         setCardRequestRecords(resp.data)
       })
       .catch((error) => { manageErrors(error); });
@@ -71,10 +70,7 @@ const useServerCardsRequests = () => {
     await query
     .post("/cardRequest/simple", data)
       .then((resp) => {
-        
-        console.log(resp.data)
-        console.log(data)
-        console.log(allCardsRequests)
+
         setAllCardsRequests([...allCardsRequests, resp.data])
 
         
@@ -95,9 +91,7 @@ const useServerCardsRequests = () => {
     .post("/cardRequest/bulk", data)
       .then((resp) => {
         
-        console.log(resp.data)
-        console.log(data)
-        console.log(allCardsRequests)
+
         setAllCardsRequests([...allCardsRequests, resp.data])
 
         
@@ -136,7 +130,7 @@ const useServerCardsRequests = () => {
       .get(`/cardRequest/${id}`)
       .then((resp) => {
         setCardRequest(resp.data);
-        console.log(resp.data)
+
       })
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);

@@ -48,7 +48,7 @@ export default function Login() {
 								placeholder='Nombre de usuario'
 							/>
 							<div className='relative'>
-								{showPsw ? (
+								{showPsw == false ? (
 									<EyeIcon
 										className='h-5 text-gray-500 absolute top-[15px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
 										onClick={() => setShowPsw(!showPsw)}

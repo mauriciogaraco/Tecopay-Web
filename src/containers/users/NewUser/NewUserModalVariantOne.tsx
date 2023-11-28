@@ -32,7 +32,7 @@ const NewUserModalVariantOne = ({
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
-		console.log(data);
+
 		try {
 			registerUser(deleteUndefinedAttr(data), close).then(() => close());
 		} catch (error) {}
