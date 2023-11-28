@@ -26,6 +26,7 @@ import { saveAccountId } from '../../store/slices/accountSlice';
 import { useNavigate } from 'react-router-dom';
 import NewAccountModal from './NewAccount/NewAccountModal';
 import useServerCards from '../../api/userServerCards';
+import { formatCardNumber } from '../../utils/helpers';
 
 const Accounts = () => {
 	const {
@@ -71,12 +72,11 @@ const Accounts = () => {
 			rowId: item.id,
 			payload: {
 				'No.': item.id,
-				Código: `${item?.address}`,
+				Código: `${formatCardNumber(item?.address)}`,
 				Nombre: item?.name,
 				Entidad: item?.issueEntity?.name,
 				Propietario: item.owner?.fullName,
 				Moneda: item.currency ?? '-',
-				Dirección: item.address,
 				'': (
 					<span className='flex whitespace-nowrap gap-4'>
 						<BlockedStateForTable currentState={item.isBlocked} />

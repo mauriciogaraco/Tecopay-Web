@@ -21,6 +21,7 @@ import AssociatedCards from './AssociatedCards/AssociatedCards';
 import useServerCards from '../../../api/userServerCards';
 import AssociatedOperations from './AssociatedOperations/AssociatedOperations';
 import AssociatedRecords from './AssociatedRecords/AssociatedRecords';
+import { formatCardNumber } from '../../../utils/helpers';
 
 const AccountDetails = () => {
 	const { pathname } = useLocation();
@@ -100,7 +101,7 @@ const AccountDetails = () => {
 		},
 
 		{
-			name: account?.address,
+			name: formatCardNumber(account?.address),
 		},
 	];
 	//--------------------------------------------------------------------------------------

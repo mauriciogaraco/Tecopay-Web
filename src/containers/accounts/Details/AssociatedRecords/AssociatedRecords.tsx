@@ -1,5 +1,3 @@
-import { PlusIcon } from '@heroicons/react/24/outline';
-
 import { useEffect, useState } from 'react';
 
 import GenericTable, {
@@ -9,9 +7,7 @@ import { formatDate } from '../../../../utils/helpersAdmin';
 import { getAccountAction } from '../../../../utils/functions';
 
 const AssociatedRecords = (records: any, paginate: any) => {
-	const [filter, setFilter] = useState<
-		Record<string, string | number | boolean | null>
-	>({});
+	
 	const [tableData, setTableData] = useState<DataTableInterface[]>([]);
 
 	// Data for table ------------------------------------------------------------------------
@@ -49,19 +45,12 @@ const AssociatedRecords = (records: any, paginate: any) => {
 		recordMapping();
 	}, []);
 
-	const searching = {
-		action: (search: string) => {
-			setFilter({ ...filter, search });
-		},
-		placeholder: 'Buscar ticket',
-	};
 
 	return tableData ? (
 		<div>
 			<GenericTable
 				tableData={tableData}
 				tableTitles={tableTitles}
-				searching={searching}
 			/>
 		</div>
 	) : (

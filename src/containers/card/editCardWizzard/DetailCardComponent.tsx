@@ -2,6 +2,7 @@ import { title } from 'process';
 import GenericList from '../../../components/misc/GenericList';
 import { formatDate } from '../../../utils/helpersAdmin';
 import { useEffect } from 'react';
+import { formatCardNumber } from '../../../utils/helpers';
 
 interface EditInterface {
 	allCards: any;
@@ -15,7 +16,7 @@ const DetailCardComponent = ({ id, allCards }: EditInterface) => {
 			<GenericList
 				header={{ title: `Detalles de tarjeta ${id}` }}
 				body={{
-					'No. Tarjeta': desiredObject?.address ?? '-',
+					'No. Tarjeta': formatCardNumber(desiredObject?.address) ?? '-',
 					Nombre: desiredObject?.holderName ?? '-',
 					'Creada por': desiredObject?.issueEntity ?? '-',
 					'Fecha de emisión': 'No existe',
