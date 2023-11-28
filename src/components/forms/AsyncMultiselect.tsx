@@ -118,8 +118,7 @@ export default function AsyncMultiSelect(
 						}
 					},
 				);
-				console.log(resp.data.items);
-				console.log(items);
+
 				setData(nullOpt ? [nullOpt, ...items] : items);
 				callback && callback(resp.data.items);
 			})

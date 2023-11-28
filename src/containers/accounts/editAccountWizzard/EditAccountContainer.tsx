@@ -6,6 +6,7 @@ import useServerAccounts from '../../../api/userServerAccounts';
 import { redirect, useNavigate } from 'react-router-dom';
 import useServerCards from '../../../api/userServerCards';
 import DetailAccountEditComponent from './DetailAccountEditComponent';
+import Loading from '../../../components/misc/Loading';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -44,8 +45,8 @@ const EditAccountContainer = ({
 
 	if (isLoading)
 		return (
-			<div className='h-96'>
-				<Fetching />
+			<div className=''>
+				<Loading h={96} />
 			</div>
 		);
 	return (

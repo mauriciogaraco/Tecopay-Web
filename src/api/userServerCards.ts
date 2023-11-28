@@ -64,8 +64,7 @@ const useServerCards = () => {
     .post("/card", data)
       .then((resp) => {
         
-        console.log(resp.data.data)
-        console.log(items)
+
         setAllCards([...items, resp.data.data])
 
         
@@ -85,7 +84,7 @@ const useServerCards = () => {
     await query
       .put(`/card/${id}`, data)
       .then((resp) => {
-        console.log(selectedDataToParent)
+
         const newCards:any = [...allCards];
         const idx = newCards.findIndex((card:any) => card.id === id);
         const cardWithId = allCards.find((card:any) => card.id == id);

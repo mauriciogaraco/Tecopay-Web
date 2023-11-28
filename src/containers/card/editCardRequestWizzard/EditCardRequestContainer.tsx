@@ -12,6 +12,7 @@ import {
 	DocumentMagnifyingGlassIcon,
 	InformationCircleIcon,
 } from '@heroicons/react/24/outline';
+import Loading from '../../../components/misc/Loading';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -62,8 +63,8 @@ const EditCardRequestContainer = ({
 
 	if (isLoading)
 		return (
-			<div className='h-96'>
-				<Fetching />
+			<div className=''>
+				<Loading h={96} />
 			</div>
 		);
 

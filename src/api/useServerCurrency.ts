@@ -164,6 +164,8 @@ const useServerCurrency = () => {
 		setIsFetching(false);
 	  };
 
+
+
 	return {
 		paginate,
 		isLoading,
