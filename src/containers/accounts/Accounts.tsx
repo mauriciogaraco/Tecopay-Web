@@ -93,7 +93,6 @@ const Accounts = () => {
 
 	const navigate = useNavigate();
 
-
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,

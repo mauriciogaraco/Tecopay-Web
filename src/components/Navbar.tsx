@@ -21,7 +21,6 @@ import Logo from '../assets/png/logo-tecopay.png';
 
 const Navbar = () => {
 	const { logOut, isFetching } = useServer();
-	const { user, business } = useAppSelector((state) => state.init);
 
 	const [userModal, setUserModal] = useState(false);
 	const [passwModal, setPasswModal] = useState(false);
@@ -54,11 +53,7 @@ const Navbar = () => {
 		<>
 			<div
 				className={`fixed w-full top-0 z-40 flex h-16 flex-shrink-0 bg-${
-					business?.subscriptionPlan.code !== 'FREE' &&
-					difference &&
-					difference >= 0
-						? 'red'
-						: 'gray'
+					difference && difference >= 0 ? 'red' : 'gray'
 				}-50 shadow`}
 			>
 				<div className='flex flex-1 justify-between items-center gap-10'>

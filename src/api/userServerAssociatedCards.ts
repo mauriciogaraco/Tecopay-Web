@@ -56,8 +56,7 @@ const useServerUser = () => {
     .post("/account/register", data)
       .then((resp) => {
         
-        console.log(resp.data.data)
-        console.log(items)
+
         dispatch(saveAccount([...items, resp.data.data]))
         // setAllTickets();
         
@@ -80,7 +79,7 @@ const useServerUser = () => {
         const newUsers:any = [...items];
         const idx = newUsers.findIndex((user:any) => user.id === id);
         newUsers.splice(idx, 1, data);
-        console.log(newUsers)
+
         dispatch(saveAccount(newUsers))
         callback?.();
       })
@@ -94,7 +93,7 @@ const useServerUser = () => {
       .get(`/account/findById/${id}`)
       .then((resp) => {
         setUser(resp.data);
-        console.log(resp.data)
+
       })
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);

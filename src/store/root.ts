@@ -18,6 +18,7 @@ import accountreducer from "./slices/accountSlice";
 import CardReducer from "./slices/cardsSlice"
 import EntityReducer from './slices/EntitySlice'
 const persistConfig = { key: "root", storage, whitelist: ["session", 'account'] };
+import initReducer from './slices/roleSlice'
 
 const rootReducer = combineReducers({
   session: sessionSlice,
@@ -26,7 +27,8 @@ const rootReducer = combineReducers({
   configurationsKey:configurationsKeySlice,
   account: accountreducer,
   cards: CardReducer,
-  Entity: EntityReducer
+  Entity: EntityReducer,
+  Roles: initReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

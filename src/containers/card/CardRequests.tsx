@@ -127,7 +127,7 @@ const CardRequests = () => {
 
 	useEffect(() => {
 		getAllCardsRequests(filter);
-		console.log(paginate);
+
 	}, [filter]);
 
 	return (

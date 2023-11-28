@@ -38,7 +38,7 @@ const NewAccountModal = ({
 		const sendData = Object.assign(data, {
 			ownerId: 1,
 		});
-		console.log(sendData);
+
 		try {
 			addAccount(deleteUndefinedAttr(sendData), close).then(() => close());
 		} catch (error) {}

@@ -31,7 +31,7 @@ const NewUserModalVariantTwo = ({
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
-		console.log(data);
+
 		try {
 			addFromTecopos(deleteUndefinedAttr(data), close).then(() => close());
 		} catch (error) {}
