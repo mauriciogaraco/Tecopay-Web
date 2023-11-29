@@ -66,7 +66,7 @@ const useServerAccounts = () => {
       .then((resp) => {   
    setAllAccounts([...allAccounts, resp.data])
         
-        toast.success("Ticket agregado satisfactoriamente");
+        toast.success("Cuenta agregada satisfactoriamente");
       }).then(()=>close())
       .catch((e) => { manageErrors(e); });
     setIsFetching(false);

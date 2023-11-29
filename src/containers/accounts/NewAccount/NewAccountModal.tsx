@@ -81,7 +81,6 @@ const NewAccountModal = ({
 					<div className='h-full'>
 						<TextArea
 							name='description'
-							rules={{ required: 'Campo requerido' }}
 							control={control}
 							paddingInput='py-0'
 							label='Descripción'
