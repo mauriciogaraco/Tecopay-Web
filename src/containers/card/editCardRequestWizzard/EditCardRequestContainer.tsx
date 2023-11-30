@@ -27,12 +27,14 @@ interface UserWizzardInterface {
 	setSelectedDataToParent: any;
 	acceptRequest: Function;
 	cardRequestRecords: any;
+	updateCardStatus: Function;
 }
 
 const EditCardRequestContainer = ({
 	id,
 	editCardRequest,
 	deleteCardRequest,
+	updateCardStatus,
 	isFetching,
 	closeModal,
 	allCardsRequests,
@@ -73,6 +75,7 @@ const EditCardRequestContainer = ({
 			<TabNav action={setCurrentTab} tabs={tabs} />
 			{currentTab == 'details' ? (
 				<DetailCardRequestComponent
+					updateCardStatus={updateCardStatus}
 					acceptRequest={acceptRequest}
 					id={id}
 					editCardRequest={editCardRequest}

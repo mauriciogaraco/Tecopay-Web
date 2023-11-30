@@ -43,6 +43,7 @@ const Card = () => {
 		editCard,
 		deleteCard,
 		setSelectedDataToParent,
+		deliverCard,
 	} = useServerCards();
 
 	const [filter, setFilter] = useState<
@@ -140,6 +141,7 @@ const Card = () => {
 			{editTicketModal.state && (
 				<Modal state={editTicketModal.state} close={close} size='m'>
 					<EditCardContainer
+						deliverCard={deliverCard}
 						id={editTicketModal.id}
 						editCard={editCard}
 						deleteCard={deleteCard}

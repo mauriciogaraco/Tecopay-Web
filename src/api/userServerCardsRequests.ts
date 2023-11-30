@@ -137,6 +137,30 @@ const useServerCardsRequests = () => {
   };
 
 
+
+
+
+
+  const updateCardStatus = async (id: number, data: any, callback?: Function) => {
+    try {
+
+      setIsFetching(true);
+      await query
+
+      .post(`/cardRequest/${id}/status`, data)
+          .then((resp) => {
+
+          toast.success("Estado Actualizado con éxito");
+        })
+        .catch((error) => { manageErrors(error); });
+      setIsFetching(false);
+    } catch (error) {
+      console.log(error)
+    }
+
+  };
+
+
   const deleteCardRequest = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
@@ -184,6 +208,7 @@ const useServerCardsRequests = () => {
     setSelectedDataToParent,
     acceptRequest,
     GetRequestRecord,
+    updateCardStatus,
     cardRequestRecords
   };
 };
