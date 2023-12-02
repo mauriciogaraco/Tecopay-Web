@@ -108,7 +108,6 @@ const Users = () => {
 
 	useEffect(() => {
 		getAllUsers(filter);
-
 	}, [filter]);
 
 	return (
@@ -137,7 +136,9 @@ const Users = () => {
 
 			{editUserModal.state && (
 				<Modal state={editUserModal.state} close={setEditUserModal}>
-					<h3 className='p-4 text-xl md:text-2xl'>Editar usuario</h3>
+					<p className='mb-4 font-semibold text-lg text-center'>
+						Editar usuario
+					</p>
 					<EditUserModal
 						close={close}
 						isLoading={isLoading}
@@ -152,7 +153,9 @@ const Users = () => {
 			{addUsermodal && (
 				<Modal state={addUsermodal} close={setAddUsermodal}>
 					<div className='flex flex-col gap-4'>
-						<h3 className='p-4 text-xl md:text-2xl'>Nuevo usuario</h3>
+						<p className='mb-4 font-semibold text-lg text-center'>
+							Nuevo usuario
+						</p>
 						<div className=' flex gap-4 items-center'>
 							<input
 								type='radio'

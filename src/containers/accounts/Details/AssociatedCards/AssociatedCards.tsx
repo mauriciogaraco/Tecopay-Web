@@ -108,7 +108,7 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 				tableTitles={tableTitles}
 				// searching={searching}
 				//actions={actions}
-				rowAction={rowAction}
+				//rowAction={rowAction}
 				// filterComponent={{ availableFilters, filterAction }}
 				paginateComponent={
 					<Paginate

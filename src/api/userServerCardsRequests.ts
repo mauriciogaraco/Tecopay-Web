@@ -149,6 +149,11 @@ const useServerCardsRequests = () => {
 
       .post(`/cardRequest/${id}/status`, data)
           .then((resp) => {
+            const newCardsRequests:any = [...allCardsRequests];
+            const idx = newCardsRequests.findIndex((card:any) => card.id === id);
+            newCardsRequests.splice(idx, 1, resp.data);
+            
+            setAllCardsRequests(newCardsRequests)
 
           toast.success("Estado Actualizado con éxito");
         })

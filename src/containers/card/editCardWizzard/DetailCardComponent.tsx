@@ -1,6 +1,6 @@
 import { title } from 'process';
 import GenericList from '../../../components/misc/GenericList';
-import { formatDate } from '../../../utils/helpersAdmin';
+import { formatCalendar } from '../../../utils/helpersAdmin';
 import { useEffect, useState } from 'react';
 import { deleteUndefinedAttr, formatCardNumber } from '../../../utils/helpers';
 import Button from '../../../components/misc/Button';
@@ -29,7 +29,6 @@ const DetailCardComponent = ({ id, allCards, deliverCard }: EditInterface) => {
 	const desiredObject: any = allCards.find((item: any) => item.id === id);
 
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
-		console.log(data, id);
 		deliverCard(id, deleteUndefinedAttr(data), reset()).then(() =>
 			closeModal(),
 		);
@@ -40,11 +39,12 @@ const DetailCardComponent = ({ id, allCards, deliverCard }: EditInterface) => {
 				header={{ title: `Detalles de tarjeta ${id}` }}
 				body={{
 					'No. Tarjeta': formatCardNumber(desiredObject?.address) ?? '-',
-					Nombre: desiredObject?.holderName ?? '-',
+					Nombre: '-',
 					'Creada por': desiredObject?.issueEntity ?? '-',
 					'Fecha de emisión': 'No existe',
-					'Fecha de expiración': formatDate(desiredObject?.expiratedAt) ?? '-',
-					Propietario: 'No existe',
+					'Fecha de expiración':
+						formatCalendar(desiredObject?.expiratedAt) ?? '-',
+					Propietario: desiredObject?.holderName ?? '-',
 					Cuenta: desiredObject.account.address ?? '-',
 					Moneda: desiredObject?.account.currency ?? '-',
 					'Monto mínimo sin confirmar':

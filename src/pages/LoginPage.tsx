@@ -49,12 +49,12 @@ export default function Login() {
 							/>
 							<div className='relative'>
 								{showPsw == false ? (
-									<EyeIcon
+									<EyeSlashIcon
 										className='h-5 text-gray-500 absolute top-[15px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
 										onClick={() => setShowPsw(!showPsw)}
 									/>
 								) : (
-									<EyeSlashIcon
+									<EyeIcon
 										className='h-5 text-gray-500 absolute top-[15px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
 										onClick={() => setShowPsw(!showPsw)}
 									/>
@@ -70,7 +70,7 @@ export default function Login() {
 							</div>
 						</div>
 
-						<div className='flex items-center justify-center'>
+						{/*<div className='flex items-center justify-center'>
 							<div className='text-sm'>
 								<a
 									href='#'
@@ -79,7 +79,7 @@ export default function Login() {
 									¿Olvidó su contraseña?
 								</a>
 							</div>
-						</div>
+								</div>*/}
 
 						<div>
 							<button

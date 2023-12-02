@@ -104,7 +104,7 @@ const useServerCards = () => {
     close: Function,
 
   ) => {
-    console.log(id)
+
     setIsFetching(true);
     setIsLoading(true)
     await query

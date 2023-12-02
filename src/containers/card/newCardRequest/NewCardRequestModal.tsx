@@ -57,7 +57,9 @@ const NewCardRequestModal = ({
 	return (
 		<main>
 			<div>
-				<h3 className='p-4 text-xl md:text-2xl'>Nueva solicitud</h3>
+				<p className='mb-4 font-semibold text-lg text-center'>
+					Nueva solicitud
+				</p>
 				<Toggle
 					name=''
 					title='Crear por bulto'

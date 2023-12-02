@@ -25,6 +25,7 @@ import {
 	Cog6ToothIcon,
 	ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
+import { TbTransferIn } from 'react-icons/tb';
 import { useLocation, Link } from 'react-router-dom';
 
 import { BsPin } from 'react-icons/bs';
@@ -142,6 +143,27 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 					href: `/coins/exchangeRate`,
 					current:
 						secondaryCurrent === 'exchangeRate' && mainCurrent === 'coins',
+				},
+			],
+		},
+		{
+			name: 'Transacciones',
+			href: 'transactions',
+			icon: TbTransferIn,
+			current: mainCurrent === 'transactions',
+
+			children: [
+				{
+					name: 'Tranferir',
+					href: `/transactions/transfer`,
+					current:
+						secondaryCurrent === 'transfer' && mainCurrent === 'transactions',
+				},
+				{
+					name: 'Recargar',
+					href: `/transactions/charge`,
+					current:
+						secondaryCurrent === 'charge' && mainCurrent === 'transactions',
 				},
 			],
 		},
@@ -342,7 +364,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 								</Menu.Button>
 
 								{!fullName ? (
-									<div className=' text-white text-md'>null</div>
+									<div className=' text-white text-md'></div>
 								) : (
 									<div className=' text-white text-md'>{fullName}</div>
 								)}
