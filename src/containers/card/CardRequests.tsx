@@ -31,6 +31,7 @@ import CreatedStateForTable from '../../components/misc/CreatedStateForTable';
 import NewCardRequestModal from './newCardRequest/NewCardRequestModal';
 import EditCardRequestContainer from './editCardRequestWizzard/EditCardRequestContainer';
 import StatusForCardRequest from '../../components/misc/StatusForCardRequest';
+import { translateCardRequestType } from '../../utils/translateCardStatus';
 
 const CardRequests = () => {
 	const [query, setQuery] = useState<string>('');
@@ -80,7 +81,7 @@ const CardRequests = () => {
 			rowId: item.id,
 			payload: {
 				'No. Solicitud': item?.queryNumber ?? '-',
-				Tipo: item?.priority,
+				Tipo: translateCardRequestType(item?.priority),
 				Propietario: item?.holderName ?? '-',
 				Cuenta: item?.account ?? '-',
 

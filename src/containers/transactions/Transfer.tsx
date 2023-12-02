@@ -30,11 +30,14 @@ const Transfer = () => {
 		Transfer(deleteUndefinedAttr(dataTosend)).then(() => changeChildState(''));
 	};
 	return (
-		<div className='w-full h-full flex justify-center items-center'>
+		<div className='flex justify-center items-center w-full h-full'>
 			<div className='w-1/2 bg-white shadow-lg rounded-lg h-1/2'>
-				<form onSubmit={handleSubmit(onSubmit)}>
-					<div className='gap-5 flex flex-col mt-8 px-20'>
-						<p className='font-semibold text-lg text-center'>Transferir</p>
+				<form
+					className='relative w-full h-full flex flex-col 2xl:mt-8 mt-2 px-20 2xl:gap-5 gap-4'
+					onSubmit={handleSubmit(onSubmit)}
+				>
+					<p className='font-semibold text-lg text-center'>Transferir</p>
+					<div className='flex flex-col'>
 						<Input
 							changeState={changeState}
 							name='source'
@@ -43,31 +46,31 @@ const Transfer = () => {
 							rules={{ required: 'Campo requerido' }}
 							control={control}
 						></Input>
-						<Input
-							changeState={changeState}
-							name='target'
-							label='Dirección que recibe'
-							placeholder='xxxx xxxx xxxx'
-							rules={{ required: 'Campo requerido' }}
-							control={control}
-						></Input>
-						<Input
-							changeState={changeState}
-							name='amount'
-							label='Cantidad'
-							type='number'
-							placeholder='0.00'
-							rules={{ required: 'Campo requerido' }}
-							control={control}
-						></Input>
-						<div className='flex self-end'>
-							<Button
-								name='Transferir'
-								color='slate-600'
-								loading={isFetching}
-								type='submit'
-							/>
-						</div>
+					</div>
+					<Input
+						changeState={changeState}
+						name='target'
+						label='Dirección que recibe'
+						placeholder='xxxx xxxx xxxx'
+						rules={{ required: 'Campo requerido' }}
+						control={control}
+					></Input>
+					<Input
+						changeState={changeState}
+						name='amount'
+						label='Cantidad'
+						type='number'
+						placeholder='0.00'
+						rules={{ required: 'Campo requerido' }}
+						control={control}
+					></Input>
+					<div className='flex self-end'>
+						<Button
+							name='Transferir'
+							color='slate-600'
+							loading={isFetching}
+							type='submit'
+						/>
 					</div>
 				</form>
 			</div>

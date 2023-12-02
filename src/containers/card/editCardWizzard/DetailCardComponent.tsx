@@ -52,18 +52,20 @@ const DetailCardComponent = ({ id, allCards, deliverCard }: EditInterface) => {
 					Descripción: desiredObject?.description ?? '-',
 				}}
 			></GenericList>
-			<div className=' flex justify-end mt-3 transition-all duration-200 ease-in-out  rounded-lg'>
-				<Button
-					name='Entregar a un usuario'
-					textColor='gray-900'
-					color='green-100'
-					type='button'
-					action={() => {
-						setDeliver(true);
-					}}
-					outline
-				/>
-			</div>
+			{desiredObject.isDelivered ? null : (
+				<div className=' flex justify-end mt-3 transition-all duration-200 ease-in-out  rounded-lg'>
+					<Button
+						name='Entregar a un usuario'
+						textColor='gray-900'
+						color='green-100'
+						type='button'
+						action={() => {
+							setDeliver(true);
+						}}
+						outline
+					/>
+				</div>
+			)}
 
 			{deliver && (
 				<Modal state={deliver} close={setDeliver}>

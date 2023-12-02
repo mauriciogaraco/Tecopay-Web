@@ -2,6 +2,7 @@ import {
 	PlusIcon,
 	CreditCardIcon,
 	LockOpenIcon,
+	TruckIcon,
 } from '@heroicons/react/24/outline';
 
 import GenericTable, {
@@ -60,6 +61,7 @@ const Card = () => {
 		'Moneda',
 		'Cuenta',
 		'Estado',
+		'',
 	];
 	const tableData: DataTableInterface[] = [];
 	// eslint-disable-next-line array-callback-return
@@ -77,6 +79,7 @@ const Card = () => {
 				Moneda: item?.account.currency,
 				Cuenta: formatCardNumber(item?.account.address),
 				Estado: <StatusForCardRequest currentState={item.request.status} />,
+				'': item.isDelivered ? <TruckIcon className='w-5' /> : '',
 			},
 		});
 	});

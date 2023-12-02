@@ -29,7 +29,10 @@ const Transfer = () => {
 	return (
 		<div className='w-full h-full flex justify-center items-center'>
 			<div className='w-1/2 bg-white shadow-lg rounded-lg h-1/2'>
-				<form className='flex w-hull h-full' onSubmit={handleSubmit(onSubmit)}>
+				<form
+					className='relative w-full h-full flex flex-col 2xl:mt-8 mt-2 2xl:gap-5 gap-4'
+					onSubmit={handleSubmit(onSubmit)}
+				>
 					<div className='gap-10 items-center w-full justify-center flex flex-col px-20'>
 						<p className='font-semibold text-lg text-center'>Recargar</p>
 						<Input
