@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import GenericList from '../../../components/misc/GenericList';
 import { useAppSelector } from '../../../store/hooks';
-import { formatDate } from '../../../utils/helpersAdmin';
+import { formatCalendar } from '../../../utils/helpersAdmin';
 import Loading from '../../../components/misc/Loading';
 import { formatCardNumber } from '../../../utils/helpers';
 
@@ -29,7 +29,7 @@ const SelectedAccountDetails = ({
 					body={{
 						'No. cuenta': `${formatCardNumber(account?.address ?? '-')}`,
 
-						'Fecha de emisión': `${formatDate(account?.createdAt ?? '-')}`,
+						'Fecha de emisión': `${formatCalendar(account?.createdAt ?? '-')}`,
 						'Creada por': `${account?.createdBy.fullName ?? '-'}`,
 
 						Código: `${account?.code ?? '-'}`,
@@ -43,6 +43,7 @@ const SelectedAccountDetails = ({
 								<p key={user.id}>{user.fullName}</p>
 							)) ?? '-',
 
+						balance: account?.amount ?? '-',
 						Descripción: account?.description ?? '-',
 					}}
 				></GenericList>

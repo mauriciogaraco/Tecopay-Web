@@ -50,7 +50,7 @@ const NewEntityModal = ({
 	return (
 		<main>
 			<div>
-				<h3 className='p-4 text-xl md:text-2xl'>Nueva Entidad</h3>
+				<p className='mb-4 font-semibold text-lg text-center'>Nueva entidad</p>
 				<form
 					className='flex flex-col gap-y-3'
 					onSubmit={handleSubmit(onSubmit)}

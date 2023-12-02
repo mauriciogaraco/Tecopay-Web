@@ -29,16 +29,23 @@ const NewUserModalVariantOne = ({
 }: propsDestructured) => {
 	const { control, handleSubmit } = useForm();
 
+	const role = useAppSelector((state) =>
+		// @ts-ignore
+		state.Roles.roles.roles.map((i) => i.code),
+	);
+	let roleToFind = 'ADMIN';
+
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
-
 		try {
-			registerUser(deleteUndefinedAttr(data), close).then(() => close());
+			registerUser(deleteUndefinedAttr(data), close);
 		} catch (error) {}
 	};
 
 	const [showPsw, setShowPsw] = useState(false);
+
+
 
 	return (
 		<main>
@@ -64,13 +71,13 @@ const NewUserModalVariantOne = ({
 					></Input>
 
 					<div className='relative'>
-						{showPsw ? (
-							<EyeIcon
+						{showPsw == false ? (
+							<EyeSlashIcon
 								className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
 								onClick={() => setShowPsw(!showPsw)}
 							/>
 						) : (
-							<EyeSlashIcon
+							<EyeIcon
 								className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
 								onClick={() => setShowPsw(!showPsw)}
 							/>
@@ -84,14 +91,15 @@ const NewUserModalVariantOne = ({
 							placeholder={showPsw ? '' : '******'}
 						/>
 					</div>
-
-					<AsyncMultiSelect
-						name='entity'
-						normalizeData={{ id: 'id', name: 'name' }}
-						control={control}
-						label='Entidad'
-						dataQuery={{ url: '/entity' }}
-					/>
+					{role.includes(roleToFind) ? (
+						<AsyncComboBox
+							name='issueEntityId'
+							normalizeData={{ id: 'id', name: 'name' }}
+							control={control}
+							label='Entidad'
+							dataQuery={{ url: '/entity' }}
+						/>
+					) : null}
 
 					<MultiSelect
 						data={[

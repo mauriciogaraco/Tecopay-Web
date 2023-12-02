@@ -104,13 +104,17 @@ const useServerCards = () => {
     close: Function,
 
   ) => {
-    console.log(id)
+
     setIsFetching(true);
     setIsLoading(true)
     await query
     .post(`/card/${id}/deliver`, data)
       .then((resp) => {
-      
+        setCard(resp.data);
+        const newCards = [...allCards];
+        const idx = newCards.findIndex((card) => card.id === id);
+        newCards.splice(idx, 1, resp.data);
+        setAllCards(newCards);
         
         toast.success("Tarjeta entregada satisfactoriamente");
       }).then(()=>close())

@@ -1,7 +1,7 @@
 import Select from '../../../components/forms/Select';
 import TextArea from '../../../components/forms/TextArea';
 import Button from '../../../components/misc/Button';
-import { formatDate } from '../../../utils/helpersAdmin';
+import { formatCalendar } from '../../../utils/helpersAdmin';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import CardRequests from '../CardRequests';
 import { TicketIcon, TrashIcon } from '@heroicons/react/24/outline';
@@ -45,8 +45,16 @@ const DetailCardRequestComponent = ({
 
 	const [acceptRequestModal, setAcceptRequestModal] = useState(false);
 
+	let dataToSend: any;
+
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
-		editCardRequest(id, deleteUndefinedAttr(data), reset()).then(() =>
+		if (data.priority == 'Expresa') {
+			dataToSend = { ...data, priority: 'EXPRESS' };
+		}
+		if (data.priority == 'Normal') {
+			dataToSend = { ...data, priority: 'NORMAL' };
+		}
+		editCardRequest(id, deleteUndefinedAttr(dataToSend), reset()).then(() =>
 			closeModal(),
 		);
 	};
@@ -58,16 +66,19 @@ const DetailCardRequestComponent = ({
 				<section className='flex relative flex-col'>
 					<div className='py-3 relative '>
 						<div className='flex justify-between gap-5'>
-							<Button
-								textColor='gray-900'
-								name='Cambiar Estado'
-								color='tecopay-200'
-								type='button'
-								action={() => {
-									setChangeState(true);
-								}}
-								outline
-							/>
+							{cardRequest?.status === 'PRINTED' ||
+							cardRequest?.status === 'DENIED' ? null : (
+								<Button
+									textColor='gray-900'
+									name='Cambiar Estado'
+									color='tecopay-200'
+									type='button'
+									action={() => {
+										setChangeState(true);
+									}}
+									outline
+								/>
+							)}
 
 							<div className='flex gap-5'>
 								<Button
@@ -113,8 +124,8 @@ const DetailCardRequestComponent = ({
 							name='priority'
 							label='Prioridad'
 							data={[
-								{ id: 1, name: 'NORMAL' },
-								{ id: 2, name: 'EXPRESS' },
+								{ id: 1, name: 'Normal' },
+								{ id: 2, name: 'Expresa' },
 							]}
 						></Select>
 					</div>

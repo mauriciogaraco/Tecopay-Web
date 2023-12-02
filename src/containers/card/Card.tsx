@@ -2,6 +2,7 @@ import {
 	PlusIcon,
 	CreditCardIcon,
 	LockOpenIcon,
+	TruckIcon,
 } from '@heroicons/react/24/outline';
 
 import GenericTable, {
@@ -26,6 +27,7 @@ import { formatCalendar, formatCardNumber } from '../../utils/helpers';
 
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 import EditCardContainer from './editCardWizzard/EditCardContainer';
+import StatusForCardRequest from '../../components/misc/StatusForCardRequest';
 
 const Card = () => {
 	const [query, setQuery] = useState<string>('');
@@ -53,11 +55,12 @@ const Card = () => {
 
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [
-		'No. Cuenta',
+		'No. Tarjeta',
 		'Nombre',
 		'Propietario',
 		'Moneda',
 		'Cuenta',
+		'Estado',
 		'',
 	];
 	const tableData: DataTableInterface[] = [];
@@ -70,12 +73,13 @@ const Card = () => {
 		tableData.push({
 			rowId: item?.id,
 			payload: {
-				'No. Cuenta': formatCardNumber(item?.address),
+				'No. Tarjeta': formatCardNumber(item?.address),
 				Nombre: item?.account.name ?? '-',
 				Propietario: item?.holderName ?? '-',
 				Moneda: item?.account.currency,
 				Cuenta: formatCardNumber(item?.account.address),
-				'': <BlockedStateForTable currentState={item.isBlocked} />,
+				Estado: <StatusForCardRequest currentState={item.request.status} />,
+				'': item.isDelivered ? <TruckIcon className='w-5' /> : '',
 			},
 		});
 	});

@@ -4,6 +4,7 @@ import { deleteUndefinedAttr } from '../../../utils/helpers';
 import Select from '../../../components/forms/Select';
 import Button from '../../../components/misc/Button';
 import { translateOrderState } from '../../../utils/translate';
+import { useState } from 'react';
 
 interface updateCardRequest {
 	updateCardStatus: Function;
@@ -20,10 +21,11 @@ const ChangeStateContainer = ({
 	cardRequest,
 	isLoading,
 }: updateCardRequest) => {
+	const [selectedToParent, setSelectedToParent] = useState();
+	const isDisabled = selectedToParent === 'Pedida';
 	let dataToSend: any;
 	const { control, handleSubmit, reset } = useForm();
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
-		console.log(data, id);
 		try {
 			if (data.status == 'Aceptada') {
 				dataToSend = { status: 'ACCEPTED' };
@@ -41,19 +43,22 @@ const ChangeStateContainer = ({
 	return (
 		<form className=' gap-4 flex flex-col' onSubmit={handleSubmit(onSubmit)}>
 			<Select
-				defaultValue={cardRequest?.status}
-				default={cardRequest?.status}
+				defaultValue={translateOrderState(cardRequest?.status) ?? ''}
+				default={translateOrderState(cardRequest?.status)}
 				control={control}
+				setSelectedToParent={setSelectedToParent}
 				name='status'
 				label='Estado'
 				data={[
 					{ id: 1, name: translateOrderState('PRINTED') },
 					{ id: 2, name: translateOrderState('ACCEPTED') },
 					{ id: 3, name: translateOrderState('DENIED') },
+					{ id: 4, name: translateOrderState('REQUESTED') },
 				]}
 			></Select>
 
 			<Button
+				disabled={isDisabled}
 				name='Insertar'
 				color='slate-600'
 				type='submit'

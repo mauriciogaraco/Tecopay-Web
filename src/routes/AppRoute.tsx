@@ -19,6 +19,8 @@ import Users from '../containers/users/Users';
 import CurrencyList from '../containers/currencys/currencyList/CurrencyList';
 import CurrencyExchangeRate from '../containers/currencys/currencyExchangeRate/CurrencyExchangeRate';
 import { fetchRole } from '../store/slices/roleSlice';
+import Transfer from '../containers/transactions/Transfer';
+import Charge from '../containers/transactions/Charge';
 
 const AppRoute = () => {
 	const dispatch = useAppDispatch();
@@ -39,6 +41,8 @@ const AppRoute = () => {
 				<Route path='/users' element={<Users />} />
 				<Route path='/coins/list' element={<CurrencyList />} />
 				<Route path='/coins/exchangeRate' element={<CurrencyExchangeRate />} />
+				<Route path='/transactions/transfer' element={<Transfer />} />
+				<Route path='/transactions/charge' element={<Charge />} />
 			</Route>
 			<Route path='/*' element={<NotFoundpage />} />
 		</Routes>

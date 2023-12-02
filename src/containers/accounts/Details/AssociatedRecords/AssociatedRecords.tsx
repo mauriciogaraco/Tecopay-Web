@@ -3,11 +3,10 @@ import { useEffect, useState } from 'react';
 import GenericTable, {
 	DataTableInterface,
 } from '../../../../components/misc/GenericTable';
-import { formatDate } from '../../../../utils/helpersAdmin';
+import { formatCalendar } from '../../../../utils/helpersAdmin';
 import { getAccountAction } from '../../../../utils/functions';
 
 const AssociatedRecords = (records: any, paginate: any) => {
-	
 	const [tableData, setTableData] = useState<DataTableInterface[]>([]);
 
 	// Data for table ------------------------------------------------------------------------
@@ -30,7 +29,7 @@ const AssociatedRecords = (records: any, paginate: any) => {
 				{
 					rowId: item.id,
 					payload: {
-						Fecha: formatDate(item?.createdAt),
+						Fecha: formatCalendar(item?.createdAt),
 						Nombre: item?.title ?? '-',
 						Acción: getAccountAction(item?.action),
 						Detalles: item?.details ?? '-',
@@ -45,13 +44,9 @@ const AssociatedRecords = (records: any, paginate: any) => {
 		recordMapping();
 	}, []);
 
-
 	return tableData ? (
 		<div>
-			<GenericTable
-				tableData={tableData}
-				tableTitles={tableTitles}
-			/>
+			<GenericTable tableData={tableData} tableTitles={tableTitles} />
 		</div>
 	) : (
 		<div>loading</div>
