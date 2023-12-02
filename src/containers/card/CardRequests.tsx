@@ -57,6 +57,7 @@ const CardRequests = () => {
 		setSelectedDataToParent,
 		GetRequestRecord,
 		cardRequestRecords,
+		updateCardStatus,
 	} = useServerCardsRequests();
 
 	const [filter, setFilter] = useState<
@@ -127,7 +128,6 @@ const CardRequests = () => {
 
 	useEffect(() => {
 		getAllCardsRequests(filter);
-
 	}, [filter]);
 
 	return (
@@ -169,6 +169,7 @@ const CardRequests = () => {
 			{editCardRequestModal.state && (
 				<Modal state={editCardRequestModal.state} close={close} size='m'>
 					<EditCardRequestContainer
+						updateCardStatus={updateCardStatus}
 						cardRequestRecords={cardRequestRecords}
 						acceptRequest={acceptRequest}
 						id={editCardRequestModal.id}

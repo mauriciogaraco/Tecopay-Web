@@ -22,6 +22,7 @@ interface UserWizzardInterface {
 	getCard: Function;
 	isLoading: Boolean;
 	setSelectedDataToParent: any;
+	deliverCard: Function;
 }
 
 const EditCardContainer = ({
@@ -35,6 +36,7 @@ const EditCardContainer = ({
 	getCard,
 	isLoading,
 	setSelectedDataToParent,
+	deliverCard,
 }: UserWizzardInterface) => {
 	const [editModal, setEditModal] = useState(false);
 	const [currentTab, setCurrentTab] = useState('details');
@@ -67,7 +69,11 @@ const EditCardContainer = ({
 				{currentTab == 'details' ? (
 					<div>
 						<div className=''>
-							<DetailCardComponent id={id} allCards={allCards} />
+							<DetailCardComponent
+								deliverCard={deliverCard}
+								id={id}
+								allCards={allCards}
+							/>
 						</div>
 					</div>
 				) : (

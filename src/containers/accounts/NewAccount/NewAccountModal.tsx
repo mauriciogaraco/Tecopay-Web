@@ -35,12 +35,8 @@ const NewAccountModal = ({
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
-		const sendData = Object.assign(data, {
-			ownerId: 1,
-		});
-
 		try {
-			addAccount(deleteUndefinedAttr(sendData), close).then(() => close());
+			addAccount(deleteUndefinedAttr(data), close).then(() => close());
 		} catch (error) {}
 	};
 
@@ -68,6 +64,13 @@ const NewAccountModal = ({
 						dataQuery={{ url: '/currency' }}
 						normalizeData={{ id: 'id', name: 'symbol' }}
 					></AsyncComboBox>
+					<AsyncComboBox
+						name='ownerId'
+						normalizeData={{ id: 'id', name: 'fullName' }}
+						control={control}
+						label='Dueño'
+						dataQuery={{ url: '/user' }}
+					/>
 
 					<AsyncComboBox
 						name='issueEntityId'
@@ -81,7 +84,6 @@ const NewAccountModal = ({
 					<div className='h-full'>
 						<TextArea
 							name='description'
-							rules={{ required: 'Campo requerido' }}
 							control={control}
 							paddingInput='py-0'
 							label='Descripción'

@@ -13,6 +13,8 @@ import { BasicType } from '../../../interfaces/InterfacesLocal';
 import useServerCardsRequests from '../../../api/userServerCardsRequests';
 import AcceptContainer from '../../../components/misc/AcceptContainer';
 import { CheckIcon } from '@heroicons/react/24/solid';
+import Input from '../../../components/forms/Input';
+import ChangeStateContainer from './ChangeStateContainer';
 
 interface EditInterface {
 	editCardRequest: Function;
@@ -23,6 +25,7 @@ interface EditInterface {
 	allCardsRequests: any;
 	setSelectedDataToParent: any;
 	acceptRequest: Function;
+	updateCardStatus: Function;
 }
 
 const DetailCardRequestComponent = ({
@@ -33,10 +36,13 @@ const DetailCardRequestComponent = ({
 	id,
 	allCardsRequests,
 	acceptRequest,
+	updateCardStatus,
 }: EditInterface) => {
 	const cardRequest: any = allCardsRequests.find((item: any) => item.id === id);
 	const { control, handleSubmit, reset } = useForm();
 	const [delAction, setDelAction] = useState(false);
+	const [changeState, setChangeState] = useState(false);
+
 	const [acceptRequestModal, setAcceptRequestModal] = useState(false);
 
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
@@ -44,38 +50,54 @@ const DetailCardRequestComponent = ({
 			closeModal(),
 		);
 	};
+
 	const { isLoading } = useServerCardsRequests();
 	return (
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<section className='flex relative flex-col'>
-					<div className='py-3 absolute right-0'>
-						<div className='flex gap-5'>
+					<div className='py-3 relative '>
+						<div className='flex justify-between gap-5'>
 							<Button
-								icon={<TrashIcon className='h-5 text-red-500' />}
-								color='gray-50'
+								textColor='gray-900'
+								name='Cambiar Estado'
+								color='tecopay-200'
 								type='button'
 								action={() => {
-									setDelAction(true);
+									setChangeState(true);
 								}}
 								outline
 							/>
-							<Button
-								icon={<CheckIcon className='h-5 text-green-500' />}
-								color='gray-50'
-								type='button'
-								action={() => {
-									setAcceptRequestModal(true);
-								}}
-								outline
-							/>
+
+							<div className='flex gap-5'>
+								<Button
+									icon={<TrashIcon className='h-5 text-red-500' />}
+									color='gray-50'
+									type='button'
+									action={() => {
+										setDelAction(true);
+									}}
+									outline
+								/>
+								{/*<Button
+									icon={<CheckIcon className='h-5 text-green-500' />}
+									color='gray-50'
+									type='button'
+									action={() => {
+										setAcceptRequestModal(true);
+									}}
+									outline
+								/>*/}
+							</div>
 						</div>
 					</div>
 					<ul className='grid py-3 gap-3 text-xl'>
 						{cardRequest?.quantity === 1 && (
-							<li className=' pl-2 rounded-m '>
-								Propietario: <span>{cardRequest?.holderName ?? '-'}</span>
-							</li>
+							<Input
+								name='holderName'
+								defaultValue={cardRequest?.holderName ?? '-'}
+								control={control}
+							></Input>
 						)}
 						{cardRequest?.quantity > 1 && (
 							<li className=' pl-2 rounded-m '>
@@ -93,19 +115,6 @@ const DetailCardRequestComponent = ({
 							data={[
 								{ id: 1, name: 'NORMAL' },
 								{ id: 2, name: 'EXPRESS' },
-							]}
-						></Select>
-						<Select
-							defaultValue={cardRequest?.status}
-							default={cardRequest?.status}
-							control={control}
-							name='status'
-							label='Estado'
-							data={[
-								{ id: 1, name: 'PRINTED' },
-								{ id: 2, name: 'IN_PROCESS' },
-								{ id: 3, name: 'DELIVERED' },
-								{ id: 4, name: 'DENIED' },
 							]}
 						></Select>
 					</div>
@@ -141,7 +150,20 @@ const DetailCardRequestComponent = ({
 					/>
 				</Modal>
 			)}
-			{acceptRequestModal && (
+
+			{changeState && (
+				<Modal state={changeState} close={setChangeState}>
+					<ChangeStateContainer
+						isLoading={isFetching}
+						cardRequest={cardRequest}
+						closeModal={closeModal}
+						id={id}
+						updateCardStatus={updateCardStatus}
+					></ChangeStateContainer>
+				</Modal>
+			)}
+
+			{/*acceptRequestModal && (
 				<Modal state={acceptRequestModal} close={setAcceptRequestModal}>
 					<AcceptContainer
 						onAction={() => acceptRequest(id, { requestId: id })}
@@ -151,7 +173,7 @@ const DetailCardRequestComponent = ({
 						loading={isFetching}
 					/>
 				</Modal>
-			)}
+			)*/}
 		</>
 	);
 };
