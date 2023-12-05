@@ -193,16 +193,16 @@ export function transformData(data:any) {
         }
       },
       {
-        "kRecordDescription": `entityHolder#${data.entityHolder ?? '-'}`,
+        "kRecordDescription": `entityHolder#${data.issueEntity ?? '-'}`,
         "kRecordSelection": 0,
-        "kRecordField1": `entityHolder#${data.entityHolder ?? '-'}`,
+        "kRecordField1": `entityHolder#${data.issueEntity ?? '-'}`,
         "kRecordSize": 23,
         "kRecordObject": {
           "kTnf": 1,
           "kChunked": false,
           "kType": [84],
           "kId": [],
-          "kPayload": Array.from(`enentityHolder#${data.entityHolder ?? '-'}`).map(c => c.charCodeAt(0))
+          "kPayload": Array.from(`enentityHolder#${data.issueEntity ?? '-'}`).map(c => c.charCodeAt(0))
         }
       }
     ]

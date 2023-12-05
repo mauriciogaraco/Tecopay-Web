@@ -113,7 +113,7 @@ const CardRequests = () => {
 				dataToExport.push({
 					'Card Number': item?.queryNumber ?? '---',
 					'Card Holder': item?.holderName ?? '---',
-					Barcode: '',
+					Barcode: item?.barCode,
 					IssuetAt: formatDateForCard(item.createdAt),
 					ExpirationDate: formatDateForCard(item.createdAt),
 				});

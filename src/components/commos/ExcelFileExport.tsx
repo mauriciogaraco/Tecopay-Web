@@ -18,7 +18,7 @@ const ExcelFileExport = ({
 			<Input
 				name='name'
 				control={control}
-				label='Nombre del archivo .xlsx'
+				label='Nombre del archivo'
 				rules={{ required: 'Requerido *' }}
 			/>
 			<div className='flex justify-end py-2'>
