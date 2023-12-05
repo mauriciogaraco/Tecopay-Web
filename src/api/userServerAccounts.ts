@@ -163,7 +163,16 @@ const useServerAccounts = () => {
     setIsFetching(true);
     await query
       .post(`/account/transfer`, data)
-      .then(() => {
+      .then((resp) => {
+        if(resp.data.sourceAccount.address == account.address){const changed = {...account, amount:resp.data.sourceAccount.amount}
+     
+
+        setAccount(changed)
+        }
+        else if(resp.data.targetAccount.address == account.address){const changed = {...account, amount:resp.data.targetAccount.amount}
+
+        setAccount(changed)
+        }
         callback?.();
         toast.success("Transferencia exitosa");
       })
@@ -175,7 +184,13 @@ const useServerAccounts = () => {
     setIsFetching(true);
     await query
       .post(`/account/charge`, data)
-      .then(() => {
+      .then((resp) => {
+       
+        if(resp.data.account.address == account.address){const changed = {...account, amount:resp.data.account.amount}
+
+        setAccount(changed)
+        }
+        
         if (callback) {
             callback();
         }

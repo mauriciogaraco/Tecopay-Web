@@ -52,7 +52,8 @@ const DetailCardComponent = ({ id, allCards, deliverCard }: EditInterface) => {
 					Descripción: desiredObject?.description ?? '-',
 				}}
 			></GenericList>
-			{desiredObject.isDelivered ? null : (
+			{desiredObject.isDelivered ||
+			desiredObject.status == 'ACCEPTED' ? null : (
 				<div className=' flex justify-end mt-3 transition-all duration-200 ease-in-out  rounded-lg'>
 					<Button
 						name='Entregar a un usuario'

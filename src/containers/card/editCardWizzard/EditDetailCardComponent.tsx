@@ -88,7 +88,7 @@ const EditDetailCardComponent = ({
 						defaultValue={card?.description}
 						name='description'
 						control={control}
-						label='description'
+						label='Descripción'
 					></TextArea>
 					<div className=' w-full mt-5 justify-between flex'>
 						<Toggle

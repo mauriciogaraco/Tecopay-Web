@@ -22,7 +22,7 @@ import NuevoTicketModal from '../accounts/NewAccount/NewAccountModal';
 
 import { useAppSelector } from '../../store/hooks';
 import useServerCards from '../../api/userServerCards';
-import { formatCalendar } from '../../utils/helpers';
+import { formatCalendar, formatDateForCard } from '../../utils/helpers';
 import EditCardContainer from './editCardRequestWizzard/EditCardRequestContainer';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
@@ -32,9 +32,13 @@ import NewCardRequestModal from './newCardRequest/NewCardRequestModal';
 import EditCardRequestContainer from './editCardRequestWizzard/EditCardRequestContainer';
 import StatusForCardRequest from '../../components/misc/StatusForCardRequest';
 import { translateCardRequestType } from '../../utils/translateCardStatus';
+import { formatDate } from '../../utils/helpersAdmin';
+import { exportExcel, generateUrlParams } from '../../utils/helpersAdmin2';
+import ExcelFileExport from '../../components/commos/ExcelFileExport';
+import query from '../../api/APIServices';
+import { BsFiletypeXlsx } from 'react-icons/bs';
 
 const CardRequests = () => {
-	const [query, setQuery] = useState<string>('');
 	const [post, setPost] = useState(null);
 
 	const {
@@ -66,9 +70,68 @@ const CardRequests = () => {
 	>({});
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
 
+	//Export to excel
+	const [loadingExport, setloadingExport] = useState(false);
+	const [exportModal, setExportModal] = useState(false);
+
+	let allResults: any = [];
+	let pages: number = paginate?.totalPages ? paginate?.totalPages : 1;
+	let page: number = 1;
+
+	const exportBankAccounts = async (filename: string) => {
+		const dataToExport: Record<string, string | number>[] = [];
+		setloadingExport(true);
+
+		await query
+			.get(`/cardRequest${generateUrlParams({ ...filter, page: 1 })}`)
+			.then((resp: any) => {
+				allResults = allResults.concat(resp.data.items);
+			})
+			.catch((e: any) => manageErrors(e));
+
+		while (pages > page) {
+			page++;
+			await query
+				.get(`/cardRequest${generateUrlParams({ ...filter, page })}`)
+				.then((resp: any) => {
+					allResults = allResults.concat(resp.data.items);
+				})
+				.catch((e: any) => manageErrors(e));
+		}
+
+		allResults.forEach((item: any) => {
+			if (item.status === 'ACCEPTED') {
+				let name: string = '';
+				if (
+					item?.madeBy?.displayName != null &&
+					item?.madeBy?.displayName != undefined
+				) {
+					name = item?.madeBy?.displayName;
+				} else {
+					name = '';
+				}
+				dataToExport.push({
+					'Card Number': item?.queryNumber ?? '---',
+					'Card Holder': item?.holderName ?? '---',
+					Barcode: '',
+					IssuetAt: formatDateForCard(item.createdAt),
+					ExpirationDate: formatDateForCard(item.createdAt),
+				});
+			}
+		});
+		exportExcel(dataToExport, filename);
+		setloadingExport(false);
+		setExportModal(false);
+	};
+
+	const exportAction = async (name: string) => {
+		exportBankAccounts(name);
+	};
+
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [
 		'No. Solicitud',
+		'Fecha de Creación',
 		'Tipo',
 		'Propietario',
 		'Cuenta',
@@ -81,6 +144,7 @@ const CardRequests = () => {
 			rowId: item.id,
 			payload: {
 				'No. Solicitud': item?.queryNumber ?? '-',
+				'Fecha de Creación': formatDate(item?.createdAt) ?? '-',
 				Tipo: translateCardRequestType(item?.priority),
 				Propietario: item?.holderName ?? '-',
 				Cuenta: item?.account ?? '-',
@@ -100,6 +164,11 @@ const CardRequests = () => {
 			icon: <PlusIcon className='h-5' />,
 			title: 'Agregar Solicitud',
 			action: () => setAddTicketmodal(true),
+		},
+		{
+			icon: <BsFiletypeXlsx className='h-5' />,
+			title: 'Exportar a Excel',
+			action: () => setExportModal(true),
 		},
 	];
 
@@ -183,6 +252,15 @@ const CardRequests = () => {
 						isLoading={isLoading}
 						getCardRequest={getCardRequest}
 						setSelectedDataToParent={setSelectedDataToParent}
+					/>
+				</Modal>
+			)}
+
+			{exportModal && (
+				<Modal state={exportModal} close={setExportModal}>
+					<ExcelFileExport
+						exportAction={exportAction}
+						loading={loadingExport}
 					/>
 				</Modal>
 			)}
