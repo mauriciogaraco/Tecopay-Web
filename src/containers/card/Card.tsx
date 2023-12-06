@@ -56,7 +56,7 @@ const Card = () => {
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [
 		'No. Tarjeta',
-		'Nombre',
+
 		'Propietario',
 		'Moneda',
 		'Cuenta',
@@ -74,7 +74,6 @@ const Card = () => {
 			rowId: item?.id,
 			payload: {
 				'No. Tarjeta': formatCardNumber(item?.address),
-				Nombre: item?.account.name ?? '-',
 				Propietario: item?.holderName ?? '-',
 				Moneda: item?.account.currency,
 				Cuenta: formatCardNumber(item?.account.address),

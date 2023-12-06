@@ -146,27 +146,6 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 				},
 			],
 		},
-		{
-			name: 'Transacciones',
-			href: 'transactions',
-			icon: TbTransferIn,
-			current: mainCurrent === 'transactions',
-
-			children: [
-				{
-					name: 'Tranferir',
-					href: `/transactions/transfer`,
-					current:
-						secondaryCurrent === 'transfer' && mainCurrent === 'transactions',
-				},
-				{
-					name: 'Recargar',
-					href: `/transactions/charge`,
-					current:
-						secondaryCurrent === 'charge' && mainCurrent === 'transactions',
-				},
-			],
-		},
 	];
 
 	const [changeBusinessModal, setChangeBusinessModal] = useState(false);

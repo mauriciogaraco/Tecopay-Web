@@ -8,13 +8,15 @@ import { TicketIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Modal from '../../../components/modals/GenericModal';
 import AlertContainer from '../../../components/misc/AlertContainer';
 import { useState } from 'react';
-import { deleteUndefinedAttr } from '../../../utils/helpers';
+import { deleteUndefinedAttr, writeDataToFile } from '../../../utils/helpers';
 import { BasicType } from '../../../interfaces/InterfacesLocal';
 import useServerCardsRequests from '../../../api/userServerCardsRequests';
 import AcceptContainer from '../../../components/misc/AcceptContainer';
 import { CheckIcon } from '@heroicons/react/24/solid';
 import Input from '../../../components/forms/Input';
 import ChangeStateContainer from './ChangeStateContainer';
+import ExcelFileExport from '../../../components/commos/ExcelFileExport';
+import { BsFiletypeJson, BsFiletypeXlsx } from 'react-icons/bs';
 
 interface EditInterface {
 	editCardRequest: Function;
@@ -42,10 +44,17 @@ const DetailCardRequestComponent = ({
 	const { control, handleSubmit, reset } = useForm();
 	const [delAction, setDelAction] = useState(false);
 	const [changeState, setChangeState] = useState(false);
+	const [exportModal, setExportModal] = useState(false);
+	const [loadingExport, setloadingExport] = useState(false);
 
 	const [acceptRequestModal, setAcceptRequestModal] = useState(false);
 
 	let dataToSend: any;
+
+	const exportAction = async (name: string) => {
+		const data = cardRequest;
+		writeDataToFile(data, name);
+	};
 
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
 		if (data.priority == 'Expresa') {
@@ -90,16 +99,20 @@ const DetailCardRequestComponent = ({
 									}}
 									outline
 								/>
-								{/*<Button
-									icon={<CheckIcon className='h-5 text-green-500' />}
+							</div>
+							{
+								<Button
+									icon={<BsFiletypeJson className='h-5' />}
 									color='gray-50'
+									textColor='gray-900'
 									type='button'
+									name='Exportar como Json'
 									action={() => {
-										setAcceptRequestModal(true);
+										setExportModal(true);
 									}}
 									outline
-								/>*/}
-							</div>
+								/>
+							}
 						</div>
 					</div>
 					<ul className='grid py-3 gap-3 text-xl'>
@@ -174,6 +187,14 @@ const DetailCardRequestComponent = ({
 				</Modal>
 			)}
 
+			{exportModal && (
+				<Modal state={exportModal} close={setExportModal}>
+					<ExcelFileExport
+						exportAction={exportAction}
+						loading={loadingExport}
+					/>
+				</Modal>
+			)}
 			{/*acceptRequestModal && (
 				<Modal state={acceptRequestModal} close={setAcceptRequestModal}>
 					<AcceptContainer

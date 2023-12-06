@@ -40,6 +40,8 @@ const AccountDetails = () => {
 		getAccountOperations,
 		records,
 		operations,
+		Charge,
+		Transfer,
 	} = useServerAccounts();
 
 	const { getAllCards, paginate, allCards } = useServerCards();
@@ -137,6 +139,10 @@ const AccountDetails = () => {
 				<div className='sm:col-span-8 pl-3 pt-1'>
 					{current === 'detalles' && (
 						<SelectedAccountDetails
+							getAccount={getAccount}
+							isFetching={isFetching}
+							charge={Charge}
+							transfer={Transfer}
 							isLoading={isLoading}
 							id={id}
 							account={account}
