@@ -3,7 +3,7 @@ import { type SubmitHandler, useForm } from 'react-hook-form';
 import ComboBox from '../../../components/forms/Combobox';
 import TextArea from '../../../components/forms/TextArea';
 import { SelectInterface } from '../../../interfaces/LocalInterfaces';
-import { useAppSelector, useAppDispatch } from '../../../store/hooks';
+import { useAppSelector } from '../../../store/hooks';
 import { useEffect } from 'react';
 import Modal from '../../../components/misc/GenericModal';
 import { deleteUndefinedAttr } from '../../../utils/helpers';
@@ -28,10 +28,15 @@ const NewUserModalVariantTwo = ({
 }: propsDestructured) => {
 	const { control, handleSubmit } = useForm();
 
+	const role = useAppSelector((state) =>
+		// @ts-ignore
+		state.Roles.roles.roles.map((i) => i.code),
+	);
+	let roleToFind = 'ADMIN';
+
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
-
 		try {
 			addFromTecopos(deleteUndefinedAttr(data), close).then(() => close());
 		} catch (error) {}
@@ -53,14 +58,15 @@ const NewUserModalVariantTwo = ({
 						normalizeData={{ id: 'id', name: 'displayName' }}
 					></AsyncComboBox>
 
-					<AsyncComboBox
-						name='issueEntityId'
-						control={control}
-						rules={{ required: 'Campo requerido' }}
-						label='Entidad'
-						dataQuery={{ url: '/entity' }}
-						normalizeData={{ id: 'id', name: 'name' }}
-					></AsyncComboBox>
+					{role.includes(roleToFind) ? (
+						<AsyncComboBox
+							name='issueEntityId'
+							normalizeData={{ id: 'id', name: 'name' }}
+							control={control}
+							label='Entidad'
+							dataQuery={{ url: '/entity' }}
+						/>
+					) : null}
 
 					<MultiSelect
 						data={[

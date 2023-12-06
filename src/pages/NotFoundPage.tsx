@@ -11,7 +11,7 @@ export default function NotFoundPage() {
 					</div>
 					<div className='py-10'>
 						<div className='text-center'>
-							<p className='text-4xl font-semibold text-orange-600'>404</p>
+							<p className='text-4xl font-semibold text-tecopay-600'>404</p>
 							<h1 className='mt-2 text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl'>
 								Página no encontrada
 							</h1>
@@ -21,7 +21,7 @@ export default function NotFoundPage() {
 							<div className='mt-6'>
 								<a
 									href='/'
-									className='text-base font-medium text-orange-600 hover:text-orange-500'
+									className='text-base font-medium text-tecopay-600 hover:text-orange-500'
 								>
 									Volver al Inicio
 									<span aria-hidden='true'> &rarr;</span>

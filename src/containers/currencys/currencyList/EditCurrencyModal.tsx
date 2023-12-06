@@ -43,8 +43,10 @@ const EditCurrencyModal = ({
 				onSubmit={handleSubmit(onSubmit)}
 				className='flex flex-col items-stretch h-full'
 			>
-				<div className='flex justify-between items-center'>
-					<p className='mb-4 font-semibold text-lg'>Editar moneda</p>
+				<div className='flex justify-center'>
+					<p className='mb-4 font-semibold text-lg text-center'>
+						Editar moneda
+					</p>
 				</div>
 				<div className='my-1'>
 					<Input

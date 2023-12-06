@@ -1,3 +1,5 @@
+import MultipleActBtn, { TableActions } from './MultipleActBtn';
+
 export interface ListHeader {
 	title: string | React.ReactNode;
 	subtitle?: string | React.ReactNode;
@@ -5,18 +7,25 @@ export interface ListHeader {
 }
 
 export interface ActionBtnInterface {
-	icon: React.ReactNode;
+	icon: React.ReactNode | JSX.Element;
 	btnColor?: string;
 	action: Function;
+	actionText?: string;
 }
 
 interface GenericList {
 	header?: ListHeader;
 	body: Record<string, string | number | React.ReactNode>;
 	actionBtn?: ActionBtnInterface | ActionBtnInterface[];
+	actions?: TableActions[];
 }
 
-export default function GenericList({ header, body, actionBtn }: GenericList) {
+export default function GenericList({
+	header,
+	body,
+	actionBtn,
+	actions,
+}: GenericList) {
 	return (
 		//header
 		<div className=' overflow-hidden bg-white shadow sm:rounded-lg'>
@@ -61,12 +70,14 @@ export default function GenericList({ header, body, actionBtn }: GenericList) {
 						</div>
 					) : (
 						<button
-							className={`inline-flex items-center rounded border border-transparent bg-${actionBtn.btnColor}-500 px-2.5 py-1.5 text-xs font-medium text-${actionBtn.btnColor}-100 shadow-sm hover:bg-${actionBtn.btnColor}-700 focus:outline-none focus:ring-2 focus:ring-${actionBtn.btnColor}-500 focus:ring-offset-2`}
+							className={`inline-flex gap-2 items-center outline shadow-sm outline-1 hover:shadow-md transition-all duration-300 outline-gray-200 rounded border border-transparent bg-${actionBtn.btnColor}-500 px-2.5 py-1.5 text-xs font-medium text-${actionBtn.btnColor}-100 shadow-sm hover:bg-${actionBtn.btnColor}-700 focus:outline-none focus:ring-2 focus:ring-${actionBtn.btnColor}-500 focus:ring-offset-2`}
 							onClick={() => actionBtn.action()}
 						>
 							{actionBtn.icon}
+							<span className='text-lg'>{actionBtn.actionText}</span>
 						</button>
 					))}
+				{actions && <div>{actions && <MultipleActBtn items={actions} />}</div>}
 			</div>
 
 			<div className='border-t border-gray-200'>

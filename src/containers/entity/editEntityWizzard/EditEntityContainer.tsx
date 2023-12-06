@@ -47,7 +47,9 @@ const EditEntityContainer = ({
 	return (
 		<div className=''>
 			<div className='flex items-center justify-around'>
-				<h1 className='ml-2 text-lg'>Editar entidad {id}</h1>{' '}
+				<p className='mb-4 font-semibold text-lg text-center'>
+					Editar entidad {id}
+				</p>
 			</div>
 
 			<DetailUserEditComponent

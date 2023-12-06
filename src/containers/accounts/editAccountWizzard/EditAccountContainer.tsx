@@ -55,6 +55,7 @@ const EditAccountContainer = ({
       <TabNav tabs={tabs} action={action} />*/}
 
 			<DetailAccountEditComponent
+				getAccount={getAccount}
 				allAccounts={allAccounts}
 				id={id}
 				editAccount={editAccount}

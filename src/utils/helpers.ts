@@ -1,5 +1,8 @@
 import moment from "moment";
 import _default from "chart.js/dist/plugins/plugin.tooltip";
+import { saveAs } from 'file-saver';
+
+
 
 
 export const generateUrlParams = (
@@ -133,4 +136,83 @@ export const validateEmail = (email: string | null) => {
 export function formatCardNumber(inputNumber: string): string {
   // Utilizamos expresiones regulares para dividir el número en grupos de cuatro dígitos y luego agregar espacios entre ellos
   return inputNumber.replace(/(.{4})/g, '$1 ').trim();
+}
+
+export function formatDateForCard(dateString:string) {
+  let date = new Date(dateString);
+  let year = date.getFullYear();
+  let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based in JavaScript
+  let day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+
+
+
+export function transformData(data:any) {
+  const transformedData = {
+    "ntgui_version": 1,
+    "data": [
+      {
+        "kRecordDescription": `barCode#${data.barCode ?? '-'}`,
+        "kRecordSelection": 0,
+        "kRecordField1": `barCode#${data.barCode ?? '-'}`,
+        "kRecordSize": 26,
+        "kRecordObject": {
+          "kTnf": 1,
+          "kChunked": false,
+          "kType": [84],
+          "kId": [],
+          "kPayload": Array.from(`enbarCode#${data.barCode ?? '-'}`).map(c => c.charCodeAt(0))
+        }
+      },
+      {
+        "kRecordDescription": `clientName#${data.holderName}`,
+        "kRecordSelection": 0,
+        "kRecordField1": `clientName#${data.holderName}`,
+        "kRecordSize": 29,
+        "kRecordObject": {
+          "kTnf": 1,
+          "kChunked": false,
+          "kType": [84],
+          "kId": [],
+          "kPayload": Array.from(`enclientName#${data.holderName}`).map(c => c.charCodeAt(0))
+        }
+      },
+      {
+        "kRecordDescription": `cardNumber#${data.queryNumber}`,
+        "kRecordSelection": 0,
+        "kRecordField1": `cardNumber#${data.queryNumber}`,
+        "kRecordSize": 27,
+        "kRecordObject": {
+          "kTnf": 1,
+          "kChunked": false,
+          "kType": [84],
+          "kId": [],
+          "kPayload": Array.from(`encardNumber#${data.queryNumber}`).map(c => c.charCodeAt(0))
+        }
+      },
+      {
+        "kRecordDescription": `entityHolder#${data.issueEntity ?? '-'}`,
+        "kRecordSelection": 0,
+        "kRecordField1": `entityHolder#${data.issueEntity ?? '-'}`,
+        "kRecordSize": 23,
+        "kRecordObject": {
+          "kTnf": 1,
+          "kChunked": false,
+          "kType": [84],
+          "kId": [],
+          "kPayload": Array.from(`enentityHolder#${data.issueEntity ?? '-'}`).map(c => c.charCodeAt(0))
+        }
+      }
+    ]
+  };
+
+  return transformedData;
+}
+
+export function writeDataToFile(data:any, filename:string): void {
+  const transformedData = transformData(data);
+  const blob = new Blob([JSON.stringify(transformedData, null, 2)], {type: "application/json"});
+  saveAs(blob, `${filename}.json`);
 }

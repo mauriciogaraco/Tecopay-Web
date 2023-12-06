@@ -57,7 +57,7 @@ const useServerUsers = () => {
     await query
     .post("/user/register", data)
       .then((resp) => {   
-        
+
    setAllUsers([...allUsers, resp.data])
         
         toast.success("Usuario registrado satisfactoriamente");

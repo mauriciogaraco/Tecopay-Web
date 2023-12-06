@@ -98,6 +98,31 @@ const useServerCards = () => {
     setIsFetching(false);
   };
 
+   const deliverCard = async (
+    id:number,
+    data: any,
+    close: Function,
+
+  ) => {
+
+    setIsFetching(true);
+    setIsLoading(true)
+    await query
+    .post(`/card/${id}/deliver`, data)
+      .then((resp) => {
+        setCard(resp.data);
+        const newCards = [...allCards];
+        const idx = newCards.findIndex((card) => card.id === id);
+        newCards.splice(idx, 1, resp.data);
+        setAllCards(newCards);
+        
+        toast.success("Tarjeta entregada satisfactoriamente");
+      }).then(()=>close())
+      .catch((e) => { manageErrors(e); });
+    setIsFetching(false);
+    setIsLoading(false)
+  };
+
   const getCard = async (id: any) => {
     setIsLoading(true);
     await query
@@ -141,6 +166,7 @@ const useServerCards = () => {
     allCards,
     setAllCards,
     setSelectedDataToParent,
+    deliverCard
   };
 };
 export default useServerCards;

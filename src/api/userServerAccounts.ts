@@ -66,7 +66,7 @@ const useServerAccounts = () => {
       .then((resp) => {   
    setAllAccounts([...allAccounts, resp.data])
         
-        toast.success("Ticket agregado satisfactoriamente");
+        toast.success("Cuenta agregada satisfactoriamente");
       }).then(()=>close())
       .catch((e) => { manageErrors(e); });
     setIsFetching(false);
@@ -84,9 +84,6 @@ const useServerAccounts = () => {
       .then((resp) => {
         const newAccounts:any = [...allAccounts];
         const idx = newAccounts.findIndex((user:any) => user.id === id);
-        const accountWithId = allAccounts.find((card:any) => card.id == id);
-        const wholeData = Object.assign(data, {id, issueEntity:{name: selectedDataToParentTwo?.name}, owner:{fullName:accountWithId?.owner.fullName}, currency: {code: selectedDataToParent?.name}} )
-
         newAccounts.splice(idx, 1, resp.data);        
         setAllAccounts(newAccounts)
         callback?.();
@@ -160,6 +157,52 @@ const useServerAccounts = () => {
       .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
+
+
+  const Transfer = async (data:any,  callback?: Function) => {
+    setIsFetching(true);
+    await query
+      .post(`/account/transfer`, data)
+      .then((resp) => {
+        if(resp.data.sourceAccount.address == account.address){const changed = {...account, amount:resp.data.sourceAccount.amount}
+     
+
+        setAccount(changed)
+        }
+        else if(resp.data.targetAccount.address == account.address){const changed = {...account, amount:resp.data.targetAccount.amount}
+
+        setAccount(changed)
+        }
+        callback?.();
+        toast.success("Transferencia exitosa");
+      })
+      .catch((error) => { manageErrors(error); });
+    setIsFetching(false);
+  };
+
+  const Charge = async (data:any, callback?: Function) => {
+    setIsFetching(true);
+    await query
+      .post(`/account/charge`, data)
+      .then((resp) => {
+       
+        if(resp.data.account.address == account.address){const changed = {...account, amount:resp.data.account.amount}
+
+        setAccount(changed)
+        }
+        
+        if (callback) {
+            callback();
+        }
+        toast.success("Recarga exitosa");
+      })
+      .catch((error) => { manageErrors(error); });
+    setIsFetching(false);
+};
+
+
+
+
   return {
     paginate,
     isLoading,
@@ -183,6 +226,8 @@ const useServerAccounts = () => {
     getAccountRecords,
     records,
     operations,
+    Transfer,
+    Charge
 
   };
 };

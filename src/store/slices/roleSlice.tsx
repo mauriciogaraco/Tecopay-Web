@@ -10,15 +10,26 @@ export const fetchRole = createAsyncThunk(
 );
 interface Role {
 	id: number;
-	fullName: string;
-	email: string;
-	issueEntityId: number;
-	account: null | string; // Assuming 'account' can be a string or null
+	name: string;
+	code: string;
+}
+
+interface Roles {
+	loading: boolean;
+	roles: {
+		id: number;
+		fullName: string;
+		email: string;
+		issueEntityId: null;
+		account: null;
+		issueEntity: null;
+		roles: Role[];
+	};
 }
 
 interface InitialState {
 	loading: boolean;
-	roles: Role[];
+	roles: Roles[];
 }
 
 const initialState: InitialState = {

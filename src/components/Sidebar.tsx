@@ -25,6 +25,7 @@ import {
 	Cog6ToothIcon,
 	ArrowRightOnRectangleIcon,
 } from '@heroicons/react/24/outline';
+import { TbTransferIn } from 'react-icons/tb';
 import { useLocation, Link } from 'react-router-dom';
 
 import { BsPin } from 'react-icons/bs';
@@ -342,7 +343,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 								</Menu.Button>
 
 								{!fullName ? (
-									<div className=' text-white text-md'>null</div>
+									<div className=' text-white text-md'></div>
 								) : (
 									<div className=' text-white text-md'>{fullName}</div>
 								)}

@@ -35,19 +35,30 @@ const NewCardRequestModal = ({
 }: propsDestructured) => {
 	const { control, handleSubmit } = useForm();
 	const [createManyState, setCreateManyState] = useState(false);
+	let dataTosend: any;
 
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
 		if (createManyState == false) {
+			if (data.priority == 'Normal')
+				dataTosend = {
+					...data,
+					priority: 'NORMAL',
+				};
+			else
+				dataTosend = {
+					...data,
+					priority: 'EXPRESS',
+				};
 			try {
-				addSimpleCardRequest(deleteUndefinedAttr(data), close).then(() =>
+				addSimpleCardRequest(deleteUndefinedAttr(dataTosend), close).then(() =>
 					close(),
 				);
 			} catch (error) {}
 		} else {
 			try {
-				addBulkCardRequest(deleteUndefinedAttr(data), close).then(() =>
+				addBulkCardRequest(deleteUndefinedAttr(dataTosend), close).then(() =>
 					close(),
 				);
 			} catch (error) {}
@@ -57,7 +68,9 @@ const NewCardRequestModal = ({
 	return (
 		<main>
 			<div>
-				<h3 className='p-4 text-xl md:text-2xl'>Nueva solicitud</h3>
+				<p className='mb-4 font-semibold text-lg text-center'>
+					Nueva solicitud
+				</p>
 				<Toggle
 					name=''
 					title='Crear por bulto'
@@ -89,11 +102,11 @@ const NewCardRequestModal = ({
 
 					<Select
 						control={control}
-						name='prioridad'
+						name='priority'
 						label='Prioridad'
 						data={[
 							{ id: 1, name: 'Normal' },
-							{ id: 2, name: 'Express' },
+							{ id: 2, name: 'Exprés' },
 						]}
 					></Select>
 					{createManyState == false && (

@@ -40,8 +40,9 @@ export default function Login() {
 					</div>
 
 					<form className='mt-8 space-y-6' onSubmit={handleSubmit(onSubmit)}>
-						<div className='-space-y-px rounded-md shadow-sm py-2'>
+						<div className='-space-y-px gap-1 flex flex-col rounded-md shadow-sm py-2'>
 							<Input
+								label='Correo'
 								name='email'
 								control={control}
 								inputClass='border border-gray-500 rounded-md text-center w-full placeholder:text-center focus:ring-tecopay-600 focus:border-tecopay-600'
@@ -49,18 +50,19 @@ export default function Login() {
 							/>
 							<div className='relative'>
 								{showPsw == false ? (
-									<EyeIcon
-										className='h-5 text-gray-500 absolute top-[15px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+									<EyeSlashIcon
+										className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
 										onClick={() => setShowPsw(!showPsw)}
 									/>
 								) : (
-									<EyeSlashIcon
-										className='h-5 text-gray-500 absolute top-[15px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+									<EyeIcon
+										className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
 										onClick={() => setShowPsw(!showPsw)}
 									/>
 								)}
 
 								<Input
+									label='Contraseña'
 									name='password'
 									control={control}
 									inputClass='border border-gray-500 rounded-md text-center w-full placeholder:text-center focus:ring-tecopay-600 focus:border-tecopay-600'
@@ -70,7 +72,7 @@ export default function Login() {
 							</div>
 						</div>
 
-						<div className='flex items-center justify-center'>
+						{/*<div className='flex items-center justify-center'>
 							<div className='text-sm'>
 								<a
 									href='#'
@@ -79,7 +81,7 @@ export default function Login() {
 									¿Olvidó su contraseña?
 								</a>
 							</div>
-						</div>
+								</div>*/}
 
 						<div>
 							<button
