@@ -1,10 +1,8 @@
 import moment from "moment";
 import { SelectInterface } from "../interfaces/InterfacesLocal";
-
-
-moment.defineLocale("es", {
-  invalidDate: " -",
-});
+import FileSaver, {FileSaverOptions} from 'file-saver'
+import { utils, write } from "sheetjs-style";
+//import { pdf } from "@react-pdf/renderer";
 
 
 export const roundOneDecimals = (value: number) => {
@@ -41,39 +39,7 @@ export const truncateValue = (
   return Number([array[0], decimalPart].join("."));
 };
 
-/*export const mathOperation = (
-  value1: number,
-  value2: number,
-  operation: "addition" | "subtraction" | "multiplication" | "division",
-  precission?: number | string
-): number => {
-  try {
-    //Limit number to precission
-    const operator1 = new bigDecimal(truncateValue(value1, precission));
-    const operator2 = new bigDecimal(truncateValue(value2, precission));
 
-    let result;
-    switch (operation) {
-      case "addition":
-        result = operator1.add(operator2);
-        break;
-      case "subtraction":
-        result = operator1.subtract(operator2);
-        break;
-      case "division":
-        result = operator1.divide(operator2);
-        break;
-      case "multiplication":
-        result = operator1.multiply(operator2);
-        break;
-    }
-
-    return Number(truncateValue(result.getValue(), precission));
-  } catch (error: any) {
-
-    return 0;
-  }
-};*/
 
 export const validateEmail = (email: string | null) => {
   if (email) {
@@ -271,7 +237,7 @@ export const prettyNumber = (current: number = 0) => {
   return current;
 };
 
-/*export const exportExcel = async (
+export const exportExcel = async (
   data: Record<string, string | number>[],
   fileName: string
 ) => {
@@ -307,7 +273,7 @@ export const prettyNumber = (current: number = 0) => {
   });
 
   FileSaver.saveAs(excelData, fileName + ".xlsx");
-};*/
+};
 
 const WeekDay = (day: number) => {
   switch (day) {
@@ -369,7 +335,7 @@ export const formatDate = (date_initial: string) => {
   if (date >= 1 && date <= 7) {
     return `${WeekDay(moment(date_initial).isoWeekday())} ${moment(
       date_initial
-    ).format("DD, hh:mm A")} `;
+    ).format("DD, [de] MMM hh:mm A")} `;
   }
 
   if (month_i === month_f) {
@@ -384,6 +350,17 @@ export const formatDate = (date_initial: string) => {
     }
   }
 };
+
+export function formatDateForReports(dateString: string): string {
+  const date = moment(dateString);
+  return date.format('DD-MMM').toLowerCase();
+}
+
+export function formatDateForReportsWithYear(dateString: string): string {
+  const date = moment(dateString);
+  return date.format('DD-MMM-YYYY').toLowerCase();
+}
+
 
 export const formatCalendar = (date?: string | null, article?: boolean) => {
   const dateObj = moment(date).toObject();
@@ -474,3 +451,109 @@ export const groupBy = (obj: Array<Record<any, any>>, key: string) => {
   }, {});
 };
 
+/*export const generatePdf = (component: React.ReactElement, name?: string) =>
+  pdf(component)
+    .toBlob()
+    .then((resp: Blob) => {
+      const url = URL.createObjectURL(resp);
+      saveAs(url, name ? `${name}.pdf` : "Document.pdf");
+    });
+
+type Order = {
+  codeCurrency: string;
+  amount: number;
+};
+type Tips = {
+  amount: number;
+  codeCurrency: string;
+};
+type OrderData = {
+  totalOrdersManaged: Order[];
+  tips: Tips;
+  realToPay: Tips;
+};
+// Función para sumar los valores de 'tips' con el mismo 'codeCurrency'
+export function sumTipsByCurrency(data: OrderData[]): Order[] {
+  const tipsMap: { [key: string]: number } = {};
+
+  data.forEach((item) => {
+    if (tipsMap[item.tips.codeCurrency]) {
+      tipsMap[item.tips.codeCurrency] += item.tips.amount;
+    } else {
+      tipsMap[item.tips.codeCurrency] = item.tips.amount;
+    }
+  });
+
+  return Object.keys(tipsMap).map((codeCurrency) => ({
+    codeCurrency,
+    amount: tipsMap[codeCurrency],
+  }));
+}
+export function sumRealToPay(data: OrderData[]): Order[] {
+  const tipsMap: { [key: string]: number } = {};
+
+  data.forEach((item) => {
+    if (tipsMap[item.tips.codeCurrency]) {
+      tipsMap[item.tips.codeCurrency] += item.realToPay.amount;
+    } else {
+      tipsMap[item.tips.codeCurrency] = item.realToPay.amount;
+    }
+  });
+
+  return Object.keys(tipsMap).map((codeCurrency) => ({
+    codeCurrency,
+    amount: tipsMap[codeCurrency],
+  }));
+}
+
+type CurrencyAmount = {
+  amount: number;
+  codeCurrency: string;
+};
+
+export function sumCurrencyAmounts(arr: CurrencyAmount[]): CurrencyAmount[] {
+  const result: { [key: string]: number } = {};
+
+  arr.forEach((item) => {
+    if (result[item.codeCurrency]) {
+      result[item.codeCurrency] += item.amount;
+    } else {
+      result[item.codeCurrency] = item.amount;
+    }
+  });
+
+  return Object.keys(result).map((codeCurrency) => ({
+    amount: result[codeCurrency],
+    codeCurrency,
+  }));
+}
+
+export function sumTotalByCurrencyArray(
+  transactionArray: CurrencyAmount[][]
+): CurrencyAmount[] {
+  const currencyMap: { [key: string]: number } = {};
+
+  transactionArray.forEach((transactionGroup) => {
+    transactionGroup.forEach((transaction) => {
+      if (currencyMap[transaction.codeCurrency]) {
+        currencyMap[transaction.codeCurrency] += transaction.amount;
+      } else {
+        currencyMap[transaction.codeCurrency] = transaction.amount;
+      }
+    });
+  });
+
+  return Object.keys(currencyMap).map((codeCurrency) => ({
+    codeCurrency,
+    amount: currencyMap[codeCurrency],
+  }));
+}
+
+export function convertArrayToString(arr: number[]): string {
+  return arr.join(",");
+}
+
+export function convertStringToArray(inputString: string): any {
+  return inputString.split(",").map(Number);
+}
+*/

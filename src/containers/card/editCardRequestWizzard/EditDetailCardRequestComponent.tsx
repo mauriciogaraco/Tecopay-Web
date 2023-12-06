@@ -27,7 +27,7 @@ import GenericTable, {
 import BlockedStateForTable from '../../../components/misc/BlockedStateForTable';
 import CreatedStateForTable from '../../../components/misc/CreatedStateForTable';
 import StatusForCardRequest from '../../../components/misc/StatusForCardRequest';
-import { formatDate } from '../../../utils/helpersAdmin';
+import { formatCalendar } from '../../../utils/helpersAdmin';
 
 interface EditInterface {
 	cardRequest: any;
@@ -58,7 +58,7 @@ const EditDetailCardRequestComponent = ({
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				Fecha: formatDate(item.createdAt),
+				Fecha: formatCalendar(item.updatedAt),
 				Estado: <StatusForCardRequest currentState={item.status} />,
 				'Resgistrado Por': item?.issuedBy?.fullName ?? '-',
 			},

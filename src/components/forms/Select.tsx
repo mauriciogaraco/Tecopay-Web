@@ -15,17 +15,21 @@ interface InputProps {
 	default?: string | number;
 	disabled?: boolean;
 	data: Array<SelectInterface>;
+	setSelectedToParent?: Function;
 }
 
 export default function Select(props: UseControllerProps & InputProps) {
 	const { field, fieldState } = useController(props);
-	const { label, data, disabled, defaultValue } = props;
+	const { label, data, disabled, defaultValue, setSelectedToParent } = props;
 	const [selected, setSelected] = useState<SelectInterface | null>(null);
 
 	useEffect(() => {
 		const current = data.findIndex(
 			(item) => item.name === defaultValue || field.value === item.name,
 		);
+		{
+			setSelectedToParent && setSelectedToParent(defaultValue);
+		}
 		if (current !== -1) {
 			setSelected(data[current]);
 			field.onChange(data[current].name);
@@ -37,6 +41,9 @@ export default function Select(props: UseControllerProps & InputProps) {
 			<Listbox
 				value={selected}
 				onChange={(e) => {
+					{
+						setSelectedToParent && setSelectedToParent(e.name);
+					}
 					setSelected(e);
 					field.onChange(e.name);
 				}}

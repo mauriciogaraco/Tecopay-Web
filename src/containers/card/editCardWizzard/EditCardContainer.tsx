@@ -9,6 +9,7 @@ import {
 	PencilSquareIcon,
 } from '@heroicons/react/24/outline';
 import TabNav from '../../../components/navigation/TabNav';
+import Loading from '../../../components/misc/Loading';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -21,6 +22,7 @@ interface UserWizzardInterface {
 	getCard: Function;
 	isLoading: Boolean;
 	setSelectedDataToParent: any;
+	deliverCard: Function;
 }
 
 const EditCardContainer = ({
@@ -34,6 +36,7 @@ const EditCardContainer = ({
 	getCard,
 	isLoading,
 	setSelectedDataToParent,
+	deliverCard,
 }: UserWizzardInterface) => {
 	const [editModal, setEditModal] = useState(false);
 	const [currentTab, setCurrentTab] = useState('details');
@@ -55,8 +58,8 @@ const EditCardContainer = ({
 
 	if (isLoading)
 		return (
-			<div className='h-96'>
-				<Fetching />
+			<div className='relative top-0'>
+				<Loading />
 			</div>
 		);
 	else
@@ -66,7 +69,11 @@ const EditCardContainer = ({
 				{currentTab == 'details' ? (
 					<div>
 						<div className=''>
-							<DetailCardComponent id={id} allCards={allCards} />
+							<DetailCardComponent
+								deliverCard={deliverCard}
+								id={id}
+								allCards={allCards}
+							/>
 						</div>
 					</div>
 				) : (

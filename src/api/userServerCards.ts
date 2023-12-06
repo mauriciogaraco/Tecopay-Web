@@ -64,8 +64,7 @@ const useServerCards = () => {
     .post("/card", data)
       .then((resp) => {
         
-        console.log(resp.data.data)
-        console.log(items)
+
         setAllCards([...items, resp.data.data])
 
         
@@ -85,7 +84,7 @@ const useServerCards = () => {
     await query
       .put(`/card/${id}`, data)
       .then((resp) => {
-        console.log(selectedDataToParent)
+
         const newCards:any = [...allCards];
         const idx = newCards.findIndex((card:any) => card.id === id);
         const cardWithId = allCards.find((card:any) => card.id == id);
@@ -97,6 +96,31 @@ const useServerCards = () => {
       })
       .catch((e) => { manageErrors(e); });
     setIsFetching(false);
+  };
+
+   const deliverCard = async (
+    id:number,
+    data: any,
+    close: Function,
+
+  ) => {
+
+    setIsFetching(true);
+    setIsLoading(true)
+    await query
+    .post(`/card/${id}/deliver`, data)
+      .then((resp) => {
+        setCard(resp.data);
+        const newCards = [...allCards];
+        const idx = newCards.findIndex((card) => card.id === id);
+        newCards.splice(idx, 1, resp.data);
+        setAllCards(newCards);
+        
+        toast.success("Tarjeta entregada satisfactoriamente");
+      }).then(()=>close())
+      .catch((e) => { manageErrors(e); });
+    setIsFetching(false);
+    setIsLoading(false)
   };
 
   const getCard = async (id: any) => {
@@ -142,6 +166,7 @@ const useServerCards = () => {
     allCards,
     setAllCards,
     setSelectedDataToParent,
+    deliverCard
   };
 };
 export default useServerCards;

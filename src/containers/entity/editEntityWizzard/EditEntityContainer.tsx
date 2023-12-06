@@ -5,6 +5,7 @@ import TabNav from '../../../components/navigation/TabNav';
 import useServerUser from '../../../api/userServerAccounts';
 import { redirect, useNavigate } from 'react-router-dom';
 import useServerEntity from '../../../api/userServerEntity';
+import Loading from '../../../components/misc/Loading';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -39,14 +40,16 @@ const EditEntityContainer = ({
 
 	if (isLoading)
 		return (
-			<div className='h-96'>
-				<Fetching />
+			<div className=''>
+				<Loading h={96} />
 			</div>
 		);
 	return (
 		<div className=''>
 			<div className='flex items-center justify-around'>
-				<h1 className='ml-2 text-lg'>Editar entidad {id}</h1>{' '}
+				<p className='mb-4 font-semibold text-lg text-center'>
+					Editar entidad {id}
+				</p>
 			</div>
 
 			<DetailUserEditComponent

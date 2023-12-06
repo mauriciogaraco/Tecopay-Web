@@ -2,6 +2,7 @@ import {
 	PlusIcon,
 	CreditCardIcon,
 	LockOpenIcon,
+	TruckIcon,
 } from '@heroicons/react/24/outline';
 
 import GenericTable, {
@@ -26,6 +27,7 @@ import { formatCalendar, formatCardNumber } from '../../utils/helpers';
 
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 import EditCardContainer from './editCardWizzard/EditCardContainer';
+import StatusForCardRequest from '../../components/misc/StatusForCardRequest';
 
 const Card = () => {
 	const [query, setQuery] = useState<string>('');
@@ -43,6 +45,7 @@ const Card = () => {
 		editCard,
 		deleteCard,
 		setSelectedDataToParent,
+		deliverCard,
 	} = useServerCards();
 
 	const [filter, setFilter] = useState<
@@ -52,11 +55,12 @@ const Card = () => {
 
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [
-		'No. Cuenta',
-		'Nombre',
+		'No. Tarjeta',
+
 		'Propietario',
 		'Moneda',
 		'Cuenta',
+		'Estado',
 		'',
 	];
 	const tableData: DataTableInterface[] = [];
@@ -69,12 +73,12 @@ const Card = () => {
 		tableData.push({
 			rowId: item?.id,
 			payload: {
-				'No. Cuenta': formatCardNumber(item?.address),
-				Nombre: item?.account.name ?? '-',
+				'No. Tarjeta': formatCardNumber(item?.address),
 				Propietario: item?.holderName ?? '-',
 				Moneda: item?.account.currency,
 				Cuenta: formatCardNumber(item?.account.address),
-				'': <BlockedStateForTable currentState={item.isBlocked} />,
+				Estado: <StatusForCardRequest currentState={item.request.status} />,
+				'': item.isDelivered ? <TruckIcon className='w-5' /> : '',
 			},
 		});
 	});
@@ -140,6 +144,7 @@ const Card = () => {
 			{editTicketModal.state && (
 				<Modal state={editTicketModal.state} close={close} size='m'>
 					<EditCardContainer
+						deliverCard={deliverCard}
 						id={editTicketModal.id}
 						editCard={editCard}
 						deleteCard={deleteCard}

@@ -59,9 +59,8 @@ const Accounts = () => {
 	// Data for table ------------------------------------------------------------------------
 	const tableTitles = [
 		'Código',
-		'Nombre',
+		'Nombre del Propietario',
 		'Entidad',
-		'Propietario',
 		'Moneda',
 		'',
 	];
@@ -73,9 +72,9 @@ const Accounts = () => {
 			payload: {
 				'No.': item.id,
 				Código: `${formatCardNumber(item?.address)}`,
-				Nombre: item?.name,
+				'Nombre del Propietario': item.owner?.fullName,
 				Entidad: item?.issueEntity?.name,
-				Propietario: item.owner?.fullName,
+
 				Moneda: item.currency ?? '-',
 				'': (
 					<span className='flex whitespace-nowrap gap-4'>
@@ -92,7 +91,6 @@ const Accounts = () => {
 	});
 
 	const navigate = useNavigate();
-
 
 	const actions = [
 		{

@@ -12,6 +12,7 @@ import {
 	DocumentMagnifyingGlassIcon,
 	InformationCircleIcon,
 } from '@heroicons/react/24/outline';
+import Loading from '../../../components/misc/Loading';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -26,12 +27,14 @@ interface UserWizzardInterface {
 	setSelectedDataToParent: any;
 	acceptRequest: Function;
 	cardRequestRecords: any;
+	updateCardStatus: Function;
 }
 
 const EditCardRequestContainer = ({
 	id,
 	editCardRequest,
 	deleteCardRequest,
+	updateCardStatus,
 	isFetching,
 	closeModal,
 	allCardsRequests,
@@ -62,8 +65,8 @@ const EditCardRequestContainer = ({
 
 	if (isLoading)
 		return (
-			<div className='h-96'>
-				<Fetching />
+			<div className=''>
+				<Loading h={96} />
 			</div>
 		);
 
@@ -72,6 +75,7 @@ const EditCardRequestContainer = ({
 			<TabNav action={setCurrentTab} tabs={tabs} />
 			{currentTab == 'details' ? (
 				<DetailCardRequestComponent
+					updateCardStatus={updateCardStatus}
 					acceptRequest={acceptRequest}
 					id={id}
 					editCardRequest={editCardRequest}

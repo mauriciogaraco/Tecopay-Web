@@ -32,6 +32,7 @@ interface EditInterface {
 	isFetching: boolean;
 	id: number | null;
 	allAccounts: any;
+	getAccount: Function;
 }
 
 const DetailAccountEditComponent = ({
@@ -42,6 +43,7 @@ const DetailAccountEditComponent = ({
 	isFetching,
 	id,
 	allAccounts,
+	getAccount,
 }: EditInterface) => {
 	const { control, handleSubmit, watch, reset, formState } = useForm<BasicType>(
 		{
@@ -56,9 +58,9 @@ const DetailAccountEditComponent = ({
 	const [delAction, setDelAction] = useState(false);
 
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
-		editAccount(account?.id, deleteUndefinedAttr(data), reset()).then(() =>
-			closeModal(),
-		);
+		editAccount(account?.id, deleteUndefinedAttr(data))
+			.then(() => closeModal())
+			.then(() => getAccount(id));
 	};
 
 	return (

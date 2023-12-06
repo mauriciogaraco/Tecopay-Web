@@ -501,7 +501,7 @@ export const roundToFourDecimal = (value) => {
   return Math.round(value * 10000) / 10000;
 };
 
-export const formatDateTime = (date, article) => {
+export const formatCalendarTime = (date, article) => {
 
   const dateObj = moment(date).toObject();
   const todayObj = moment().toObject();

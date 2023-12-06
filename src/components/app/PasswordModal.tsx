@@ -34,10 +34,17 @@ const PasswordModal = ({ closeModal }: PasswordModal) => {
 			</h2>
 			<div className='grid grid-cols-2 gap-3 my-3'>
 				<div className='relative'>
-					<EyeIcon
-						className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
-						onClick={() => setShowPsw(!showPsw)}
-					/>
+					{showPsw == false ? (
+						<EyeSlashIcon
+							className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+							onClick={() => setShowPsw(!showPsw)}
+						/>
+					) : (
+						<EyeIcon
+							className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+							onClick={() => setShowPsw(!showPsw)}
+						/>
+					)}
 
 					<Input
 						name='password'
@@ -49,10 +56,17 @@ const PasswordModal = ({ closeModal }: PasswordModal) => {
 				</div>
 
 				<div className='relative'>
-					<EyeIcon
-						className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
-						onClick={() => setShowPsw(!showPsw)}
-					/>
+					{showPsw == false ? (
+						<EyeSlashIcon
+							className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+							onClick={() => setShowPsw(!showPsw)}
+						/>
+					) : (
+						<EyeIcon
+							className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+							onClick={() => setShowPsw(!showPsw)}
+						/>
+					)}
 					<Input
 						name='probePassword'
 						label='Confirmar contraseña'
@@ -69,15 +83,23 @@ const PasswordModal = ({ closeModal }: PasswordModal) => {
 					/>
 				</div>
 				<div className='col-span-2 relative'>
-					<EyeIcon
-						className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
-						onClick={() => setShowPin(!showPin)}
-					/>
+					{showPsw == false ? (
+						<EyeSlashIcon
+							className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+							onClick={() => setShowPsw(!showPsw)}
+						/>
+					) : (
+						<EyeIcon
+							className='h-5 text-gray-500 absolute top-[34px] right-2 z-10 hover:text-gray-600 hover:cursor-pointer'
+							onClick={() => setShowPsw(!showPsw)}
+						/>
+					)}
+
 					<Input
 						name='pinPassword'
 						label='Nuevo PIN'
 						control={control}
-						placeholder={showPin ? 'PIN' : pinUnicode}
+						placeholder={showPin ? 'PIN' : '******'}
 						type={showPin ? 'text' : 'password'}
 						rules={{
 							maxLength: {

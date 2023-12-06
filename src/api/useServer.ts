@@ -49,7 +49,7 @@ const useServer = () => {
   const { id } = useParams();
 
   const manageErrors = (error: any) => {
-    console.log(error);
+
     if (error.response?.data?.message) {
       toast.error(error.response?.data?.message);
       
@@ -98,7 +98,7 @@ const useServer = () => {
     await query
       .postAuth("/identity/login" , data)
       .then((resp) => {
-        console.log(resp)
+
         dispatch(setKeys(resp.data));
       })
       .catch((e) => { manageErrors(e); });
@@ -218,7 +218,7 @@ const useServer = () => {
         const { currentPage, totalItems, totalPages, items } = resp.data;
         setPaginate({ totalItems, totalPages, currentPage });
         setAllUsers(items);
-        console.log(items)
+
       })
       .catch((error) => {
         if (error.response?.data?.message) {

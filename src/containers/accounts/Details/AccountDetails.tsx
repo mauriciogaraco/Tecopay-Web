@@ -40,6 +40,8 @@ const AccountDetails = () => {
 		getAccountOperations,
 		records,
 		operations,
+		Charge,
+		Transfer,
 	} = useServerAccounts();
 
 	const { getAllCards, paginate, allCards } = useServerCards();
@@ -101,7 +103,7 @@ const AccountDetails = () => {
 		},
 
 		{
-			name: formatCardNumber(account?.address),
+			name: formatCardNumber(account?.address ?? '-'),
 		},
 	];
 	//--------------------------------------------------------------------------------------
@@ -113,17 +115,19 @@ const AccountDetails = () => {
 					icon={<UserCircleIcon className='h-7 text-gray-500' />}
 					paths={paths}
 				/>
-				<div className='absolute right-[45px] mt-[6px] h-7 px-2'>
-					<Button
-						name='Editar'
-						icon={<PencilSquareIcon className=' text-white w-5' />}
-						color='slate-600'
-						type='button'
-						action={() => showEditModal()}
-						loading={isFetching}
-						disabled={isFetching}
-					/>
-				</div>
+				{current === 'detalles' && (
+					<div className='absolute right-[45px] mt-[6px] h-7 px-2'>
+						<Button
+							name='Editar'
+							icon={<PencilSquareIcon className=' text-white w-5' />}
+							color='slate-600'
+							type='button'
+							action={() => showEditModal()}
+							loading={isFetching}
+							disabled={isFetching}
+						/>
+					</div>
+				)}
 			</div>
 			<div className='sm:grid grid-cols-10 gap-3'>
 				<SideNav
@@ -135,6 +139,10 @@ const AccountDetails = () => {
 				<div className='sm:col-span-8 pl-3 pt-1'>
 					{current === 'detalles' && (
 						<SelectedAccountDetails
+							getAccount={getAccount}
+							isFetching={isFetching}
+							charge={Charge}
+							transfer={Transfer}
 							isLoading={isLoading}
 							id={id}
 							account={account}
@@ -162,7 +170,7 @@ const AccountDetails = () => {
 						id={id}
 						editAccount={editAccount}
 						isFetching={isFetching}
-						closeModal={()=>setEditModal(false)}
+						closeModal={() => setEditModal(false)}
 					/>
 				</Modal>
 			)}

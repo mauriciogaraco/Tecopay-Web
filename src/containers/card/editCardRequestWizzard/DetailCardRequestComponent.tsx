@@ -1,18 +1,22 @@
 import Select from '../../../components/forms/Select';
 import TextArea from '../../../components/forms/TextArea';
 import Button from '../../../components/misc/Button';
-import { formatDate } from '../../../utils/helpersAdmin';
+import { formatCalendar } from '../../../utils/helpersAdmin';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import CardRequests from '../CardRequests';
 import { TicketIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Modal from '../../../components/modals/GenericModal';
 import AlertContainer from '../../../components/misc/AlertContainer';
 import { useState } from 'react';
-import { deleteUndefinedAttr } from '../../../utils/helpers';
+import { deleteUndefinedAttr, writeDataToFile } from '../../../utils/helpers';
 import { BasicType } from '../../../interfaces/InterfacesLocal';
 import useServerCardsRequests from '../../../api/userServerCardsRequests';
 import AcceptContainer from '../../../components/misc/AcceptContainer';
 import { CheckIcon } from '@heroicons/react/24/solid';
+import Input from '../../../components/forms/Input';
+import ChangeStateContainer from './ChangeStateContainer';
+import ExcelFileExport from '../../../components/commos/ExcelFileExport';
+import { BsFiletypeJson, BsFiletypeXlsx } from 'react-icons/bs';
 
 interface EditInterface {
 	editCardRequest: Function;
@@ -23,6 +27,7 @@ interface EditInterface {
 	allCardsRequests: any;
 	setSelectedDataToParent: any;
 	acceptRequest: Function;
+	updateCardStatus: Function;
 }
 
 const DetailCardRequestComponent = ({
@@ -33,49 +38,90 @@ const DetailCardRequestComponent = ({
 	id,
 	allCardsRequests,
 	acceptRequest,
+	updateCardStatus,
 }: EditInterface) => {
 	const cardRequest: any = allCardsRequests.find((item: any) => item.id === id);
 	const { control, handleSubmit, reset } = useForm();
 	const [delAction, setDelAction] = useState(false);
+	const [changeState, setChangeState] = useState(false);
+	const [exportModal, setExportModal] = useState(false);
+	const [loadingExport, setloadingExport] = useState(false);
+
 	const [acceptRequestModal, setAcceptRequestModal] = useState(false);
 
+	let dataToSend: any;
+
+	const exportAction = async (name: string) => {
+		const data = cardRequest;
+		writeDataToFile(data, name);
+	};
+
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
-		editCardRequest(id, deleteUndefinedAttr(data), reset()).then(() =>
+		if (data.priority == 'Expresa') {
+			dataToSend = { ...data, priority: 'EXPRESS' };
+		}
+		if (data.priority == 'Normal') {
+			dataToSend = { ...data, priority: 'NORMAL' };
+		}
+		editCardRequest(id, deleteUndefinedAttr(dataToSend), reset()).then(() =>
 			closeModal(),
 		);
 	};
+
 	const { isLoading } = useServerCardsRequests();
 	return (
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<section className='flex relative flex-col'>
-					<div className='py-3 absolute right-0'>
-						<div className='flex gap-5'>
-							<Button
-								icon={<TrashIcon className='h-5 text-red-500' />}
-								color='gray-50'
-								type='button'
-								action={() => {
-									setDelAction(true);
-								}}
-								outline
-							/>
-							<Button
-								icon={<CheckIcon className='h-5 text-green-500' />}
-								color='gray-50'
-								type='button'
-								action={() => {
-									setAcceptRequestModal(true);
-								}}
-								outline
-							/>
+					<div className='py-3 relative '>
+						<div className='flex justify-between gap-5'>
+							{cardRequest?.status === 'PRINTED' ||
+							cardRequest?.status === 'DENIED' ? null : (
+								<Button
+									textColor='gray-900'
+									name='Cambiar Estado'
+									color='tecopay-200'
+									type='button'
+									action={() => {
+										setChangeState(true);
+									}}
+									outline
+								/>
+							)}
+
+							<div className='flex gap-5'>
+								<Button
+									icon={<TrashIcon className='h-5 text-red-500' />}
+									color='gray-50'
+									type='button'
+									action={() => {
+										setDelAction(true);
+									}}
+									outline
+								/>
+							</div>
+							{
+								<Button
+									icon={<BsFiletypeJson className='h-5' />}
+									color='gray-50'
+									textColor='gray-900'
+									type='button'
+									name='Exportar como Json'
+									action={() => {
+										setExportModal(true);
+									}}
+									outline
+								/>
+							}
 						</div>
 					</div>
 					<ul className='grid py-3 gap-3 text-xl'>
 						{cardRequest?.quantity === 1 && (
-							<li className=' pl-2 rounded-m '>
-								Propietario: <span>{cardRequest?.holderName ?? '-'}</span>
-							</li>
+							<Input
+								name='holderName'
+								defaultValue={cardRequest?.holderName ?? '-'}
+								control={control}
+							></Input>
 						)}
 						{cardRequest?.quantity > 1 && (
 							<li className=' pl-2 rounded-m '>
@@ -91,21 +137,8 @@ const DetailCardRequestComponent = ({
 							name='priority'
 							label='Prioridad'
 							data={[
-								{ id: 1, name: 'NORMAL' },
-								{ id: 2, name: 'EXPRESS' },
-							]}
-						></Select>
-						<Select
-							defaultValue={cardRequest?.status}
-							default={cardRequest?.status}
-							control={control}
-							name='status'
-							label='Estado'
-							data={[
-								{ id: 1, name: 'PRINTED' },
-								{ id: 2, name: 'IN_PROCESS' },
-								{ id: 3, name: 'DELIVERED' },
-								{ id: 4, name: 'DENIED' },
+								{ id: 1, name: 'Normal' },
+								{ id: 2, name: 'Expresa' },
 							]}
 						></Select>
 					</div>
@@ -141,7 +174,28 @@ const DetailCardRequestComponent = ({
 					/>
 				</Modal>
 			)}
-			{acceptRequestModal && (
+
+			{changeState && (
+				<Modal state={changeState} close={setChangeState}>
+					<ChangeStateContainer
+						isLoading={isFetching}
+						cardRequest={cardRequest}
+						closeModal={closeModal}
+						id={id}
+						updateCardStatus={updateCardStatus}
+					></ChangeStateContainer>
+				</Modal>
+			)}
+
+			{exportModal && (
+				<Modal state={exportModal} close={setExportModal}>
+					<ExcelFileExport
+						exportAction={exportAction}
+						loading={loadingExport}
+					/>
+				</Modal>
+			)}
+			{/*acceptRequestModal && (
 				<Modal state={acceptRequestModal} close={setAcceptRequestModal}>
 					<AcceptContainer
 						onAction={() => acceptRequest(id, { requestId: id })}
@@ -151,7 +205,7 @@ const DetailCardRequestComponent = ({
 						loading={isFetching}
 					/>
 				</Modal>
-			)}
+			)*/}
 		</>
 	);
 };
