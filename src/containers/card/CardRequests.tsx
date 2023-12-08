@@ -26,6 +26,8 @@ import { exportExcel, generateUrlParams } from '../../utils/helpersAdmin2';
 import ExcelFileExport from '../../components/commos/ExcelFileExport';
 import query from '../../api/APIServices';
 import { BsFiletypeXlsx } from 'react-icons/bs';
+import Button from '../../components/misc/Button';
+import { DocumentMagnifyingGlassIcon, InformationCircleIcon } from '@heroicons/react/20/solid';
 
 const CardRequests = () => {
 
@@ -44,14 +46,20 @@ const CardRequests = () => {
 		manageErrors,
 		allCardsRequests,
 		setSelectedDataToParent,
-		GetRequestRecord,
 		cardRequestRecords,
 		updateCardStatus,
 	} = useServerCardsRequests();
 
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
-	>({page: 1});
+	>({ page: 1 });
+
+	const [editCardRequestModal, setEditCardRequestModal] = useState<{
+		state: boolean;
+		id: number | null;
+		active: string | null;
+		status: string | null;
+	}>({ state: false, id: null, active: null, status: null });
 
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
 
@@ -121,11 +129,10 @@ const CardRequests = () => {
 		'Propietario',
 		'Cuenta',
 		'Estado',
+		'Acciones',
 	];
 
 	const tableData: DataTableInterface[] = [];
-	
-	console.log({allCardsRequests})
 
 	allCardsRequests?.map((item: any) => {
 		tableData.push({
@@ -137,6 +144,34 @@ const CardRequests = () => {
 				Propietario: item?.holderName ?? '-',
 				Cuenta: item?.account ?? '-',
 				Estado: <StatusForCardRequest currentState={item.status} />,
+				Acciones: (
+					<div className='flex'>
+						<div className='mx-1'>
+							<Button color='slate-500' textColor='slate-500' icon={<DocumentMagnifyingGlassIcon className='w-5' />} name={"Detalles"}
+								action={() => {
+									setEditCardRequestModal({ state: true, id: item.id, active: "details", status: null });
+								}}></Button>
+						</div>
+						<div className='mx-1'>
+							<Button color='slate-500' textColor='slate-500' icon={<InformationCircleIcon className='w-5' />} name={"Reporte"}
+								action={() => {
+									setEditCardRequestModal({ state: true, id: item.id, active: "reports", status: null });
+								}}></Button>
+						</div>
+						{
+							item?.status === 'PRINTED' ||
+								item?.status === 'DENIED' ? null : (
+								<div className='mx-1'>
+									<Button color='slate-500' textColor='slate-500' icon={<CreditCardIcon className='w-5' />} name={"Cambiar estado"}
+										action={() => {
+											setEditCardRequestModal({ state: true, id: item.id, active: "changeStatus", status: item.status });
+										}}></Button>
+								</div>
+							)
+						}
+
+					</div>
+				),
 			},
 		});
 	});
@@ -146,8 +181,8 @@ const CardRequests = () => {
 		placeholder: 'Buscar Solicitud',
 	};
 
-	const close = () => setEditCardRequestModal({ state: false, id: null });
-	
+	const close = () => setEditCardRequestModal({ state: false, id: null, active: null, status: null });
+
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
@@ -172,23 +207,12 @@ const CardRequests = () => {
 	];
 	//------------------------------------------------------------------------------------
 
-	const [contactModal, setContactModal] = useState(false);
-	
-	const [editCardRequestModal, setEditCardRequestModal] = useState<{
-		state: boolean;
-		id: number | null;
-	}>({ state: false, id: null });
-
-	const rowAction = (id: number) => {
-		setEditCardRequestModal({ state: true, id });
-		GetRequestRecord(id, filter);
-	};
-
 	const closeAddAccount = () => setAddTicketmodal(false);
 
 	useEffect(() => {
 		getAllCardsRequests(filter);
 	}, [filter]);
+
 
 	return (
 		<div className=''>
@@ -202,8 +226,6 @@ const CardRequests = () => {
 				loading={isLoading}
 				searching={searching}
 				actions={actions}
-				rowAction={rowAction}
-				//filterComponent={{ availableFilters, filterAction }}
 				paginateComponent={
 					<Paginate
 						action={(page: number) => setFilter({ ...filter, page })}
@@ -216,7 +238,7 @@ const CardRequests = () => {
 				<Modal state={addTicketmodal} close={setAddTicketmodal}>
 					<NewCardRequestModal
 						close={closeAddAccount}
-						contactModal={contactModal}
+						contactModal={false}
 						addBulkCardRequest={addBulkCardRequest}
 						isFetching={isFetching}
 						addSimpleCardRequest={addSimpleCardRequest}
@@ -239,6 +261,8 @@ const CardRequests = () => {
 						isLoading={isLoading}
 						getCardRequest={getCardRequest}
 						setSelectedDataToParent={setSelectedDataToParent}
+						active={editCardRequestModal.active}
+						status={editCardRequestModal.status ?? null}
 					/>
 				</Modal>
 			)}

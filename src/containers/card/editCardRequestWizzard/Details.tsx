@@ -25,7 +25,7 @@ interface EditInterface {
 	updateCardStatus: Function;
 }
 
-const DetailCardRequestComponent = ({
+const Details = ({
 	editCardRequest,
 	deleteCardRequest,
 	closeModal,
@@ -37,7 +37,7 @@ const DetailCardRequestComponent = ({
 	const cardRequest: any = allCardsRequests.find((item: any) => item.id === id);
 	const { control, handleSubmit, reset } = useForm();
 	const [delAction, setDelAction] = useState(false);
-	const [changeState, setChangeState] = useState(false);
+	// const [changeState, setChangeState] = useState(false);
 	const [exportModal, setExportModal] = useState(false);
 
 	let dataToSend: any;
@@ -59,8 +59,6 @@ const DetailCardRequestComponent = ({
 		);
 	};
 
-	console.log({ cardRequest })
-
 	const { isLoading } = useServerCardsRequests();
 
 	const priorityData = [
@@ -74,7 +72,7 @@ const DetailCardRequestComponent = ({
 				<section className='flex relative flex-col'>
 					<div className='py-3 relative '>
 						<div className='flex justify-between gap-5'>
-							{cardRequest?.status === 'PRINTED' ||
+							{/* {cardRequest?.status === 'PRINTED' ||
 								cardRequest?.status === 'DENIED' ? null : (
 								<Button
 									textColor='gray-900'
@@ -86,7 +84,7 @@ const DetailCardRequestComponent = ({
 									}}
 									outline
 								/>
-							)}
+							)} */}
 
 							<div className='flex gap-5'>
 								<Button
@@ -177,7 +175,7 @@ const DetailCardRequestComponent = ({
 				</Modal>
 			)}
 
-			{changeState && (
+			{/* {changeState && (
 				<Modal state={changeState} close={setChangeState}>
 					<ChangeStateContainer
 						isLoading={isFetching}
@@ -187,7 +185,7 @@ const DetailCardRequestComponent = ({
 						updateCardStatus={updateCardStatus}
 					></ChangeStateContainer>
 				</Modal>
-			)}
+			)} */}
 
 			{exportModal && (
 				<Modal state={exportModal} close={setExportModal}>
@@ -212,4 +210,4 @@ const DetailCardRequestComponent = ({
 	);
 };
 
-export default DetailCardRequestComponent;
+export default Details;

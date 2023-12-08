@@ -1,13 +1,9 @@
-import { useState } from 'react';
-import EditDetailCardRequestComponent from './EditDetailCardRequestComponent';
-import TabNav from '../../../components/navigation/TabNav';
+import Reports from './Reports';
 
-import DetailCardRequestComponent from './DetailCardRequestComponent';
-import {
-	DocumentMagnifyingGlassIcon,
-	InformationCircleIcon,
-} from '@heroicons/react/24/outline';
+import Details from './Details';
+
 import Loading from '../../../components/misc/Loading';
+import ChangeStateContainer from './ChangeStateContainer';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -23,6 +19,8 @@ interface UserWizzardInterface {
 	acceptRequest: Function;
 	cardRequestRecords: any;
 	updateCardStatus: Function;
+	active: string | null;
+	status?: string | null;
 }
 
 const EditCardRequestContainer = ({
@@ -37,24 +35,10 @@ const EditCardRequestContainer = ({
 	isLoading,
 	setSelectedDataToParent,
 	cardRequestRecords,
+	active,
+	status
 }: UserWizzardInterface) => {
 
-	const [currentTab, setCurrentTab] = useState('details');
-
-	const tabs = [
-		{
-			icon: <DocumentMagnifyingGlassIcon className='w-5' />,
-			name: 'Detalles',
-			href: 'details',
-			current: currentTab === 'details',
-		},
-		{
-			icon: <InformationCircleIcon className='w-5' />,
-			name: 'Reportes',
-			href: 'Reportes',
-			current: currentTab === 'Reportes',
-		},
-	];
 
 	if (isLoading)
 		return (
@@ -63,11 +47,11 @@ const EditCardRequestContainer = ({
 			</div>
 		);
 
+
 	return (
 		<div className=''>
-			<TabNav action={setCurrentTab} tabs={tabs} />
-			{currentTab === 'details' ? (
-				<DetailCardRequestComponent
+			{active === 'details' ? (
+				<Details
 					updateCardStatus={updateCardStatus}
 					id={id}
 					editCardRequest={editCardRequest}
@@ -77,18 +61,20 @@ const EditCardRequestContainer = ({
 					allCardsRequests={allCardsRequests}
 					setSelectedDataToParent={setSelectedDataToParent}
 				/>
-			) : (
-				<EditDetailCardRequestComponent
+			) : active === 'reports' ? (
+				<Reports
 					cardRequestRecords={cardRequestRecords}
-					id={id}
-					editCardRequest={editCardRequest}
-					deleteCardRequest={deleteCardRequest}
-					cardRequest={cardRequest}
-					closeModal={closeModal}
 					isFetching={isFetching}
-					allCardsRequests={allCardsRequests}
 					setSelectedDataToParent={setSelectedDataToParent}
 				/>
+			) : active === 'changeStatus' && (
+				<ChangeStateContainer
+					isLoading={isFetching}
+					cardRequest={status}
+					closeModal={closeModal}
+					id={id}
+					updateCardStatus={updateCardStatus}
+				></ChangeStateContainer>
 			)}
 		</div>
 	);

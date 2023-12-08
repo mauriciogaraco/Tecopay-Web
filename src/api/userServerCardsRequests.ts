@@ -56,12 +56,9 @@ const useServerCardsRequests = () => {
 	const addSimpleCardRequest = async (data: any, close: Function) => {
 		setIsFetching(true);
 		setIsLoading(true);
-		console.log({data})
 		await query
 			.post('/cardRequest/simple', data)
 			.then((resp) => {
-
-				console.log({resp})
 
 				setAllCardsRequests([...allCardsRequests, resp.data]);
 
