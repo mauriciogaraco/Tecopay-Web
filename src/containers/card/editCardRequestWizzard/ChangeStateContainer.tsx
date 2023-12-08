@@ -47,7 +47,6 @@ const ChangeStateContainer = ({
 		<form className=' gap-4 flex flex-col' onSubmit={handleSubmit(onSubmit)}>
 			<Select
 				defaultValue={translateOrderState(cardRequest) ?? ''}
-				// default={translateOrderState(cardRequest?.status)}
 				control={control}
 				setSelectedToParent={setSelectedToParent}
 				name='status'

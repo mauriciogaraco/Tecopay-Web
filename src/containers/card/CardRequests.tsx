@@ -86,6 +86,7 @@ const CardRequests = () => {
 			page++;
 			await query
 				.get(`/cardRequest${generateUrlParams({ ...filter, page })}`)
+				// eslint-disable-next-line no-loop-func
 				.then((resp: any) => {
 					allResults = allResults.concat(resp.data.items);
 				})
@@ -106,7 +107,7 @@ const CardRequests = () => {
 				dataToExport.push({
 					'Card Number': item?.queryNumber ?? '---',
 					'Card Holder': item?.holderName ?? '---',
-					Barcode: item?.barCode,
+					Barcode: item?.card.barCode,
 					IssuetAt: formatDateForCard(item.createdAt),
 					ExpirationDate: formatDateForCard(item.createdAt),
 				});

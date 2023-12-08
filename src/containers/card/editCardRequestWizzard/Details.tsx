@@ -149,6 +149,22 @@ const Details = ({
 					</div>
 
 					{
+						(cardRequest.status !== "REQUESTED" && cardRequest.status !== "DENIED")
+						&& (
+							<div className='h-full w-1/2' >
+								<Input
+									name='barCode'
+									defaultValue={cardRequest?.card[0]?.barCode!}
+									rules={{ required: 'Campo requerido' }}
+									control={control}
+									label='Código de barras'
+									disabled={true}
+								></Input>
+							</div>
+						)}
+
+
+					{
 						cardRequest.status !== "PRINTED" && (
 							<div className='flex self-end'>
 								<Button
