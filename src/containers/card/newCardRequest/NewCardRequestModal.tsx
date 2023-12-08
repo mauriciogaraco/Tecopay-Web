@@ -10,14 +10,10 @@ import Toggle from '../../../components/forms/Toggle';
 import Button from '../../../components/misc/Button';
 import Select from '../../../components/forms/Select';
 import { useState } from 'react';
-import useServerCardsRequests from '../../../api/userServerCardsRequests';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 
 interface propsDestructured {
-	setContactModal: (contactModal: boolean) => void;
 	contactModal: boolean;
-	setNuevoCardRequestModal: (contactModal: boolean) => void;
-	nuevoCardRequestModal: boolean;
 	close: Function;
 	addSimpleCardRequest: Function;
 	addBulkCardRequest: Function;
@@ -25,10 +21,7 @@ interface propsDestructured {
 }
 
 const NewCardRequestModal = ({
-	setContactModal,
-	setNuevoCardRequestModal,
 	addSimpleCardRequest,
-	nuevoCardRequestModal,
 	close,
 	addBulkCardRequest,
 	isFetching,
@@ -40,8 +33,8 @@ const NewCardRequestModal = ({
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
-		if (createManyState == false) {
-			if (data.priority == 'Normal')
+		if (!createManyState) {
+			if (data.priority === 'Normal')
 				dataTosend = {
 					...data,
 					priority: 'NORMAL',
@@ -55,13 +48,13 @@ const NewCardRequestModal = ({
 				addSimpleCardRequest(deleteUndefinedAttr(dataTosend), close).then(() =>
 					close(),
 				);
-			} catch (error) {}
+			} catch (error) { }
 		} else {
 			try {
 				addBulkCardRequest(deleteUndefinedAttr(dataTosend), close).then(() =>
 					close(),
 				);
-			} catch (error) {}
+			} catch (error) { }
 		}
 	};
 

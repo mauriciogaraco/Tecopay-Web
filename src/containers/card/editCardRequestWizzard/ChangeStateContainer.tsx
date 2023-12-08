@@ -21,15 +21,17 @@ const ChangeStateContainer = ({
 	cardRequest,
 	isLoading,
 }: updateCardRequest) => {
+
 	const [selectedToParent, setSelectedToParent] = useState();
 	const isDisabled = selectedToParent === 'Pedida';
 	let dataToSend: any;
 	const { control, handleSubmit, reset } = useForm();
+
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
 		try {
-			if (data.status == 'Aceptada') {
+			if (data.status === 'Aceptada') {
 				dataToSend = { status: 'ACCEPTED' };
-			} else if (data.status == 'Impresa') {
+			} else if (data.status === 'Impresa') {
 				dataToSend = { status: 'PRINTED' };
 			} else {
 				dataToSend = { status: 'DENIED' };
@@ -40,11 +42,11 @@ const ChangeStateContainer = ({
 			);
 		} catch (error) {}
 	};
+
 	return (
 		<form className=' gap-4 flex flex-col' onSubmit={handleSubmit(onSubmit)}>
 			<Select
-				defaultValue={translateOrderState(cardRequest?.status) ?? ''}
-				default={translateOrderState(cardRequest?.status)}
+				defaultValue={translateOrderState(cardRequest) ?? ''}
 				control={control}
 				setSelectedToParent={setSelectedToParent}
 				name='status'
@@ -55,11 +57,11 @@ const ChangeStateContainer = ({
 					{ id: 3, name: translateOrderState('DENIED') },
 					{ id: 4, name: translateOrderState('REQUESTED') },
 				]}
-			></Select>
+			/>
 
 			<Button
 				disabled={isDisabled}
-				name='Insertar'
+				name='Actualizar'
 				color='slate-600'
 				type='submit'
 				loading={isLoading}

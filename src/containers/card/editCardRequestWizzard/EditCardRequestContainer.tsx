@@ -1,18 +1,9 @@
-import { useState, createContext, useEffect } from 'react';
-import Fetching from '../../../components/misc/Fetching';
-import DetailCardComponent from './DetailCardRequestComponent';
-import Button from '../../../components/misc/Button';
-import EditDetailCardRequestComponent from './EditDetailCardRequestComponent';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import TabNav from '../../../components/navigation/TabNav';
-import { faBoxesStacked } from '@fortawesome/free-solid-svg-icons';
+import Reports from './Reports';
 
-import DetailCardRequestComponent from './DetailCardRequestComponent';
-import {
-	DocumentMagnifyingGlassIcon,
-	InformationCircleIcon,
-} from '@heroicons/react/24/outline';
+import Details from './Details';
+
 import Loading from '../../../components/misc/Loading';
+import ChangeStateContainer from './ChangeStateContainer';
 
 interface UserWizzardInterface {
 	id: number | null;
@@ -28,6 +19,8 @@ interface UserWizzardInterface {
 	acceptRequest: Function;
 	cardRequestRecords: any;
 	updateCardStatus: Function;
+	active: string | null;
+	status?: string | null;
 }
 
 const EditCardRequestContainer = ({
@@ -39,29 +32,13 @@ const EditCardRequestContainer = ({
 	closeModal,
 	allCardsRequests,
 	cardRequest,
-	getCardRequest,
 	isLoading,
 	setSelectedDataToParent,
-	acceptRequest,
 	cardRequestRecords,
+	active,
+	status
 }: UserWizzardInterface) => {
-	const [editModal, setEditModal] = useState(false);
-	const [currentTab, setCurrentTab] = useState('details');
 
-	const tabs = [
-		{
-			icon: <DocumentMagnifyingGlassIcon className='w-5' />,
-			name: 'Detalles',
-			href: 'details',
-			current: currentTab === 'details',
-		},
-		{
-			icon: <InformationCircleIcon className='w-5' />,
-			name: 'Reportes',
-			href: 'Reportes',
-			current: currentTab === 'Reportes',
-		},
-	];
 
 	if (isLoading)
 		return (
@@ -70,13 +47,12 @@ const EditCardRequestContainer = ({
 			</div>
 		);
 
+
 	return (
 		<div className=''>
-			<TabNav action={setCurrentTab} tabs={tabs} />
-			{currentTab == 'details' ? (
-				<DetailCardRequestComponent
+			{active === 'details' ? (
+				<Details
 					updateCardStatus={updateCardStatus}
-					acceptRequest={acceptRequest}
 					id={id}
 					editCardRequest={editCardRequest}
 					deleteCardRequest={deleteCardRequest}
@@ -85,18 +61,20 @@ const EditCardRequestContainer = ({
 					allCardsRequests={allCardsRequests}
 					setSelectedDataToParent={setSelectedDataToParent}
 				/>
-			) : (
-				<EditDetailCardRequestComponent
+			) : active === 'reports' ? (
+				<Reports
 					cardRequestRecords={cardRequestRecords}
-					id={id}
-					editCardRequest={editCardRequest}
-					deleteCardRequest={deleteCardRequest}
-					cardRequest={cardRequest}
-					closeModal={closeModal}
 					isFetching={isFetching}
-					allCardsRequests={allCardsRequests}
 					setSelectedDataToParent={setSelectedDataToParent}
 				/>
+			) : active === 'changeStatus' && (
+				<ChangeStateContainer
+					isLoading={isFetching}
+					cardRequest={status}
+					closeModal={closeModal}
+					id={id}
+					updateCardStatus={updateCardStatus}
+				></ChangeStateContainer>
 			)}
 		</div>
 	);

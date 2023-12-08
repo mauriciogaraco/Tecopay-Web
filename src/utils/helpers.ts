@@ -146,24 +146,29 @@ export function formatDateForCard(dateString:string) {
   return `${year}-${month}-${day}`;
 }
 
-
-
-
 export function transformData(data:any) {
+  console.log({data})
   const transformedData = {
     "ntgui_version": 1,
     "data": [
       {
-        "kRecordDescription": `barCode#${data.barCode ?? '-'}`,
+        "kRecordDescription": data.card.map((item: { barCode: any; }) => {
+          return `barCode#${item.barCode ?? '-'}`
+        }),
+        // "kRecordDescription": `barCode#${data.card[0].barCode ?? '-'}`,
         "kRecordSelection": 0,
-        "kRecordField1": `barCode#${data.barCode ?? '-'}`,
+        "kRecordField1": data.card.map((item: { barCode: any; }) => {
+          return `barCode#${item.barCode ?? '-'}`
+        }),
         "kRecordSize": 26,
         "kRecordObject": {
           "kTnf": 1,
           "kChunked": false,
           "kType": [84],
           "kId": [],
-          "kPayload": Array.from(`enbarCode#${data.barCode ?? '-'}`).map(c => c.charCodeAt(0))
+          "kPayload": Array.from(`enbarCode#${data.card.map((item: { barCode: any; }) => {
+            return `barCode#${item.barCode ?? '-'}`
+          }) ?? '-'}`).map(c => c.charCodeAt(0))
         }
       },
       {
