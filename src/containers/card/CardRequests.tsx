@@ -1,12 +1,10 @@
 import {
 	PlusIcon,
 	CreditCardIcon,
-	LockOpenIcon,
 } from '@heroicons/react/24/outline';
 
 import GenericTable, {
 	DataTableInterface,
-	FilterOpts,
 } from '../../components/misc/GenericTable';
 
 import Paginate from '../../components/misc/Paginate';
@@ -15,19 +13,10 @@ import Breadcrumb, {
 	PathInterface,
 } from '../../components/navigation/Breadcrumb';
 
-import { BasicType, SelectInterface } from '../../interfaces/InterfacesLocal';
-
 import { useEffect, useState } from 'react';
-import NuevoTicketModal from '../accounts/NewAccount/NewAccountModal';
 
-import { useAppSelector } from '../../store/hooks';
-import useServerCards from '../../api/userServerCards';
-import { formatCalendar, formatDateForCard } from '../../utils/helpers';
-import EditCardContainer from './editCardRequestWizzard/EditCardRequestContainer';
-import StateSpanForTable from '../../components/misc/StateSpanForTable';
-import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
+import { formatDateForCard } from '../../utils/helpers';
 import useServerCardsRequests from '../../api/userServerCardsRequests';
-import CreatedStateForTable from '../../components/misc/CreatedStateForTable';
 import NewCardRequestModal from './newCardRequest/NewCardRequestModal';
 import EditCardRequestContainer from './editCardRequestWizzard/EditCardRequestContainer';
 import StatusForCardRequest from '../../components/misc/StatusForCardRequest';
@@ -39,15 +28,12 @@ import query from '../../api/APIServices';
 import { BsFiletypeXlsx } from 'react-icons/bs';
 
 const CardRequests = () => {
-	const [post, setPost] = useState(null);
 
 	const {
 		acceptRequest,
 		paginate,
 		isLoading,
 		isFetching,
-		waiting,
-		modalWaiting,
 		cardRequest,
 		getAllCardsRequests,
 		addSimpleCardRequest,
@@ -56,9 +42,7 @@ const CardRequests = () => {
 		editCardRequest,
 		deleteCardRequest,
 		manageErrors,
-		modalWaitingError,
 		allCardsRequests,
-		setAllCardsRequests,
 		setSelectedDataToParent,
 		GetRequestRecord,
 		cardRequestRecords,
@@ -67,7 +51,8 @@ const CardRequests = () => {
 
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
-	>({});
+	>({page: 1});
+
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
 
 	//Export to excel
@@ -137,7 +122,10 @@ const CardRequests = () => {
 		'Cuenta',
 		'Estado',
 	];
+
 	const tableData: DataTableInterface[] = [];
+	
+	console.log({allCardsRequests})
 
 	allCardsRequests?.map((item: any) => {
 		tableData.push({
@@ -148,7 +136,6 @@ const CardRequests = () => {
 				Tipo: translateCardRequestType(item?.priority),
 				Propietario: item?.holderName ?? '-',
 				Cuenta: item?.account ?? '-',
-
 				Estado: <StatusForCardRequest currentState={item.status} />,
 			},
 		});
@@ -158,7 +145,9 @@ const CardRequests = () => {
 		action: (search: string) => setFilter({ ...filter, search }),
 		placeholder: 'Buscar Solicitud',
 	};
+
 	const close = () => setEditCardRequestModal({ state: false, id: null });
+	
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
@@ -182,8 +171,9 @@ const CardRequests = () => {
 		},
 	];
 	//------------------------------------------------------------------------------------
-	const [nuevoCardRequestModal, setNuevoCardRequestModal] = useState(false);
+
 	const [contactModal, setContactModal] = useState(false);
+	
 	const [editCardRequestModal, setEditCardRequestModal] = useState<{
 		state: boolean;
 		id: number | null;
@@ -225,11 +215,8 @@ const CardRequests = () => {
 			{addTicketmodal && (
 				<Modal state={addTicketmodal} close={setAddTicketmodal}>
 					<NewCardRequestModal
-						setContactModal={setContactModal}
 						close={closeAddAccount}
 						contactModal={contactModal}
-						setNuevoCardRequestModal={setNuevoCardRequestModal}
-						nuevoCardRequestModal={nuevoCardRequestModal}
 						addBulkCardRequest={addBulkCardRequest}
 						isFetching={isFetching}
 						addSimpleCardRequest={addSimpleCardRequest}

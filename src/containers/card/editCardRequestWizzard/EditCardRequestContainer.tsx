@@ -1,11 +1,6 @@
-import { useState, createContext, useEffect } from 'react';
-import Fetching from '../../../components/misc/Fetching';
-import DetailCardComponent from './DetailCardRequestComponent';
-import Button from '../../../components/misc/Button';
+import { useState } from 'react';
 import EditDetailCardRequestComponent from './EditDetailCardRequestComponent';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import TabNav from '../../../components/navigation/TabNav';
-import { faBoxesStacked } from '@fortawesome/free-solid-svg-icons';
 
 import DetailCardRequestComponent from './DetailCardRequestComponent';
 import {
@@ -39,13 +34,11 @@ const EditCardRequestContainer = ({
 	closeModal,
 	allCardsRequests,
 	cardRequest,
-	getCardRequest,
 	isLoading,
 	setSelectedDataToParent,
-	acceptRequest,
 	cardRequestRecords,
 }: UserWizzardInterface) => {
-	const [editModal, setEditModal] = useState(false);
+
 	const [currentTab, setCurrentTab] = useState('details');
 
 	const tabs = [
@@ -73,10 +66,9 @@ const EditCardRequestContainer = ({
 	return (
 		<div className=''>
 			<TabNav action={setCurrentTab} tabs={tabs} />
-			{currentTab == 'details' ? (
+			{currentTab === 'details' ? (
 				<DetailCardRequestComponent
 					updateCardStatus={updateCardStatus}
-					acceptRequest={acceptRequest}
 					id={id}
 					editCardRequest={editCardRequest}
 					deleteCardRequest={deleteCardRequest}

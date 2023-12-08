@@ -1,22 +1,18 @@
 import Select from '../../../components/forms/Select';
 import TextArea from '../../../components/forms/TextArea';
 import Button from '../../../components/misc/Button';
-import { formatCalendar } from '../../../utils/helpersAdmin';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import CardRequests from '../CardRequests';
-import { TicketIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { TrashIcon } from '@heroicons/react/24/outline';
 import Modal from '../../../components/modals/GenericModal';
 import AlertContainer from '../../../components/misc/AlertContainer';
 import { useState } from 'react';
 import { deleteUndefinedAttr, writeDataToFile } from '../../../utils/helpers';
 import { BasicType } from '../../../interfaces/InterfacesLocal';
 import useServerCardsRequests from '../../../api/userServerCardsRequests';
-import AcceptContainer from '../../../components/misc/AcceptContainer';
-import { CheckIcon } from '@heroicons/react/24/solid';
 import Input from '../../../components/forms/Input';
 import ChangeStateContainer from './ChangeStateContainer';
 import ExcelFileExport from '../../../components/commos/ExcelFileExport';
-import { BsFiletypeJson, BsFiletypeXlsx } from 'react-icons/bs';
+import { BsFiletypeJson } from 'react-icons/bs';
 
 interface EditInterface {
 	editCardRequest: Function;
@@ -26,7 +22,6 @@ interface EditInterface {
 	id: number | null;
 	allCardsRequests: any;
 	setSelectedDataToParent: any;
-	acceptRequest: Function;
 	updateCardStatus: Function;
 }
 
@@ -37,7 +32,6 @@ const DetailCardRequestComponent = ({
 	isFetching,
 	id,
 	allCardsRequests,
-	acceptRequest,
 	updateCardStatus,
 }: EditInterface) => {
 	const cardRequest: any = allCardsRequests.find((item: any) => item.id === id);
@@ -45,9 +39,6 @@ const DetailCardRequestComponent = ({
 	const [delAction, setDelAction] = useState(false);
 	const [changeState, setChangeState] = useState(false);
 	const [exportModal, setExportModal] = useState(false);
-	const [loadingExport, setloadingExport] = useState(false);
-
-	const [acceptRequestModal, setAcceptRequestModal] = useState(false);
 
 	let dataToSend: any;
 
@@ -57,18 +48,26 @@ const DetailCardRequestComponent = ({
 	};
 
 	const onSubmit: SubmitHandler<BasicType> = (data) => {
-		if (data.priority == 'Expresa') {
+		if (data.priority === 'Expresa') {
 			dataToSend = { ...data, priority: 'EXPRESS' };
 		}
-		if (data.priority == 'Normal') {
+		if (data.priority === 'Normal') {
 			dataToSend = { ...data, priority: 'NORMAL' };
 		}
-		editCardRequest(id, deleteUndefinedAttr(dataToSend), reset()).then(() =>
+		editCardRequest(id, deleteUndefinedAttr(dataToSend ?? []), reset()).then(() =>
 			closeModal(),
 		);
 	};
 
+	console.log({ cardRequest })
+
 	const { isLoading } = useServerCardsRequests();
+
+	const priorityData = [
+		{ id: 1, name: 'Normal', code: "NORMAL" },
+		{ id: 2, name: 'Expresa', code: "EXPRESS" },
+	]
+
 	return (
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
@@ -76,7 +75,7 @@ const DetailCardRequestComponent = ({
 					<div className='py-3 relative '>
 						<div className='flex justify-between gap-5'>
 							{cardRequest?.status === 'PRINTED' ||
-							cardRequest?.status === 'DENIED' ? null : (
+								cardRequest?.status === 'DENIED' ? null : (
 								<Button
 									textColor='gray-900'
 									name='Cambiar Estado'
@@ -118,6 +117,7 @@ const DetailCardRequestComponent = ({
 					<ul className='grid py-3 gap-3 text-xl'>
 						{cardRequest?.quantity === 1 && (
 							<Input
+								label='Nombre del propietario'
 								name='holderName'
 								defaultValue={cardRequest?.holderName ?? '-'}
 								control={control}
@@ -131,15 +131,12 @@ const DetailCardRequestComponent = ({
 					</ul>
 					<div className=' flex flex-col my-3 gap-3'>
 						<Select
-							defaultValue={cardRequest?.priority}
-							default={cardRequest?.priority}
+							defaultValue={priorityData.find(priority => priority.code === cardRequest?.priority)?.name}
+							// default={cardRequest?.priority}
 							control={control}
 							name='priority'
 							label='Prioridad'
-							data={[
-								{ id: 1, name: 'Normal' },
-								{ id: 2, name: 'Expresa' },
-							]}
+							data={priorityData}
 						></Select>
 					</div>
 
@@ -153,14 +150,19 @@ const DetailCardRequestComponent = ({
 						></TextArea>
 					</div>
 
-					<div className='flex self-end'>
-						<Button
-							name='Insertar'
-							color='slate-600'
-							type='submit'
-							loading={isLoading}
-						/>
-					</div>
+					{
+						cardRequest.status !== "PRINTED" && (
+							<div className='flex self-end'>
+								<Button
+									name='Actualizar'
+									color='slate-600'
+									type='submit'
+									loading={isLoading}
+								/>
+							</div>
+						)
+					}
+
 				</section>
 			</form>
 			{delAction && (
@@ -191,7 +193,7 @@ const DetailCardRequestComponent = ({
 				<Modal state={exportModal} close={setExportModal}>
 					<ExcelFileExport
 						exportAction={exportAction}
-						loading={loadingExport}
+					// loading={loadingExport}
 					/>
 				</Modal>
 			)}
