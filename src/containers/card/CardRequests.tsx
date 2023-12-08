@@ -1,12 +1,10 @@
 import {
 	PlusIcon,
 	CreditCardIcon,
-	LockOpenIcon,
 } from '@heroicons/react/24/outline';
 
 import GenericTable, {
 	DataTableInterface,
-	FilterOpts,
 } from '../../components/misc/GenericTable';
 
 import Paginate from '../../components/misc/Paginate';
@@ -15,19 +13,10 @@ import Breadcrumb, {
 	PathInterface,
 } from '../../components/navigation/Breadcrumb';
 
-import { BasicType, SelectInterface } from '../../interfaces/InterfacesLocal';
-
 import { useEffect, useState } from 'react';
-import NuevoTicketModal from '../accounts/NewAccount/NewAccountModal';
 
-import { useAppSelector } from '../../store/hooks';
-import useServerCards from '../../api/userServerCards';
-import { formatCalendar, formatDateForCard } from '../../utils/helpers';
-import EditCardContainer from './editCardRequestWizzard/EditCardRequestContainer';
-import StateSpanForTable from '../../components/misc/StateSpanForTable';
-import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
+import { formatDateForCard } from '../../utils/helpers';
 import useServerCardsRequests from '../../api/userServerCardsRequests';
-import CreatedStateForTable from '../../components/misc/CreatedStateForTable';
 import NewCardRequestModal from './newCardRequest/NewCardRequestModal';
 import EditCardRequestContainer from './editCardRequestWizzard/EditCardRequestContainer';
 import StatusForCardRequest from '../../components/misc/StatusForCardRequest';
@@ -37,17 +26,16 @@ import { exportExcel, generateUrlParams } from '../../utils/helpersAdmin2';
 import ExcelFileExport from '../../components/commos/ExcelFileExport';
 import query from '../../api/APIServices';
 import { BsFiletypeXlsx } from 'react-icons/bs';
+import Button from '../../components/misc/Button';
+import { DocumentMagnifyingGlassIcon, InformationCircleIcon } from '@heroicons/react/20/solid';
 
 const CardRequests = () => {
-	const [post, setPost] = useState(null);
 
 	const {
 		acceptRequest,
 		paginate,
 		isLoading,
 		isFetching,
-		waiting,
-		modalWaiting,
 		cardRequest,
 		getAllCardsRequests,
 		addSimpleCardRequest,
@@ -56,18 +44,23 @@ const CardRequests = () => {
 		editCardRequest,
 		deleteCardRequest,
 		manageErrors,
-		modalWaitingError,
 		allCardsRequests,
-		setAllCardsRequests,
 		setSelectedDataToParent,
-		GetRequestRecord,
 		cardRequestRecords,
 		updateCardStatus,
 	} = useServerCardsRequests();
 
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
-	>({});
+	>({ page: 1 });
+
+	const [editCardRequestModal, setEditCardRequestModal] = useState<{
+		state: boolean;
+		id: number | null;
+		active: string | null;
+		status: string | null;
+	}>({ state: false, id: null, active: null, status: null });
+
 	const [addTicketmodal, setAddTicketmodal] = useState(false);
 
 	//Export to excel
@@ -93,6 +86,7 @@ const CardRequests = () => {
 			page++;
 			await query
 				.get(`/cardRequest${generateUrlParams({ ...filter, page })}`)
+				// eslint-disable-next-line no-loop-func
 				.then((resp: any) => {
 					allResults = allResults.concat(resp.data.items);
 				})
@@ -113,7 +107,7 @@ const CardRequests = () => {
 				dataToExport.push({
 					'Card Number': item?.queryNumber ?? '---',
 					'Card Holder': item?.holderName ?? '---',
-					Barcode: item?.barCode,
+					Barcode: item?.card.barCode,
 					IssuetAt: formatDateForCard(item.createdAt),
 					ExpirationDate: formatDateForCard(item.createdAt),
 				});
@@ -136,7 +130,9 @@ const CardRequests = () => {
 		'Propietario',
 		'Cuenta',
 		'Estado',
+		'Acciones',
 	];
+
 	const tableData: DataTableInterface[] = [];
 
 	allCardsRequests?.map((item: any) => {
@@ -148,8 +144,35 @@ const CardRequests = () => {
 				Tipo: translateCardRequestType(item?.priority),
 				Propietario: item?.holderName ?? '-',
 				Cuenta: item?.account ?? '-',
-
 				Estado: <StatusForCardRequest currentState={item.status} />,
+				Acciones: (
+					<div className='flex'>
+						<div className='mx-1'>
+							<Button color='slate-500' textColor='slate-500' icon={<DocumentMagnifyingGlassIcon className='w-5' />} name={"Detalles"}
+								action={() => {
+									setEditCardRequestModal({ state: true, id: item.id, active: "details", status: null });
+								}}></Button>
+						</div>
+						<div className='mx-1'>
+							<Button color='slate-500' textColor='slate-500' icon={<InformationCircleIcon className='w-5' />} name={"Reporte"}
+								action={() => {
+									setEditCardRequestModal({ state: true, id: item.id, active: "reports", status: null });
+								}}></Button>
+						</div>
+						{
+							item?.status === 'PRINTED' ||
+								item?.status === 'DENIED' ? null : (
+								<div className='mx-1'>
+									<Button color='slate-500' textColor='slate-500' icon={<CreditCardIcon className='w-5' />} name={"Cambiar estado"}
+										action={() => {
+											setEditCardRequestModal({ state: true, id: item.id, active: "changeStatus", status: item.status });
+										}}></Button>
+								</div>
+							)
+						}
+
+					</div>
+				),
 			},
 		});
 	});
@@ -158,7 +181,9 @@ const CardRequests = () => {
 		action: (search: string) => setFilter({ ...filter, search }),
 		placeholder: 'Buscar Solicitud',
 	};
-	const close = () => setEditCardRequestModal({ state: false, id: null });
+
+	const close = () => setEditCardRequestModal({ state: false, id: null, active: null, status: null });
+
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
@@ -182,23 +207,13 @@ const CardRequests = () => {
 		},
 	];
 	//------------------------------------------------------------------------------------
-	const [nuevoCardRequestModal, setNuevoCardRequestModal] = useState(false);
-	const [contactModal, setContactModal] = useState(false);
-	const [editCardRequestModal, setEditCardRequestModal] = useState<{
-		state: boolean;
-		id: number | null;
-	}>({ state: false, id: null });
-
-	const rowAction = (id: number) => {
-		setEditCardRequestModal({ state: true, id });
-		GetRequestRecord(id, filter);
-	};
 
 	const closeAddAccount = () => setAddTicketmodal(false);
 
 	useEffect(() => {
 		getAllCardsRequests(filter);
 	}, [filter]);
+
 
 	return (
 		<div className=''>
@@ -212,8 +227,6 @@ const CardRequests = () => {
 				loading={isLoading}
 				searching={searching}
 				actions={actions}
-				rowAction={rowAction}
-				//filterComponent={{ availableFilters, filterAction }}
 				paginateComponent={
 					<Paginate
 						action={(page: number) => setFilter({ ...filter, page })}
@@ -225,11 +238,8 @@ const CardRequests = () => {
 			{addTicketmodal && (
 				<Modal state={addTicketmodal} close={setAddTicketmodal}>
 					<NewCardRequestModal
-						setContactModal={setContactModal}
 						close={closeAddAccount}
-						contactModal={contactModal}
-						setNuevoCardRequestModal={setNuevoCardRequestModal}
-						nuevoCardRequestModal={nuevoCardRequestModal}
+						contactModal={false}
 						addBulkCardRequest={addBulkCardRequest}
 						isFetching={isFetching}
 						addSimpleCardRequest={addSimpleCardRequest}
@@ -252,6 +262,8 @@ const CardRequests = () => {
 						isLoading={isLoading}
 						getCardRequest={getCardRequest}
 						setSelectedDataToParent={setSelectedDataToParent}
+						active={editCardRequestModal.active}
+						status={editCardRequestModal.status ?? null}
 					/>
 				</Modal>
 			)}
