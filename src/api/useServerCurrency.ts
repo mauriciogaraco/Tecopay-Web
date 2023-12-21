@@ -117,7 +117,7 @@ const useServerCurrency = () => {
 		await query
 			.post('/exchangerate', data)
 			.then((resp) => {
-				setAllExchangeRates([...allCurrencys, resp.data]);
+				setAllExchangeRates([...allExchangeRates, resp.data.exchangeRates[0]]);
 
 				toast.success('Tasa registrada satisfactoriamente');
 
