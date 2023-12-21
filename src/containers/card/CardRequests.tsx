@@ -28,6 +28,7 @@ import query from '../../api/APIServices';
 import { BsFiletypeXlsx } from 'react-icons/bs';
 import Button from '../../components/misc/Button';
 import { DocumentMagnifyingGlassIcon, InformationCircleIcon } from '@heroicons/react/20/solid';
+import { translateOrderState } from '../../utils/translate';
 
 const CardRequests = () => {
 
@@ -68,50 +69,28 @@ const CardRequests = () => {
 	const [exportModal, setExportModal] = useState(false);
 
 	let allResults: any = [];
-	let pages: number = paginate?.totalPages ? paginate?.totalPages : 1;
-	let page: number = 1;
 
 	const exportBankAccounts = async (filename: string) => {
 		const dataToExport: Record<string, string | number>[] = [];
 		setloadingExport(true);
 
 		await query
-			.get(`/cardRequest${generateUrlParams({ ...filter, page: 1 })}`)
+			.get(`/cardRequest${generateUrlParams({ all_data: true })}`)
 			.then((resp: any) => {
 				allResults = allResults.concat(resp.data.items);
 			})
 			.catch((e: any) => manageErrors(e));
 
-		while (pages > page) {
-			page++;
-			await query
-				.get(`/cardRequest${generateUrlParams({ ...filter, page })}`)
-				// eslint-disable-next-line no-loop-func
-				.then((resp: any) => {
-					allResults = allResults.concat(resp.data.items);
-				})
-				.catch((e: any) => manageErrors(e));
-		}
-
 		allResults.forEach((item: any) => {
-			if (item.status === 'ACCEPTED') {
-				let name: string = '';
-				if (
-					item?.madeBy?.displayName != null &&
-					item?.madeBy?.displayName != undefined
-				) {
-					name = item?.madeBy?.displayName;
-				} else {
-					name = '';
-				}
 				dataToExport.push({
-					'Card Number': item?.queryNumber ?? '---',
-					'Card Holder': item?.holderName ?? '---',
-					Barcode: item?.card.barCode,
-					IssuetAt: formatDateForCard(item.createdAt),
-					ExpirationDate: formatDateForCard(item.createdAt),
+					'No. Solicitud': item?.queryNumber ?? '-',
+					'Fecha de Creación': formatDate(item?.createdAt) ?? '-',
+					'Tipo': translateCardRequestType(item?.priority),
+					'Propietario': item?.holderName ?? '-',
+					'Cuenta':item?.account ?? '-',
+					'Estado':item.status ? translateOrderState(item.status) : '-',
 				});
-			}
+			
 		});
 		exportExcel(dataToExport, filename);
 		setloadingExport(false);
