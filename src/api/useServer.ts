@@ -96,9 +96,9 @@ const useServer = () => {
   const logIn = async (data: Record<string, string | number | boolean>) => {
     setIsFetching(true);
     await query
-      .postAuth("/identity/login" , data)
+      .postAuth("/login" , data)
       .then((resp) => {
-
+        console.log(resp);
         dispatch(setKeys(resp.data));
       })
       .catch((e) => { manageErrors(e); });
@@ -106,7 +106,7 @@ const useServer = () => {
   };
 
   const logOut = () => {
-    query.postAuth("/identity/logout", {}).then((data) => {
+    query.postAuth("/logout", {}).then((data) => {
       if (data.status === 204) {
         dispatch(setKeys(null))
         redirect("/");
