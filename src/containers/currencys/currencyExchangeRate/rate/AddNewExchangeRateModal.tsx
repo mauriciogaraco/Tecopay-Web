@@ -24,7 +24,7 @@ const AddNewExchangeRateModal = ({
   const onSubmit: SubmitHandler<Record<string, string | number | boolean>> = (
     data: any
   ) => {
-    registerNewExchangeRate(deleteUndefinedAttr(data), close).then(() => close())
+    registerNewExchangeRate(deleteUndefinedAttr(data), close)
   };
 
   return (

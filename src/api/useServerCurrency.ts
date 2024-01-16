@@ -63,7 +63,10 @@ const useServerCurrency = () => {
 		await query
 			.patch(`/currency/${id}`, data)
 			.then((resp) => {
-				setAllCurrencys([...allCurrencys, resp.data]);
+				let index = allCurrencys.findIndex(obj => obj.id === resp.data.id)
+				let newAllCurrencys = [...allCurrencys];
+				newAllCurrencys[ index ] = resp.data;
+				setAllCurrencys( newAllCurrencys );
 
 				toast.success('Moneda modificada satisfactoriamente');
 
@@ -117,7 +120,7 @@ const useServerCurrency = () => {
 		await query
 			.post('/exchangerate', data)
 			.then((resp) => {
-				setAllExchangeRates([...allCurrencys, resp.data]);
+				setAllExchangeRates([...allExchangeRates, resp.data.exchangeRates[0]]);
 
 				toast.success('Tasa registrada satisfactoriamente');
 

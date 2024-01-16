@@ -1,11 +1,16 @@
 import axios from "axios";
 import { setKeys } from "../store/slices/sessionSlice";
 
+//Data
+//"https://apidevpay.tecopos.com"
 const baseUrl = `${process.env.REACT_APP_API_HOST_TICKET}`;
+
+//Authentication
+//"https://idapidev.tecopos.com/api"  +   "/v1"
 const baseAuthUrl = `${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_VERSION_API}`;
 
-const baseUrlTest = `${"https://jsonplaceholder.typicode.com/"}`; //Test URL
-const no_authentication = ["/identity/login"];
+
+//const no_authentication = ["/identity/login"];
 const axiosApiInstance = axios.create();
 
 let store: any;
@@ -16,10 +21,11 @@ export const injectStore = (_store: any) => {
 // Request interceptor for API calls
 axiosApiInstance.interceptors.request.use(
     async config => {
-        const rute = config.url?.split(baseUrl)[1] ?? "";
-
+        //const rute = config.url?.split(baseAuthUrl)[1] ?? "";
         const session = store?.getState().session;
         const keys = session?.key;
+
+
       //@ts-ignore
         config.headers = {
             ...config.headers,
@@ -28,13 +34,13 @@ axiosApiInstance.interceptors.request.use(
             "X-App-Origin": "Tecopos-Tecopay",
         };
 
-        if (keys !== null && !no_authentication.includes(rute)) {
-            //@ts-ignore
-            config.headers = {
-                ...config.headers,
-                Authorization: `Bearer ${keys.token}`,
-            };
-        }
+       if (keys !== null) {
+     //@ts-ignore
+           config.headers = {
+               ...config.headers,
+               Authorization: `Bearer ${keys.token}`,
+           };
+       }
         return config;
     },
     error => {
@@ -54,12 +60,12 @@ axiosApiInstance.interceptors.response.use(
             store.dispatch(setKeys(null));
         }
 
-        if (error.response.status === 401 && !originalRequest._retry) {
+        if ( (error.response.status === 401 || error.response.status === 400 ) && !originalRequest._retry) {
             originalRequest._retry = true;
             const keys = store.getState().session.key;
 
             if (keys) {
-                return await post(
+                return await postAuth(
                         `/identity/refresh-token`,
                         {
                             refresh_token: keys.refresh_token,
@@ -98,7 +104,6 @@ const get = async (path: string) => {
 
     return axiosApiInstance.get(request.url);
 };
-
 
 
 const post = async (path: string, body: object, config = {}) => {
