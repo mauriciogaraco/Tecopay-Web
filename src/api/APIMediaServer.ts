@@ -1,5 +1,8 @@
 import axios from "axios";
 import { setKeys } from "../store/slices/sessionSlice";
+
+
+
 let store: any;
 export const injectMediaStore = (_store: any) => {
     store = _store;
@@ -57,7 +60,7 @@ axiosApiInstance.interceptors.response.use(
       if (session) {
         try {
           await axios
-            .post(`${process.env.VITE_APP_API_HOST}${process.env.VITE_APP_VERSION_API}/identity/refresh-token`, {
+            .post(`${process.env.VITE_APP_API_HOST}${process.env.VITE_APP_VERSION_API}/refresh-token`, {
               refresh_token: session.refresh_token,
             })
             .then(async (response) => {

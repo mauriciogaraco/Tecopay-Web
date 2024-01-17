@@ -21,7 +21,18 @@ export const injectStore = (_store: any) => {
 // Request interceptor for API calls
 axiosApiInstance.interceptors.request.use(
     async config => {
-        //const rute = config.url?.split(baseAuthUrl)[1] ?? "";
+
+        const url = config.url || '';
+        let xAppOriginValue = 'Tecopos-Tecopay';    
+
+        if (url.includes('idapidev.tecopos.com')) {
+            xAppOriginValue = 'Tecopay-Web';
+          } else if (url.includes('apidevpay.tecopos.com')) {
+            xAppOriginValue = 'Tecopos-Tecopay';
+          }
+          config.headers['X-App-Origin'] = xAppOriginValue;
+
+
         const session = store?.getState().session;
         const keys = session?.key;
 
@@ -31,7 +42,7 @@ axiosApiInstance.interceptors.request.use(
             ...config.headers,
             Accept: "*/*",
             "Content-Type": "application/json",
-            "X-App-Origin": "Tecopos-Tecopay",
+            
         };
 
        if (keys !== null) {
@@ -66,7 +77,7 @@ axiosApiInstance.interceptors.response.use(
 
             if (keys) {
                 return await postAuth(
-                        `/identity/refresh-token`,
+                        `/refresh-token`,
                         {
                             refresh_token: keys.refresh_token,
                         }
@@ -105,7 +116,6 @@ const get = async (path: string) => {
     return axiosApiInstance.get(request.url);
 };
 
-
 const post = async (path: string, body: object, config = {}) => {
     const request = {
         url: `${baseUrl + path}`,
@@ -122,6 +132,15 @@ const postAuth = async (path: string, body: object, config = {}) => {
     };
 
     return axiosApiInstance.post(request.url, body, config);
+};
+
+const getAuth = async (path: string) => {
+    const request = {
+        url: `${baseAuthUrl + path}`,
+        method: "GET",
+    };
+
+    return axiosApiInstance.get(request.url);
 };
 
 const put = async (path: string, body: object) => {
@@ -157,5 +176,6 @@ export default {
     put,
     patch,
     deleteAPI,
-    postAuth
+    postAuth,
+    getAuth,
 };
