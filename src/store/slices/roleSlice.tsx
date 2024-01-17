@@ -4,10 +4,11 @@ import query from '../../api/APIServices';
 export const fetchRole = createAsyncThunk(
 	'init/fetchRoleStatus',
 	async (thunkAPI) => {
-		const response = await query.get('/user/myuser');
+		const response = await query.getAuth('/user');
 		return response.data;
 	},
 );
+
 interface Role {
 	id: number;
 	name: string;
