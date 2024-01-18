@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Blurhash } from "react-blurhash";
 import { CiImageOn } from "react-icons/ci";
 
 interface ImageInterface {
@@ -10,7 +9,7 @@ interface ImageInterface {
 
 const ImageComponent = ({ className, hash, src }: ImageInterface) => {
   const [imgLoaded, setImgLoaded] = useState(false);
-
+  console.log('zxzzx' + src )
   useEffect(() => {
     if (!!src) {
       const img = new Image();
@@ -32,22 +31,7 @@ const ImageComponent = ({ className, hash, src }: ImageInterface) => {
         <img className="object-cover h-full w-full" src={src} alt="imagen" />
       </div>
     );
-  if (!imgLoaded && hash)
-    return (
-      <div className={className ? className : ""}>
-        <Blurhash
-          hash={hash}
-          style={{
-            minWidth: "100%",
-            minHeight: "100%",
-            objectFit: "scale-down",
-            padding: 5,
-          }}
-          width={"100%"}
-          height={"100%"}
-        />
-      </div>
-    );
+  
   return (
     <img
       className={className ? className : ""}

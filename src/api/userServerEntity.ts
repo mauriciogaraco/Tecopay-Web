@@ -3,20 +3,15 @@ import {
   type PaginateInterface,
   type AccountData,
   type TicketsInterface,
-  type UserInterface,
 } from "../interfaces/ServerInterfaces";
 import query from "./APIServices";
 import useServer from "./useServer";
-import { Flip, toast } from "react-toastify";
-import { saveEntity } from "../store/slices/EntitySlice";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import { generateUrlParams } from "../utils/helpers";
 import { type BasicType } from "../interfaces/LocalInterfaces";
 
 const useServerEntity = () => {
   const { manageErrors } = useServer();
-  const [render, setRender] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
@@ -24,13 +19,11 @@ const useServerEntity = () => {
   const [allTickets, setAllTickets] = useState <AccountData>();
   const [entity, setEntity] = useState<AccountData | null>(null);
   const [modalWaiting, setModalWaiting] = useState<boolean>(false);
-  const [modalWaitingError, setModalWaitingError] = useState<string | null>(
-    null
-  );
+  const [modalWaitingError, setModalWaitingError] = useState<string | null>(null);
   const [waiting, setWaiting] = useState<boolean>(false);
   const [allEntity, setAllEntity] = useState<any>([])
 
-
+  //Postman -> all?
   const getAllEntity = async (filter: BasicType) => {
     setIsLoading(true);
     await query
@@ -50,6 +43,7 @@ const useServerEntity = () => {
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
+  //Postman -> register
   const addEntity = async (
     data: any,
     close: Function
@@ -69,7 +63,7 @@ const useServerEntity = () => {
     setIsFetching(false);
     setIsLoading(false)
   };
-
+  //Postman -> update
   const editEntity = async (
     id: number,
     data: Record<string, string | number | boolean | string[]>,
@@ -91,7 +85,7 @@ const useServerEntity = () => {
       .catch((e) => { manageErrors(e); });
     setIsFetching(false);
   };
-
+  //Postman -> find by id
   const getEntity = async (id: any) => {
     setIsLoading(true);
     await query
@@ -123,9 +117,7 @@ const useServerEntity = () => {
       .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
-
-  
-
+  //Postman -> delete
   const deleteEntity = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
@@ -139,6 +131,8 @@ const useServerEntity = () => {
       .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
+
+
   return {
     paginate,
     isLoading,

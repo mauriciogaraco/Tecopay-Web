@@ -16,7 +16,7 @@ import { useAppSelector } from '../../store/hooks';
 import useServerEntity from '../../api/userServerEntity';
 import { formatCalendar } from '../../utils/helpers';
 
-import NewEntityModal from '../entity/NewEntity/NewEntityModal';
+import NewEntityModal from '../entity/NewEntityModal/NewEntityModal';
 import EditEntityContainer from '../entity/editEntityWizzard/EditEntityContainer';
 
 const Entity = () => {

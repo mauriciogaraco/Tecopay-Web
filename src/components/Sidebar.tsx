@@ -75,7 +75,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 	const [passwModal, setPasswModal] = useState(false);
 	const { staticBar } = useAppSelector((state) => state.session);
 	// @ts-ignore
-	const { fullName } = useAppSelector((state) => state.Roles.roles);
+	const { username:fullName } = useAppSelector((state) => state.Roles.roles);
 
 	const dispatch = useAppDispatch();
 
@@ -317,23 +317,25 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 								: 'group-hover:pr-3 group-hover:scrollbar-thin'
 						}`}
 					>
-						{/* Profile dropdown */}
+						{/* Profile dropdown justify-center group-hover:justify-start*/}
 						<Menu
 							as='div'
 							className={classNames(
-								`relative group flex ${staticBar ? '' : 'pl-4'} ${
-									staticBar ? 'pl-4 ' : ' group-hover:pl-4'
-								} px-2 py-2 text-sm font-medium rounded-md`,
+								`relative group flex ${staticBar ? '' : 'pl-4'} 
+								 px-2 py-2 text-sm font-medium rounded-md items-center  ${
+									staticBar ? 'pl-4 justify-start' : ' group-hover:pl-4 group-hover:justify-start'
+								}`,
 							)}
 						>
 							<div
 								className={`flex items-center justify-center group-hover:gap-5 ${
-									staticBar ? 'gap-5' : ''
+									staticBar ? 'gap-5' : 'mx-auto group-hover:mx-0 '
 								} `}
 							>
-								<Menu.Button className='flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>
+								
+								<Menu.Button className={`${staticBar ? 'mr-3' : 'group-hover:mr-3'} flex-shrink-0 rounded-full bg-white max-w-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`} >
 									<span className='sr-only'>Open user menu</span>
-									<img
+										<img
 										className='h-8 w-8 rounded-full'
 										src={
 											user?.avatar?.src ?? require('../assets/user-default.jpg')
@@ -342,11 +344,18 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 									/>
 								</Menu.Button>
 
+									
 								{!fullName ? (
-									<div className=' text-white text-md'></div>
+									<span className={`text-white text-md ${ staticBar ? 'flex' : 'hidden group-hover:flex'} flex-shrink-0`}>
+									''
+									</span>	
 								) : (
-									<div className=' text-white text-md'>{fullName}</div>
+									<span className={`text-white text-md ${ staticBar ? 'flex' : 'hidden group-hover:flex'} flex-shrink-0`}>
+													{fullName}
+									</span>	
 								)}
+
+								
 							</div>
 
 							<Transition
@@ -358,7 +367,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 								leaveFrom='transform opacity-100 scale-100'
 								leaveTo='transform opacity-0 scale-95'
 							>
-								<Menu.Items className='absolute  z-10 mt-2 w-64 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+								<Menu.Items className='absolute z-10 mt-56 w-64 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
 									<Menu.Item>
 										<div>
 											<div className='relative flex items-center rounded-lg bg-white px-2 py-2 gap-2'>
@@ -371,6 +380,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 														}
 														alt=''
 													/>
+
 												</div>
 												<div className='min-w-0 flex-1'>
 													<a href='#' className='focus:outline-none'>
@@ -379,7 +389,7 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 															aria-hidden='true'
 														/>
 														<p className='text-sm font-medium text-gray-900'>
-															{user?.displayName}
+														{fullName}
 														</p>
 														<p className='text-xs text-gray-500 flex flex-col'>
 															{user?.roles?.map((item: any, idx: any) => (
