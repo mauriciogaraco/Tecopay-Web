@@ -3,11 +3,11 @@ import { setKeys } from "../store/slices/sessionSlice";
 
 //Data
 //"https://apidevpay.tecopos.com"
-const baseUrl = `${process.env.REACT_APP_API_HOST_TICKET}`;
+const baseUrl = `${process.env.REACT_APP_API_HOST}`;
 
 //Authentication
-//"https://idapidev.tecopos.com/api"  +   "/v1"
-const baseAuthUrl = `${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_VERSION_API}`;
+//"https://idapidev.tecopos.com/api/v1"
+const baseAuthUrl = `${process.env.REACT_APP_API_HOST_AUTH}`;
 
 
 //const no_authentication = ["/identity/login"];
@@ -126,6 +126,7 @@ const post = async (path: string, body: object, config = {}) => {
 }
 
 const postAuth = async (path: string, body: object, config = {}) => {
+    console.log(baseAuthUrl)
     const request = {
         url: `${baseAuthUrl + path}`,
         method: "POST",

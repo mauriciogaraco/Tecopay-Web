@@ -13,7 +13,6 @@ import { toast, Flip } from "react-toastify";
 import { setKeys } from "../store/slices/sessionSlice";
 
 import mediaQuery from "./APIMediaServer"
-import { Console } from "console";
 
 export interface PaginateInterface {
   totalPages: number;
@@ -105,13 +104,13 @@ const useServer = () => {
     setIsFetching(false);
   };
 
-  const logOut = () => {
-    query.postAuth("/logout", {}).then((data) => {
+  const logOut = async () => {
+   await query.postAuth("/logout", {}).then((data) => {
       if (data.status === 204) {
         dispatch(setKeys(null))
         redirect("/");
       }
-    });
+    }).catch(e=>manageErrors(e));
   };
 
   const getSumaryData = async () => {
