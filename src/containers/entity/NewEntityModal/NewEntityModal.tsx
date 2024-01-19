@@ -6,26 +6,9 @@ import EntityGeneralInfo from "./EntityGeneralInfo";
 import EntityCards from "./EntityCards";
 import EntityCategories from "./EntityCategories";
 import { deleteUndefinedAttr } from '../../../utils/helpers';
+import useServerEntity from '../../../api/userServerEntity';
+import userServerCategories from "../../../api/userServerCategories";
 
-interface propsDestructured {
-	action: Function;
-	isLoading: boolean;
-}
-
-interface ContextData {
-	control?: Control;
-	stepUp?: Function;
-	stepDown?: Function;
-	data?: categoriesData[];
-	setData?: Function;
-}
-
-interface categoriesData {
-	name: string;
-	color: `#${string}`;
-	points: number;
-	id: number;
-}
 
 const contextData: ContextData = {};
 
@@ -33,32 +16,53 @@ export const ProductContext = createContext(contextData);
 
 
 const NewEntityModal = ({
-	action: addEntity,
+	action,
 	isLoading,
 }: propsDestructured) => {
 
-	const { control, handleSubmit, reset } = useForm<Record<string, string | number>>();
-	const [data, setData] = useState<categoriesData[]>([]);
+	const {
+		getAllBussinnes,
+		isLoading: loading,
+		business,
+		addEntity,
+		allEntity,
+	} = useServerEntity();
+
+	const {
+		allCategories,
+		addCategory
+	} = userServerCategories();
 
 	useEffect(() => {
-		setData([
-			{ name: "Roberto", color: '#455678', points: 23, id: 356 },
-			{ name: "Juan", color: '#345678', points: 34, id: 3344 },
-			{ name: "Alberto", color: '#349678', points: 56, id: 345 },
-			{ name: "Pepe", color: '#344578', points: 657, id: 348 },
-			{ name: "Ruben", color: '#345645', points: 343, id: 45 },
-			{ name: "Luis", color: '#245678', points: 4545, id: 395 },])
+		getAllBussinnes();
 	}, []);
 
 
+	const { control, handleSubmit, reset } = useForm<Record<string, string | number>>();
+	const [data, setData] = useState<categoriesData[]>([]);
+	const [imgRelation, setImgRelation] = useState([]);
+	const [currentStep, setCurrentStep] = useState(0);
+
+	function unifyData(imgRelation: any,) {
+		imgRelation.forEach((obj: any) => {
+			const key = Object.keys(obj)[0];
+			const flag = data.find((elemento: any) => elemento.name === key);
+			if (flag) {
+				flag.cardImageId = obj[key];
+			}
+		});
+	}
+	console.log(data);
 	//Form Handle -----------------------------------------------------------------------------
-	const onSubmit: SubmitHandler<Record<string, string | number>> = (data) => {
-		//currentStep !== 2 ? stepUp() : addEntity(data);
-		currentStep !== 2 ? stepUp() : console.log(data);;
+	const onSubmit: SubmitHandler<any> = async (datax) => {
+		if (currentStep !== 2) return;
+		datax.ownerId = 1;
+		datax.businessId = 3;
+		unifyData(imgRelation)
+		addEntity(deleteUndefinedAttr(filtrarPropiedades(datax)), data, () => { })
 	};
 
 	//Step Component Data-------------------------------------------------------------
-	const [currentStep, setCurrentStep] = useState(0);
 	const stepTitles = [
 		"Información general",
 		"Categorías",
@@ -75,11 +79,11 @@ const NewEntityModal = ({
 		<>
 			<StepsComponent current={currentStep} titles={stepTitles} />
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<ProductContext.Provider value={{ control, stepUp, stepDown, data, setData }}>
+				<ProductContext.Provider value={{ control, stepUp, stepDown, data, setData, business }}>
 					{isLoading && <Fetching />}
 					{currentStep === 0 && <EntityGeneralInfo />}
 					{currentStep === 1 && <EntityCategories />}
-					{currentStep === 2 && <EntityCards />}
+					{currentStep === 2 && <EntityCards setImgRelation={setImgRelation} />}
 				</ProductContext.Provider>
 			</form>
 		</>
@@ -87,3 +91,88 @@ const NewEntityModal = ({
 };
 
 export default NewEntityModal;
+
+
+
+export type Welcome = {
+	id: number;
+	name: string;
+	status: string;
+	slug: string;
+	dni: string;
+	businessCategory: BusinessCategory;
+	logo: Logo | null;
+}
+
+export type BusinessCategory = {
+	id: number;
+	name: string;
+	description: null;
+}
+
+export type Logo = {
+	id: number;
+	src: string;
+	thumbnail: string;
+	blurHash: string;
+}
+
+
+interface propsDestructured {
+	action: Function;
+	isLoading: boolean;
+}
+
+interface ContextData {
+	control?: Control;
+	stepUp?: Function;
+	stepDown?: Function;
+	data?: categoriesData[];
+	setData?: Function;
+	business?: Welcome[];
+}
+
+interface categoriesData {
+	name: string;
+	color: `#${string}`;
+	points?: number;
+	id: number;
+	issueEntityId: number;
+	cardImageId?: number;
+
+}
+
+
+interface MyObject {
+	address: string;
+	allowCreateAccount: boolean;
+	businessId: string;
+	name: string;
+	ownerId: number;
+	phone: string;
+	responsable: string;
+	[key: string]: any;
+}
+
+function filtrarPropiedades(objeto: MyObject): MyObject {
+	const propiedadesPermitidas: Array<keyof MyObject> = [
+		'address',
+		'allowCreateAccount',
+		'businessId',
+		'name',
+		'ownerId',
+		'phone',
+		'responsable',
+	];
+
+	const resultado: Partial<MyObject> = {};
+
+
+	Object.keys(objeto).forEach((clave) => {
+		if (propiedadesPermitidas.includes(clave as keyof MyObject)) {
+			resultado[clave as keyof MyObject] = objeto[clave];
+		}
+	});
+
+	return resultado as MyObject;
+}

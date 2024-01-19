@@ -17,6 +17,7 @@ import EditEntityContainer from './editEntityWizzard/EditEntityContainer';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
 
 
+
 const Entity = () => {
 
 	const {
@@ -25,12 +26,12 @@ const Entity = () => {
 		deleteEntity,
 		getEntity,
 		setAllEntity,
+		addEntity,
 		paginate,
 		isLoading,
 		isFetching,
 		allEntity,
 		entity,
-		addEntity,
 	} = useServerEntity();
 
 	const [filter, setFilter] = useState<Record<string, string | number | boolean | null>>({});
@@ -123,7 +124,6 @@ const Entity = () => {
 					/>
 				}
 			/>
-
 
 			{/*Modal de Nueva Entidad*/}
 			{addEntityModal && (

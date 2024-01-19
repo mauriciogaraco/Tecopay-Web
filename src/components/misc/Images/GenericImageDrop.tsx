@@ -11,6 +11,10 @@ interface DropInterface {
   previewDefault?: string;
   previewHash?: string;
   setDisabled?: Function;
+  text?:string;
+  setData?: Function;
+  dataUp?:Function;
+  dataIndex?:string;
 }
 
 const GenericImageDrop = ({
@@ -18,10 +22,20 @@ const GenericImageDrop = ({
   previewDefault,
   previewHash,
   setDisabled,
+  text,
+  dataUp,
+  dataIndex,
   ...props
 }: DropInterface & UseControllerProps) => {
   const { imgPreview, uploadImg, isFetching } = useServer();
   const { field } = useController(props);
+
+  useEffect(() => {
+		if (dataIndex && dataUp && Array.isArray(imgPreview) && imgPreview.length > 0 && imgPreview[0]?.id) {
+      dataUp( (c:any) => [...c, {[dataIndex]:imgPreview[0]?.id} ] );
+    }
+	}, [imgPreview]);
+
 
   useEffect(() => {
     imgPreview.length !== 0 && field.onChange(imgPreview[0].id);
@@ -39,7 +53,7 @@ const GenericImageDrop = ({
     onDropAccepted: async (file: File[], e: DropEvent) => {
       const data = new FormData();
       data.append("file", file[0]);
-      uploadImg(data);
+      uploadImg(data)
     },
     noKeyboard: false,
     multiple: false,
@@ -99,9 +113,9 @@ const GenericImageDrop = ({
       >
         <div className="flex flex-col text-sm text-gray-600 text-center items-center p-5">
           <div className="relative cursor-pointer rounded font-medium text-gray-50">
-            <p onTouchStartCapture={open}>Click para cargar archivo</p>
+            <p onTouchStartCapture={open}>{text ? text : 'Click para cargar archivo'}</p>
           </div>
-          <p className="text-gray-100">o arrastre uno</p>
+          <p className="text-gray-100">{text ? '' : 'o arrastre uno'}</p>
           {/* <p className="text-xs text-gray-500">PNG, JPG, GIF hasta 200kB</p>*/}
         </div>
       </div>

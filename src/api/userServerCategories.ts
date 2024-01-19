@@ -9,9 +9,8 @@ import useServer from "./useServer";
 import { toast } from "react-toastify";
 import { generateUrlParams } from "../utils/helpers";
 import { type BasicType } from "../interfaces/LocalInterfaces";
-import userServerCategories from "./userServerCategories";
 
-const useServerEntity = () => {
+const useServerCategories = () => {
   const { manageErrors } = useServer();
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
@@ -23,22 +22,8 @@ const useServerEntity = () => {
   const [modalWaitingError, setModalWaitingError] = useState<string | null>(null);
   const [waiting, setWaiting] = useState<boolean>(false);
   const [allEntity, setAllEntity] = useState<any>([])
+  const [allCategories, setAllCategories] = useState<any>([])
   const [business, setBusiness] = useState<any>([])
-
-
-  interface categoriesData {
-    name: string;
-    color: `#${string}`;
-    points?: number;
-    id: number;
-    issueEntityId: number;
-    cardImageId?: number;
-  
-  }
-
-  const {
-		addCategory
-	} = userServerCategories();
 
   //Postman -> all?
   const getAllEntity = async (filter: BasicType) => {
@@ -60,33 +45,24 @@ const useServerEntity = () => {
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
-
   //Postman -> register
-  const addEntity = async (
+  const addCategory = async (
     data: any,
-    categories:any,
     close: Function
   ) => {
     setIsFetching(true);
     setIsLoading(true)
     await query
-    .post("/entity", data)
+    .post("/categories", data)
       .then((resp) => {
-        let issueEntityId = resp.data.entity.id;
-        const categoriesReady = categories.map((objeto:categoriesData) => ({
-          ...objeto, issueEntityId,
-        }));
-        categoriesReady.forEach(async (objeto:any) => {
-          await addCategory(objeto, ()=>{});
-        });
-
-       setAllEntity([...allEntity, resp.data])
-       toast.success("Entidad agregada satisfactoriamente");
+        allCategories([...allCategories, resp.data])
+       toast.success("Categoria agregada satisfactoriamente");
       })
       .catch((e) => { manageErrors(e); });
     setIsFetching(false);
     setIsLoading(false)
   };
+
   //Postman -> update
   const editEntity = async (
     id: number,
@@ -174,28 +150,8 @@ const useServerEntity = () => {
 
  
   return {
-    paginate,
-    isLoading,
-    isFetching,
-    waiting,
-    modalWaiting,
-    allUsers,
-    entity,
-    business,
-    setAllTickets,
-    allTickets,
-    getAllBussinnes,
-    getAllEntity,
-    addEntity,
-    getEntity,
-    editEntity,
-    updateEntity,
-    deleteEntity,
-    setAllUsers,
-    manageErrors,
-    modalWaitingError,
-    allEntity,
-    setAllEntity
+    allCategories,
+    addCategory,
   };
 };
-export default useServerEntity;
+export default useServerCategories;

@@ -18,8 +18,7 @@ export const useServer = () => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [imgPreview, setImgPreview] = useState<ImageLoad[]>([]);
   const [imgView, setImgView] = useState<ImageLoad>();
-  console.log('zxxxxxxxxxxxxxx')
-  console.log(imgPreview)
+
   const manageErrors = (error: any) => {
     console.log(error);
     if (error.status === 401 || error.status === 403) {
