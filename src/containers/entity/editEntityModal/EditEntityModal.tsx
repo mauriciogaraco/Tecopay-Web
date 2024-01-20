@@ -1,41 +1,58 @@
 import { useForm, SubmitHandler, Control } from "react-hook-form";
 import { useState, createContext, useEffect } from "react";
 import StepsComponent from "../../../components/misc/StepsComponent";
-import Fetching from "../../../components/misc/Fetching";
-import EntityGeneralInfo from "./EntityGeneralInfo";
-import EntityCards from "./EntityCards";
-import EntityCategories from "./EntityCategories";
+import EditEntityGeneralInfo from "./EditEntityGeneralInfo";
+import EditEntityCards from "./EditEntityCards";
+import EditEntityCategories from "./EditEntityCategories";
 import { deleteUndefinedAttr } from '../../../utils/helpers';
+import useServerCategories from "../../../api/userServerCategories";
 import SpinnerLoading from '../../../components/misc/SpinnerLoading';
-import { useAppSelector } from "../../../store/hooks";
-
 
 const contextData: ContextData = {};
 
+export const ProductContext = createContext(contextData);
+
 interface propsDestructured {
 	close: Function;
+	id: number;
 	entityCRUD: any;
 }
 
-export const ProductContext = createContext(contextData);
+const EditEntityModal = ({
+	id,
+	close,
+	entityCRUD
+}: propsDestructured) => {
 
-
-
-const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
 
 	const {
-		isLoading,
+		getAllBussinnes,
 		business,
+		isLoading: loading,
 		addEntity,
+		updateEntity,
+		entity,
+		getEntity,
 	} = entityCRUD;
 
-	const { businessId } = useAppSelector( ( state ) => state.session );
-
-	const { control, handleSubmit, reset } = useForm<Record<string, string | number>>();
+	console.log(id)
+	const { control, handleSubmit } = useForm<Record<string, string | number>>();
 	const [data, setData] = useState<categoriesData[]>([]);
 	const [imgRelation, setImgRelation] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
 
+	const {
+		getCategory,
+		category,
+	} = useServerCategories();
+
+	useEffect(() => {
+		getAllBussinnes().then(
+			() => { getEntity(id) }
+		).then(
+			() => { getCategory(1) }
+		)
+	}, []);
 
 	function unifyData(imgRelation: any,) {
 		imgRelation.forEach((obj: any) => {
@@ -48,18 +65,16 @@ const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
 	}
 
 	//Form Handle -----------------------------------------------------------------------------
-
 	const onSubmit: SubmitHandler<any> = async (dataToSubmit) => {
 		if (currentStep !== 2) return;
-		dataToSubmit.ownerId = businessId;
-		dataToSubmit.businessId = 1;
+		dataToSubmit.ownerId = 1;
+		dataToSubmit.businessId = 3;
 		unifyData(imgRelation);
-		addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), data, close);
+		//addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), data, close);
+		updateEntity(id, deleteUndefinedAttr(propertyFilter(dataToSubmit)), data, close)
 	};
 
-
-	//Step Component Data-----------------------------------------------------------------------
-
+	//Step Component Data-------------------------------------------------------------
 	const stepTitles = [
 		"Información general",
 		"Categorías",
@@ -71,26 +86,30 @@ const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
 		setCurrentStep(currentStep - 1)
 	};
 
-	//-------------------------------------------------------------------------------------------
+	//----------------------------------------------------------------------------------------
 
 	return (
 		<>
 			<StepsComponent current={currentStep} titles={stepTitles} />
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<ProductContext.Provider value={{ control, stepUp, stepDown, data, setData, business, setImgRelation }}>
-					{isLoading && <SpinnerLoading />}
-					{currentStep === 0 && !isLoading && <EntityGeneralInfo />}
-					{currentStep === 1 && !isLoading && <EntityCategories />}
-					{currentStep === 2 && !isLoading && <EntityCards />}
+				<ProductContext.Provider value={{ control, stepUp, stepDown, data, setData, entity, setImgRelation, close }}>
+					{!entity && <SpinnerLoading />}
+					{currentStep === 0 && entity && <EditEntityGeneralInfo />}
+					{currentStep === 1 && entity && <EditEntityCategories />}
+					{currentStep === 2 && entity && <EditEntityCards />}
 				</ProductContext.Provider>
 			</form>
 		</>
 	);
 };
 
-export default NewEntityModal;
+export default EditEntityModal;
 
 
+
+
+
+//Interfaces, Types & Utility functions
 export type Welcome = {
 	id: number;
 	name: string;
@@ -122,10 +141,14 @@ interface ContextData {
 	data?: categoriesData[];
 	setData?: Function;
 	business?: Welcome[];
+	entityInfo?: any;
+	loadingEntity?: boolean;
+	entity?: any;
 	setImgRelation?: Function;
+	close?: Function;
 }
 
-interface categoriesData {
+type categoriesData = {
 	name: string;
 	color: `#${string}`;
 	points?: number;

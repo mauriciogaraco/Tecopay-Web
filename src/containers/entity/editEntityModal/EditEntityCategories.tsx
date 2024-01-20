@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { ProductContext } from "./NewEntityModal";
+import { ProductContext } from "./EditEntityModal";
 import Input from '../../../components/forms/Input';
 import Button from '../../../components/misc/Button';
 import GenericTable, {
@@ -20,7 +20,7 @@ import AlertContainer from '../../../components/misc/AlertContainer';
 
 
 
-const EntityCategories = () => {
+const EditEntityCategories = () => {
 
 	const { stepUp, stepDown, data, setData } = useContext(ProductContext);
 	const [isLoading, setIsLoading] = useState(false);
@@ -134,7 +134,7 @@ const EntityCategories = () => {
 	);
 };
 
-export default EntityCategories;
+export default EditEntityCategories;
 
 
 
@@ -171,7 +171,7 @@ const AddModalContainer = ({ action, categories, close }: ExportModalContainer) 
 						</div>
 						<h1 className="mt-6">Nota: Debe utilizar selector de colores para definir color de categoria</h1>
 					</div>
-					<div className="flex w-1/2 justify-center items-center justify-stretch">
+					<div className="flex w-1/2 items-center justify-stretch">
 						<ColorSelect ExternsetHex={setHex} />
 					</div>
 				</div>

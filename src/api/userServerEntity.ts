@@ -1,8 +1,6 @@
 import { useState } from "react";
 import {
   type PaginateInterface,
-  type AccountData,
-  type TicketsInterface,
 } from "../interfaces/ServerInterfaces";
 import query from "./APIServices";
 import useServer from "./useServer";
@@ -11,38 +9,66 @@ import { generateUrlParams } from "../utils/helpers";
 import { type BasicType } from "../interfaces/LocalInterfaces";
 import userServerCategories from "./userServerCategories";
 
+
+export type Entidad = {
+  entity: Entity;
+  profileImage: ProfileImage;
+  category?: null;
+}
+
+type Entity = {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+  color: string;
+  allowCreateAccount: boolean;
+  profileImageId: number;
+  owner: Owner;
+  category: null;
+}
+
+type Owner = {
+  fullName: string;
+}
+
+type ProfileImage = {
+  id: number;
+  url: string;
+  hash: string;
+}
+
+type categoriesData = {
+  name: string;
+  color: `#${string}`;
+  points?: number;
+  id: number;
+  issueEntityId: number;
+  cardImageId?: number;
+}
+
+
 const useServerEntity = () => {
+
+
   const { manageErrors } = useServer();
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
-  const [allUsers, setAllUsers] = useState<TicketsInterface[]>([]);
-  const [allTickets, setAllTickets] = useState <AccountData>();
-  const [entity, setEntity] = useState<AccountData | null>(null);
-  const [modalWaiting, setModalWaiting] = useState<boolean>(false);
-  const [modalWaitingError, setModalWaitingError] = useState<string | null>(null);
-  const [waiting, setWaiting] = useState<boolean>(false);
+  const [entity, setEntity] = useState<Entidad | null>(null);
   const [allEntity, setAllEntity] = useState<any>([])
   const [business, setBusiness] = useState<any>([])
 
 
-  interface categoriesData {
-    name: string;
-    color: `#${string}`;
-    points?: number;
-    id: number;
-    issueEntityId: number;
-    cardImageId?: number;
-  
-  }
-
+  //registrar categorias com parte del proceso de crear nueva entidad
   const {
-		addCategory
-	} = userServerCategories();
+    addCategory, updateCategory
+  } = userServerCategories();
+
 
   //Postman -> all?
   const getAllEntity = async (filter: BasicType) => {
-    setIsLoading(true);
+    setIsFetching(true);
     await query
       .get(`/entity${generateUrlParams(filter)}`)
       .then((resp) => {
@@ -58,35 +84,39 @@ const useServerEntity = () => {
 
       })
       .catch((error) => { manageErrors(error); });
-    setIsLoading(false);
+      setIsFetching(false);
   };
 
   //Postman -> register
   const addEntity = async (
     data: any,
-    categories:any,
+    categories: any,
     close: Function
   ) => {
-    setIsFetching(true);
+    close && close();
     setIsLoading(true)
     await query
-    .post("/entity", data)
+      .post("/entity", data)
       .then((resp) => {
+        getAllEntity({});
         let issueEntityId = resp.data.entity.id;
-        const categoriesReady = categories.map((objeto:categoriesData) => ({
+        const categoriesReady = categories.map((objeto: categoriesData) => ({
           ...objeto, issueEntityId,
         }));
-        categoriesReady.forEach(async (objeto:any) => {
-          await addCategory(objeto, ()=>{});
-        });
+        categoriesReady.forEach(async (objeto: any) => {
+          await addCategory(objeto, () => { });
+        }).then(
+          () => {
+            toast.success("Entidad agregada satisfactoriamente");
+            close && close();
+          }
+        )
 
-       setAllEntity([...allEntity, resp.data])
-       toast.success("Entidad agregada satisfactoriamente");
       })
       .catch((e) => { manageErrors(e); });
-    setIsFetching(false);
     setIsLoading(false)
   };
+
   //Postman -> update
   const editEntity = async (
     id: number,
@@ -97,9 +127,9 @@ const useServerEntity = () => {
     await query
       .patch(`/entity/${id}`, data)
       .then((resp) => {
-        const newUsers:any = [...allEntity];
-        const dataWithId = Object.assign(data, {id:id})
-        const idx = newUsers.findIndex((user:any) => user.id === id);
+        const newUsers: any = [...allEntity];
+        const dataWithId = Object.assign(data, { id: id })
+        const idx = newUsers.findIndex((user: any) => user.id === id);
         newUsers.splice(idx, 1, dataWithId);
         setAllEntity(newUsers)
         //dispatch(saveEntity(newUsers))
@@ -109,6 +139,7 @@ const useServerEntity = () => {
       .catch((e) => { manageErrors(e); });
     setIsFetching(false);
   };
+
   //Postman -> find by id
   const getEntity = async (id: any) => {
     setIsLoading(true);
@@ -122,39 +153,49 @@ const useServerEntity = () => {
   };
 
   const updateEntity = async (
-    userId: number,
-    data: BasicType,
+    entityID: number,
+    dataEntity: categoriesData[],
+    dataCategory: any,
     callback?: Function
   ) => {
     setIsFetching(true);
     await query
-      .patch(`/control/user/${userId}`, data)
+      .patch(`/entity/${entityID}`, dataEntity)
       .then(async (resp) => {
         setEntity(resp.data);
-        const newUsers = [...allUsers];
-        const idx = newUsers.findIndex((user) => user.id === userId);
-        newUsers.splice(idx, 1, resp.data);
-        setAllUsers(newUsers);
-        callback?.();
-        toast.success("Actualización exitosa");
+        toast.success("Entidad actualizada exitosamente");
+        callback && callback();
       })
+      //.then(
+      //  ()=>{
+      //    const categoriesReady = dataCategory.map((objeto: categoriesData) => ({
+      //      ...objeto, entityID,
+      //    }));
+      //    categoriesReady.forEach(async (objeto: any) => {
+      //      await updateCategory(objeto, () => { });
+      //    })
+      //  }
+      //)
       .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
+
   //Postman -> delete
   const deleteEntity = async (id: number, callback?: Function) => {
     setIsFetching(true);
     await query
       .deleteAPI(`/entity/${id}`, {})
       .then(() => {
-        toast.success("Usuario Eliminado con éxito");
-        const newUsers = allEntity.filter((item:any) => item.id !== id);
-        setAllEntity(newUsers)
-        callback?.();
+        toast.success("Entidad Eliminada con éxitosamente");
+        //const newUsers = allEntity.filter((item: any) => item.id !== id);
+        //setAllEntity(newUsers)
+        getAllEntity({});
+        callback && callback();
       })
       .catch((error) => { manageErrors(error); });
     setIsFetching(false);
   };
+
   //Postman -> setBusiness?
   const getAllBussinnes = async () => {
     setIsLoading(true);
@@ -172,18 +213,14 @@ const useServerEntity = () => {
     setIsLoading(false);
   };
 
- 
+
   return {
     paginate,
     isLoading,
     isFetching,
-    waiting,
-    modalWaiting,
-    allUsers,
     entity,
     business,
-    setAllTickets,
-    allTickets,
+    allEntity,
     getAllBussinnes,
     getAllEntity,
     addEntity,
@@ -191,11 +228,9 @@ const useServerEntity = () => {
     editEntity,
     updateEntity,
     deleteEntity,
-    setAllUsers,
     manageErrors,
-    modalWaitingError,
-    allEntity,
     setAllEntity
   };
 };
+
 export default useServerEntity;

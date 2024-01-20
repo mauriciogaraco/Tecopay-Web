@@ -13,30 +13,41 @@ import { useEffect, useState } from 'react';
 import useServerEntity from '../../api/userServerEntity';
 import NewEntityModal from './NewEntityModal/NewEntityModal';
 import { HomeModernIcon } from '@heroicons/react/24/outline';
-import EditEntityContainer from './editEntityWizzard/EditEntityContainer';
+import EditEntityModal from './editEntityModal/EditEntityModal';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
-
 
 
 const Entity = () => {
 
 	const {
+		getAllBussinnes,
 		getAllEntity,
-		editEntity,
-		deleteEntity,
-		getEntity,
-		setAllEntity,
 		addEntity,
+		updateEntity,
+		getEntity,
 		paginate,
 		isLoading,
-		isFetching,
 		allEntity,
+		business,
 		entity,
+		isFetching,
 	} = useServerEntity();
+
+	useEffect(() => {
+		getAllBussinnes();
+	}, []);
+
+	let entityCRUD= {getAllEntity, getEntity, getAllBussinnes, addEntity, updateEntity, paginate, isLoading, allEntity, business, entity,}
+
 
 	const [filter, setFilter] = useState<Record<string, string | number | boolean | null>>({});
 	const [addEntityModal, setAddEntityModal] = useState(false);
+	const [editEntityModal, setEditEntityModal] = useState<{
+		state: boolean;
+		id: number;
+	}>({ state: false, id: 0 });
 
+	
 	useEffect(() => {
 		getAllEntity(filter);
 	}, [filter]);
@@ -51,13 +62,12 @@ const Entity = () => {
 
 
 	//Table ------------------------------------------------------------------------
-	const tableTitles = 
-	['Nombre', 
-	'Dirección', 
-	'Telefono', 
-	''
-	];
-
+	const tableTitles =
+		['Nombre',
+			'Dirección',
+			'Telefono',
+			''
+		];
 
 	const tableData: DataTableInterface[] = [];
 	// @ts-ignore
@@ -88,10 +98,9 @@ const Entity = () => {
 	];
 
 	const rowAction = (id: number) => {
-		setEditTicketModal({ state: true, id });
+		setEditEntityModal({ state: true, id });
 	};
 
-	const close = () => setEditTicketModal({ state: false, id: null });
 
 
 	//------------------------------------------------------------------------------------
@@ -112,7 +121,7 @@ const Entity = () => {
 			<GenericTable
 				tableData={tableData}
 				tableTitles={tableTitles}
-				loading={isLoading}
+				loading={isFetching}
 				// searching={searching}
 				actions={actions}
 				rowAction={rowAction}
@@ -127,25 +136,19 @@ const Entity = () => {
 
 			{/*Modal de Nueva Entidad*/}
 			{addEntityModal && (
-				<Modal state={addEntityModal} close={setAddEntityModal} size='m'>
-					<NewEntityModal isLoading={isLoading} action={addEntity} />
+				<Modal state={addEntityModal} close={() => setAddEntityModal(false)} size='m'>
+					<div className="min-h-96 overflow-hidden">
+						<NewEntityModal close={() => setAddEntityModal(false)} entityCRUD={entityCRUD} />
+					</div>
+					
 				</Modal>
 			)}
 
-			{editTicketModal.state && (
-				<Modal state={editTicketModal.state} close={close} size='m'>
-					<EditEntityContainer
-						id={editTicketModal.id}
-						editEntity={editEntity}
-						deleteEntity={deleteEntity}
-						isFetching={isFetching}
-						closeModal={close}
-						getEntity={getEntity}
-						setAllEntity={setAllEntity}
-						isLoading={isLoading}
-						entity={entity}
-						allEntity={allEntity}
-					/>
+			{editEntityModal && (
+				<Modal state={editEntityModal.state} close={setEditEntityModal} size='m'>
+					<div className="min-h-96 overflow-hidden">
+					<EditEntityModal id={editEntityModal.id} close={()=>setEditEntityModal({ state: false, id: 0 })} entityCRUD={entityCRUD} />
+					</div>
 				</Modal>
 			)}
 		</div>

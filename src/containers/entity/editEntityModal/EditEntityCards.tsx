@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { ProductContext } from "./NewEntityModal";
+import { ProductContext } from "./EditEntityModal";
 import Button from '../../../components/misc/Button';
 import GenericImageDrop from "../../../components/misc/Images/GenericImageDrop";
 import useServer from '../../../api/useServerMain';
@@ -10,7 +10,7 @@ export interface ImageView {
 	hash: string;
 }
 
-const EntityCards = () => {
+const EditEntityCards = () => {
 	const { control, stepUp, stepDown, data, setData, setImgRelation } = useContext(ProductContext);
 	const { imgView, getImg } = useServer();
 
@@ -30,7 +30,7 @@ const EntityCards = () => {
 	  
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
-			<div className="max-h-96 min-h-96 h-96 overflow-y-auto">
+			<div className="max-h-96 h-96 overflow-y-auto">
 			<p className='mb-4 font-semibold text-lg text-center'>Defina los diseños de tarjetas segun categorias</p>
 				<div className="grid grid-cols-2 gap-2 grid-flow-row auto-rows-max">
 					{data?.map((obj) => (
@@ -52,7 +52,7 @@ const EntityCards = () => {
 
 				</div>
 			</div>
-			<div className="grid grid-cols-2 gap-3 py-2 mt-9 mx-2">
+			<div className="grid grid-cols-2 gap-3 py-2">
 				<Button
 					color="slate-500"
 					action={stepDown}
@@ -67,11 +67,11 @@ const EntityCards = () => {
 					outline
 					textColor="slate-600"
 					type="submit"
-					name="Crear entidad"
+					name="Actualizar entidad"
 				/>
 			</div>
 		</div>
 	);
 };
 
-export default EntityCards;
+export default EditEntityCards;

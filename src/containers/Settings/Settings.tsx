@@ -17,7 +17,7 @@ import useServerEntity from '../../api/userServerEntity';
 import { formatCalendar } from '../../utils/helpers';
 
 import NewEntityModal from '../entity/NewEntityModal/NewEntityModal';
-import EditEntityContainer from '../entity/editEntityWizzard/EditEntityContainer';
+//import EditEntityContainer from '../entity/editEntityModal/EditEntityContainer';
 
 const Entity = () => {
 	const [query, setQuery] = useState<string>('');
@@ -151,7 +151,7 @@ const Entity = () => {
 					/>
 				</Modal>
 			)*/}
-			{editTicketModal.state && (
+			{/*editTicketModal.state && (
 				<Modal state={editTicketModal.state} close={close} size='m'>
 					<EditEntityContainer
 						id={editTicketModal.id}
@@ -166,7 +166,7 @@ const Entity = () => {
 						allEntity={allEntity}
 					/>
 				</Modal>
-			)}
+			)*/}
 		</div>
 	);
 };
