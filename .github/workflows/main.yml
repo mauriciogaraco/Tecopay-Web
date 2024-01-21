@@ -24,4 +24,4 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: cd /var/opt/tecopay-web && git pull && npm i && unset CI && npm run build 
+    - run: cd /var/opt/tecopay-web && git pull && npm i && npm run build 
