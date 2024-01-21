@@ -1,8 +1,6 @@
 import axios from "axios";
 import { setKeys } from "../store/slices/sessionSlice";
 
-
-
 let store: any;
 export const injectMediaStore = (_store: any) => {
     store = _store;
@@ -11,6 +9,10 @@ export const injectMediaStore = (_store: any) => {
 const no_authentication = ["/files/"];
 
 const axiosApiInstance = axios.create();
+
+//Data
+//"https://apidevpay.tecopos.com"
+const baseUrl = `${process.env.REACT_APP_API_HOST_TICKET}`;
 
 
 // Request interceptor for API calls
@@ -90,16 +92,17 @@ axiosApiInstance.interceptors.response.use(
 
 const get = async (path: string) => {
   const request = {
-    url: `${process.env.VITE_APP_API_HOST}${process.env.VITE_APP_VERSION_API}${path}`,
+    url: `${baseUrl + path}`,
     method: "GET",
   };
 
   return axiosApiInstance.get(request.url);
 };
 
+
 const post = async (path: string, body: object, config = {}) => {
   const request = {
-    url: `${process.env.VITE_APP_API_HOST}${process.env.VITE_APP_VERSION_API}${path}`,
+    url: `${baseUrl + path}`,
     method: "POST",
   };
 
