@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { ProductContext } from "./EditEntityModal";
 import Input from '../../../components/forms/Input';
 import Button from '../../../components/misc/Button';
@@ -11,33 +11,24 @@ import {
 import { useForm, SubmitHandler } from "react-hook-form";
 import Modal from '../../../components/modals/GenericModal';
 import { Wheel } from '@uiw/react-color';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faTrash,
-} from "@fortawesome/free-solid-svg-icons";
 import { TrashIcon } from '@heroicons/react/24/outline';
-import AlertContainer from '../../../components/misc/AlertContainer';
-
 
 
 const EditEntityCategories = () => {
 
-	const { stepUp, stepDown, data, setData } = useContext(ProductContext);
-	const [isLoading, setIsLoading] = useState(false);
+	const { stepUp, stepDown, getCategory, category, id, isLoadingCat, setCategory, setCatToDelete, catToDelete } = useContext(ProductContext);
 	const [addEntityCategory, setaddEntityCategory] = useState(false);
 	const [modifyEntityCategory, setmodifyEntityCategory] = useState(false);
 	const [modifyIndex, setmodifyIndex] = useState(0);
-	const [delAction, setDelAction] = useState(false);
 
 
 	//Table ------------------------------------------------------------------------
 	const tableTitles =
 		['Nombre', 'Color', 'Puntos'];
 
-
 	const tableData: DataTableInterface[] = [];
 
-	data?.map((item: any) => {
+	category?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
@@ -55,7 +46,7 @@ const EditEntityCategories = () => {
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
-			title: 'Agregar categoria',
+			title: 'Agregar categoría',
 			action: () => setaddEntityCategory(true),
 		},
 	];
@@ -65,12 +56,12 @@ const EditEntityCategories = () => {
 		<div className="h-auto border border-slate-300 rounded p-2">
 			<div>
 				<div className="max-h-96 h-96 overflow-y-auto">
-					<p className='mb-4 font-semibold text-lg text-center'>Defina las categorias para su negocio</p>
+					<p className='mb-4 font-semibold text-lg text-center'>Defina las categorías para su negocio</p>
 
 					<GenericTable
 						tableData={tableData}
 						tableTitles={tableTitles}
-						loading={isLoading}
+						loading={isLoadingCat}
 						actions={actions}
 						rowAction={rowAction}
 					/>
@@ -98,8 +89,8 @@ const EditEntityCategories = () => {
 			{addEntityCategory && (
 				<Modal state={addEntityCategory} close={setaddEntityCategory}>
 					<AddModalContainer
-						action={setData}
-						categories={data ? data : []}
+						action={setCategory}
+						categories={category ? category : []}
 						close={setaddEntityCategory}
 					/>
 				</Modal>
@@ -108,27 +99,14 @@ const EditEntityCategories = () => {
 			{modifyEntityCategory && (
 				<Modal state={modifyEntityCategory} close={setmodifyEntityCategory}>
 					<ModifyModalContainer
-						action={setData}
-						categories={data ? data : []}
+						action={setCategory}
+						categories={category ? category : []}
 						close={setmodifyEntityCategory}
 						indexModify={modifyIndex}
-						deleteCat={setDelAction}
+						deleteCat={setCatToDelete}
 					/>
 				</Modal>
 			)}
-			{/*
-			{delAction && (
-				<Modal state={delAction} close={setDelAction}>
-					<AlertContainer
-						onAction={() => deleteEntity(entity?.id, closeModal)}
-						onCancel={setDelAction}
-						title={`Eliminar ${entity?.name}`}
-						text='¿Seguro que desea eliminar este usuario del sistema?'
-						loading={isFetching}
-					/>
-				</Modal>
-			)}
-			*/}
 
 		</div>
 	);
@@ -144,7 +122,8 @@ const AddModalContainer = ({ action, categories, close }: ExportModalContainer) 
 
 	const submit: SubmitHandler<Record<string, string | number>> = (data: any) => {
 		data.color = hex;
-		data.id = categories.length;
+		data.id = getNextAvailableId(categories);
+		data.newCat = true;
 		action && action([...categories, data]);
 		close && close();
 	};
@@ -166,6 +145,7 @@ const AddModalContainer = ({ action, categories, close }: ExportModalContainer) 
 								name="points"
 								control={controlForm}
 								label="Puntos"
+								type='number'
 								rules={{ required: "Requerido *" }}
 							/>
 						</div>
@@ -188,15 +168,28 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 	const [hex, setHex] = useState('#fff');
 	const { control: controlForm, handleSubmit: handleSubmitAdd } = useForm<Record<string, string | number>>();
 
+	function deleteCategory(indexModify: number) {
+		let deleteObject = categories.find(obj => obj.id === indexModify)
+		if (deleteObject?.newCat) {
+			let newArray = categories.filter(obj => obj.id !== indexModify)
+			action && action(newArray);
+		} else {
+			deleteCat && deleteCat((c:number[])=>[...c,indexModify]);
+			let newArray = categories.filter(obj => obj.id !== indexModify)
+			action && action(newArray);
+		}
+		close && close();
+	}
+
 	const renderInfo = categories.find(objeto => objeto.id === indexModify);
 	const submitCategories: SubmitHandler<Record<string, string | number>> = (data: any) => {
 
 		if (indexModify !== undefined) {
-
 			let finalCategories = [...categories];
 			data.color = hex != '#fff' ? hex : renderInfo?.color;
 			data.id = indexModify;
-			finalCategories[indexModify] = data
+			finalCategories = finalCategories.map(obj => (obj.id === indexModify ? { ...obj, ...data } : obj));
+			//finalCategories[indexModify] = data
 			action && action(finalCategories);
 			close && close();
 		}
@@ -221,45 +214,29 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 								name="points"
 								control={controlForm}
 								label="Puntos"
+								type='number'
 								rules={{ required: "Requerido *" }}
 								defaultValue={renderInfo?.points}
 							/>
 						</div>
 						<h1 className="mt-6">Nota: Debe utilizar selector de colores para definir color de categoria</h1>
-						{/*
-						<button className="flex items-center justify-start mt-6 w-8 h-8">
-							<FontAwesomeIcon
-								onClick={() => {
-									let finalCategories = [...categories];
-									const nuevoArray = eliminarYReorganizar(finalCategories, indexModify);
-									action && action(nuevoArray);
-									close && close();
-								}
-								}
-								className="text-slate-600 hover:scale-125 w-8 h-8 "
-								icon={faTrash}
-							/>
-						</button>
-						*/}
 					</div>
 					<div className="flex w-1/2 items-center justify-stretch">
 						<ColorSelect ExternsetHex={setHex} color={renderInfo?.color} />
 					</div>
 				</div>
 
-				<div className="flex justify-between py-2">
+				<div className="flex justify-between py-2 mt-2">
 					<div>
 						<Button
-							icon={<TrashIcon className='text-red-500  w-8 h-8' />}
-							color='gray-50'
-							type='button'
-							action={() => {
-								let finalCategories = [...categories];
-								const nuevoArray = eliminarYReorganizar(finalCategories, indexModify);
-								action && action(nuevoArray);
-								close && close();
-							}}
+							color="slate-500"
+							action={() => { deleteCategory(indexModify) }}
+							name="Eliminar categoría"
+							full
 							outline
+							textColor="text-red-500"
+							iconAfter={<TrashIcon className='text-red-500  w-4 h-4' />}
+							type={'button'}
 						/>
 					</div>
 					<div>
@@ -292,6 +269,7 @@ interface categoriesData {
 	id: number;
 	issueEntityId: number;
 	cardImageId?: number;
+	newCat?: boolean;
 }
 
 interface ExportModalContainer {
@@ -319,4 +297,17 @@ function eliminarYReorganizar(array: any, idAEliminar: number) {
 	}));
 
 	return nuevoArray;
+}
+
+interface MyObject {
+	id: number;
+	// Other properties of the object
+}
+
+function getNextAvailableId(objects: MyObject[]): number {
+	const existingIds = objects.map(obj => obj.id);
+	const maxId = Math.max(...existingIds);
+
+	// Return the next available id (one point bigger than the largest existing id)
+	return maxId + 1;
 }

@@ -1,37 +1,16 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext} from "react";
 import { ProductContext } from "./NewEntityModal";
 import Button from '../../../components/misc/Button';
 import GenericImageDrop from "../../../components/misc/Images/GenericImageDrop";
-import useServer from '../../../api/useServerMain';
 
-export interface ImageView {
-	id: number;
-	url: string;
-	hash: string;
-}
 
 const EntityCards = () => {
-	const { control, stepUp, stepDown, data, setData, setImgRelation } = useContext(ProductContext);
-	const { imgView, getImg } = useServer();
-
-	useEffect(() => {
-		getImg(26);
-	}, []);
-
-	const unknownObject: unknown = imgView;
-	const anotherObject1 = unknownObject as ImageView;
-	let url = imgView ? `https://paydev.tecopos.com${anotherObject1?.url}` : '';
-
-	interface ImageLoad {
-		id: number;
-		src: string;
-		hash: string;
-	  }
+	const { control, stepDown, data, setImgRelation } = useContext(ProductContext);
 	  
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
 			<div className="max-h-96 min-h-96 h-96 overflow-y-auto">
-			<p className='mb-4 font-semibold text-lg text-center'>Defina los diseños de tarjetas segun categorias</p>
+			<p className='mb-4 font-semibold text-lg text-center'>Defina los diseños de tarjetas para categorías</p>
 				<div className="grid grid-cols-2 gap-2 grid-flow-row auto-rows-max">
 					{data?.map((obj) => (
 						<div className="flex flex-col items-center p-2" key={obj.id}>
@@ -40,10 +19,11 @@ const EntityCards = () => {
 								<GenericImageDrop
 									className="h-32 rounded-md border border-gray-400 m-auto overflow-hidden"
 									control={control}
-									name={`${obj.id}-cardImageId`}
+									name={`cardImageId${obj.id}`}
 									key={obj.id}
 									dataUp={setImgRelation}
 									dataIndex={obj.name}
+									rules={{ required: 'Las imágenes de categorías son requeridas' }}
 								/>
 							</div>
 						</div>
