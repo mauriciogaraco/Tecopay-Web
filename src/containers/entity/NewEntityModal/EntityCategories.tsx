@@ -12,11 +12,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Modal from '../../../components/modals/GenericModal';
 import { Wheel } from '@uiw/react-color';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faTrash,
-} from "@fortawesome/free-solid-svg-icons";
 import { TrashIcon } from '@heroicons/react/24/outline';
-import AlertContainer from '../../../components/misc/AlertContainer';
 
 
 
@@ -34,9 +30,8 @@ const EntityCategories = () => {
 	const tableTitles =
 		['Nombre', 'Color', 'Puntos'];
 
-
 	const tableData: DataTableInterface[] = [];
-
+	
 	data?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
@@ -55,7 +50,7 @@ const EntityCategories = () => {
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
-			title: 'Agregar categoria',
+			title: 'Agregar categoría',
 			action: () => setaddEntityCategory(true),
 		},
 	];
@@ -65,7 +60,7 @@ const EntityCategories = () => {
 		<div className="h-auto border border-slate-300 rounded p-2">
 			<div>
 				<div className="max-h-96 h-96 overflow-y-auto">
-					<p className='mb-4 font-semibold text-lg text-center'>Defina las categorias para su negocio</p>
+					<p className='mb-4 font-semibold text-lg text-center'>Defina las categorías para su negocio</p>
 
 					<GenericTable
 						tableData={tableData}
@@ -86,11 +81,11 @@ const EntityCategories = () => {
 					/>
 					<Button
 						color="slate-500"
-						action={stepUp}
 						name="Siguiente"
 						full
 						outline
 						textColor="slate-600"
+						action={stepUp}
 					/>
 
 				</div>
@@ -116,19 +111,6 @@ const EntityCategories = () => {
 					/>
 				</Modal>
 			)}
-			{/*
-			{delAction && (
-				<Modal state={delAction} close={setDelAction}>
-					<AlertContainer
-						onAction={() => deleteEntity(entity?.id, closeModal)}
-						onCancel={setDelAction}
-						title={`Eliminar ${entity?.name}`}
-						text='¿Seguro que desea eliminar este usuario del sistema?'
-						loading={isFetching}
-					/>
-				</Modal>
-			)}
-			*/}
 
 		</div>
 	);
@@ -140,13 +122,16 @@ export default EntityCategories;
 
 const AddModalContainer = ({ action, categories, close }: ExportModalContainer) => {
 	const [hex, setHex] = useState('#fff');
-	const { control: controlForm, handleSubmit: handleSubmitAdd } = useForm<Record<string, string | number>>();
+	const { control: controlForm, handleSubmit: handleSubmitAdd, watch } = useForm<Record<string, string | number>>();
+
 
 	const submit: SubmitHandler<Record<string, string | number>> = (data: any) => {
-		data.color = hex;
-		data.id = categories.length;
-		action && action([...categories, data]);
-		close && close();
+		if (data) {
+			data.color = hex;
+			data.id = categories.length;
+			action && action([...categories, data]);
+			close && close();
+		}
 	};
 	return (
 		<form onSubmit={handleSubmitAdd(submit)}>
@@ -157,7 +142,7 @@ const AddModalContainer = ({ action, categories, close }: ExportModalContainer) 
 							<Input
 								name="name"
 								control={controlForm}
-								label="Nombre de la categoria"
+								label="Nombre de la categoría"
 								rules={{ required: "Requerido *" }}
 							/>
 						</div>
@@ -166,18 +151,19 @@ const AddModalContainer = ({ action, categories, close }: ExportModalContainer) 
 								name="points"
 								control={controlForm}
 								label="Puntos"
+								type='number'
 								rules={{ required: "Requerido *" }}
 							/>
 						</div>
-						<h1 className="mt-6">Nota: Debe utilizar selector de colores para definir color de categoria</h1>
+						<h1 className="mt-6">Nota: Debe utilizar selector de colores para definir color de categoría</h1>
 					</div>
-					<div className="flex w-1/2 justify-center items-center justify-stretch">
+					<div className="flex w-1/2 items-center justify-stretch">
 						<ColorSelect ExternsetHex={setHex} />
 					</div>
 				</div>
 
 				<div className="flex justify-end py-2">
-					<Button color="slate-600" name="Aceptar" type="submit" />
+					<Button color="slate-600" name="Aceptar" action={submit} />
 				</div>
 			</div>
 		</form>
@@ -201,7 +187,6 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 			close && close();
 		}
 	};
-
 	return (
 		<form onSubmit={handleSubmitAdd(submitCategories)}>
 			<div className="flex flex-col">
@@ -211,7 +196,7 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 							<Input
 								name="name"
 								control={controlForm}
-								label="Nombre de la categoria"
+								label="Nombre de la categoría"
 								rules={{ required: "Requerido *" }}
 								defaultValue={renderInfo?.name}
 							/>
@@ -221,46 +206,35 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 								name="points"
 								control={controlForm}
 								label="Puntos"
+								type='number'
 								rules={{ required: "Requerido *" }}
 								defaultValue={renderInfo?.points}
 							/>
 						</div>
-						<h1 className="mt-6">Nota: Debe utilizar selector de colores para definir color de categoria</h1>
-						{/*
-						<button className="flex items-center justify-start mt-6 w-8 h-8">
-							<FontAwesomeIcon
-								onClick={() => {
-									let finalCategories = [...categories];
-									const nuevoArray = eliminarYReorganizar(finalCategories, indexModify);
-									action && action(nuevoArray);
-									close && close();
-								}
-								}
-								className="text-slate-600 hover:scale-125 w-8 h-8 "
-								icon={faTrash}
-							/>
-						</button>
-						*/}
+						<h1 className="mt-6">Nota: Debe utilizar selector de colores para definir color de categoría</h1>
 					</div>
 					<div className="flex w-1/2 items-center justify-stretch">
 						<ColorSelect ExternsetHex={setHex} color={renderInfo?.color} />
 					</div>
 				</div>
 
-				<div className="flex justify-between py-2">
+				<div className="flex justify-between py-2 mt-2">
 					<div>
 						<Button
-							icon={<TrashIcon className='text-red-500  w-8 h-8' />}
-							color='gray-50'
-							type='button'
+							color="slate-500"
 							action={() => {
 								let finalCategories = [...categories];
 								const nuevoArray = eliminarYReorganizar(finalCategories, indexModify);
 								action && action(nuevoArray);
 								close && close();
 							}}
+							name="Eliminar categoría"
+							full
 							outline
+							textColor="text-red-500"
+							iconAfter={<TrashIcon className='text-red-500  w-4 h-4' />}
 						/>
+
 					</div>
 					<div>
 						<Button color="slate-600" name="Aceptar" type="submit" />

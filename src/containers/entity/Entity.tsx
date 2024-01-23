@@ -11,6 +11,7 @@ import Breadcrumb, {
 } from '../../components/navigation/Breadcrumb';
 import { useEffect, useState } from 'react';
 import useServerEntity from '../../api/userServerEntity';
+import useServerCategories from '../../api/userServerCategories';
 import NewEntityModal from './NewEntityModal/NewEntityModal';
 import { HomeModernIcon } from '@heroicons/react/24/outline';
 import EditEntityModal from './editEntityModal/EditEntityModal';
@@ -18,6 +19,13 @@ import StateSpanForTable from '../../components/misc/StateSpanForTable';
 
 
 const Entity = () => {
+
+	const [filter, setFilter] = useState<Record<string, string | number | boolean | null>>({});
+	const [addEntityModal, setAddEntityModal] = useState(false);
+	const [editEntityModal, setEditEntityModal] = useState<{
+		state: boolean;
+		id: number;
+	}>({ state: false, id: 0 });
 
 	const {
 		getAllBussinnes,
@@ -30,30 +38,48 @@ const Entity = () => {
 		allEntity,
 		business,
 		entity,
-		isFetching,
+		isFetching
 	} = useServerEntity();
+
+	const {
+		getCategory,
+		category,
+		isLoadingCat,
+		setCategory,
+		imgsFromArray,
+	} = useServerCategories();
+
+
+	useEffect(() => {
+		getAllEntity(filter);
+	}, [filter]);
 
 	useEffect(() => {
 		getAllBussinnes();
 	}, []);
 
-	let entityCRUD= {getAllEntity, getEntity, getAllBussinnes, addEntity, updateEntity, paginate, isLoading, allEntity, business, entity,}
+	let entityCRUD = {
+		 getAllEntity, 
+		 getEntity, 
+		 getAllBussinnes, 
+		 addEntity, 
+		 updateEntity, 
+		 getCategory,
+		 category, 
+		 paginate, 
+		 isLoading, 
+		 allEntity, 
+		 business, 
+		 entity,
+		 id: editEntityModal.id,
+		 isLoadingCat,
+		 imgsFromArray,
+		 setCategory,
+		};
 
 
-	const [filter, setFilter] = useState<Record<string, string | number | boolean | null>>({});
-	const [addEntityModal, setAddEntityModal] = useState(false);
-	const [editEntityModal, setEditEntityModal] = useState<{
-		state: boolean;
-		id: number;
-	}>({ state: false, id: 0 });
+	//Breadcrumb------------------------------------------------------------------------------------
 
-	
-	useEffect(() => {
-		getAllEntity(filter);
-	}, [filter]);
-
-
-	//Breadcrumb-----------------------------------------------------------------------------------
 	const paths: PathInterface[] = [
 		{
 			name: 'Entidades',
@@ -61,7 +87,7 @@ const Entity = () => {
 	];
 
 
-	//Table ------------------------------------------------------------------------
+	//Table -----------------------------------------------------------------------------------------
 	const tableTitles =
 		['Nombre',
 			'Dirección',
@@ -101,16 +127,6 @@ const Entity = () => {
 		setEditEntityModal({ state: true, id });
 	};
 
-
-
-	//------------------------------------------------------------------------------------
-
-	const [editTicketModal, setEditTicketModal] = useState<{
-		state: boolean;
-		id: number | null;
-	}>({ state: false, id: null });
-
-
 	return (
 		<div>
 			<Breadcrumb
@@ -122,10 +138,8 @@ const Entity = () => {
 				tableData={tableData}
 				tableTitles={tableTitles}
 				loading={isFetching}
-				// searching={searching}
 				actions={actions}
 				rowAction={rowAction}
-				//filterComponent={{ availableFilters, filterAction }}
 				paginateComponent={
 					<Paginate
 						action={(page: number) => setFilter({ ...filter, page })}
@@ -140,14 +154,15 @@ const Entity = () => {
 					<div className="min-h-96 overflow-hidden">
 						<NewEntityModal close={() => setAddEntityModal(false)} entityCRUD={entityCRUD} />
 					</div>
-					
+
 				</Modal>
 			)}
 
+			{/*Modal para Editar Entidad*/}
 			{editEntityModal && (
 				<Modal state={editEntityModal.state} close={setEditEntityModal} size='m'>
 					<div className="min-h-96 overflow-hidden">
-					<EditEntityModal id={editEntityModal.id} close={()=>setEditEntityModal({ state: false, id: 0 })} entityCRUD={entityCRUD} />
+						<EditEntityModal close={() => setEditEntityModal({ state: false, id: 0 })} entityCRUD={entityCRUD} />
 					</div>
 				</Modal>
 			)}

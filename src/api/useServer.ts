@@ -49,13 +49,13 @@ const useServer = () => {
   const { id } = useParams();
 
   const manageErrors = (error: any) => {
-
+    console.log('execueteeeeeeeeeeed')
     if (error.response?.data?.message) {
       toast.error(error.response?.data?.message);
       
     } else {
       toast.error(
-        "Upss, ha ocurrido un error inesperado. \n Intente de nuevo o consulte con su administrador..."
+        "Upss, useServer ha ocurrido un error inesperado. \n Intente de nuevo o consulte con su administrador..."
       );
       
     }
