@@ -17,7 +17,8 @@ export const useServer = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const [imgPreview, setImgPreview] = useState<ImageLoad[]>([]);
-  const [imgView, setImgView] = useState<ImageLoad>();
+  const [imgView, setImgView] = useState<ImageLoad>({ id: 0, src: '', hash: '' });
+  const [imgsFromArray, setImgsFromArray] = useState<any>([]);
 
   const manageErrors = (error: any) => {
     console.log(error);
@@ -67,18 +68,36 @@ export const useServer = () => {
 
   const getImg = async (id: any) => {
     setIsLoading(true);
-    await mediaQuery
-      .get(`/image/${id}`)
-      .then((resp) => {
-        setImgView(resp.data);
-      })
-      .catch((error) => { manageErrors(error); });
+    try {
+      // Código asíncrono que puede generar errores
+      const resp = await mediaQuery.get(`/image/${id}`)
+      //setImgView(resp.data);
+      return resp.data
+    } catch (error) {
+      manageErrors(error);
+    }
     setIsLoading(false);
   };
 
   const updateImgLocal = (data: ImageLoad[]) => {
     setImgPreview(data);
   };
+
+  const getImgsFromArray = async (ids: number[]) => {
+    setIsLoading(true);
+    await Promise.all(ids.map(async (id: number) => {
+      await mediaQuery
+        .get(`/image/${id}`)
+        .then((resp) => {
+          setImgsFromArray([...imgsFromArray, resp.data]);
+          console.log(imgsFromArray);
+        })
+        .catch((error) => { manageErrors(error); });
+    }));
+
+    setIsLoading(false);
+  };
+
 
   return {
     imgPreview,
@@ -89,6 +108,7 @@ export const useServer = () => {
     uploadImg,
     manageErrors,
     updateImgLocal,
+    getImgsFromArray,
   };
 };
 

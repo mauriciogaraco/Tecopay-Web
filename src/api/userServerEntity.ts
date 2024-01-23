@@ -58,11 +58,12 @@ const useServerEntity = () => {
   const [entity, setEntity] = useState<Entidad | null>(null);
   const [allEntity, setAllEntity] = useState<any>([])
   const [business, setBusiness] = useState<any>([])
+  const [categoriesEntities, setCategoriesEntities] = useState<any>([])
 
 
   //registrar categorias com parte del proceso de crear nueva entidad
   const {
-    addCategory, updateCategory
+    addCategory, updateCategory, getCategory, category, deleteCategory,
   } = userServerCategories();
 
 
@@ -84,8 +85,9 @@ const useServerEntity = () => {
 
       })
       .catch((error) => { manageErrors(error); });
-      setIsFetching(false);
+    setIsFetching(false);
   };
+
 
   //Postman -> register
   const addEntity = async (
@@ -93,29 +95,34 @@ const useServerEntity = () => {
     categories: any,
     close: Function
   ) => {
-    close && close();
     setIsLoading(true)
-    await query
-      .post("/entity", data)
-      .then((resp) => {
-        getAllEntity({});
-        let issueEntityId = resp.data.entity.id;
-        const categoriesReady = categories.map((objeto: categoriesData) => ({
-          ...objeto, issueEntityId,
-        }));
-        categoriesReady.forEach(async (objeto: any) => {
-          await addCategory(objeto, () => { });
-        }).then(
-          () => {
-            toast.success("Entidad agregada satisfactoriamente");
-            close && close();
+    try {
+      let addingEntity = await query.post("/entity", data)
+      let issueEntityId = addingEntity.data.entity.id;
+      const categoriesReady = categories.map((objeto: categoriesData) => ({
+        ...objeto, issueEntityId,
+      }));
+      await Promise.all(
+        categoriesReady.map(async (obj: any) => {
+          try {
+            addCategory(obj, () => { });
+          } catch (error) {
+            manageErrors(error);
+            return null;
           }
-        )
-
-      })
-      .catch((e) => { manageErrors(e); });
-    setIsLoading(false)
+        })
+      );
+      //extra code
+      setAllEntity([addingEntity.data.entity, ...allEntity]);
+      close && close();
+      toast.success("Entidad agregada satisfactoriamente");
+      setIsLoading(false)
+    } catch (error) {
+      manageErrors(error);
+    }
+    setIsFetching(false);
   };
+
 
   //Postman -> update
   const editEntity = async (
@@ -140,61 +147,86 @@ const useServerEntity = () => {
     setIsFetching(false);
   };
 
+
   //Postman -> find by id
   const getEntity = async (id: any) => {
     setIsLoading(true);
     await query
       .get(`/entity/${id}`)
-      .then((resp) => {
-        setEntity(resp.data);
-      })
+      .then(async (resp) => {
+        await setEntity(resp.data);
+        return getCategory(resp?.data?.entity?.id)
+      }).then(() => { setIsLoading(false) })
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
+
 
   const updateEntity = async (
     entityID: number,
     dataEntity: categoriesData[],
     dataCategory: any,
+    catToDelete: number[],
     callback?: Function
   ) => {
     setIsFetching(true);
-    await query
-      .patch(`/entity/${entityID}`, dataEntity)
-      .then(async (resp) => {
-        setEntity(resp.data);
-        toast.success("Entidad actualizada exitosamente");
-        callback && callback();
-      })
-      //.then(
-      //  ()=>{
-      //    const categoriesReady = dataCategory.map((objeto: categoriesData) => ({
-      //      ...objeto, entityID,
-      //    }));
-      //    categoriesReady.forEach(async (objeto: any) => {
-      //      await updateCategory(objeto, () => { });
-      //    })
-      //  }
-      //)
-      .catch((error) => { manageErrors(error); });
+    try {
+      let update = await query.patch(`/entity/${entityID}`, dataEntity)
+      const newArray = allEntity.map((obj: any) => (obj.id === entityID ? update.data : obj));
+      setAllEntity(newArray);
+      await Promise.all(
+        dataCategory.map(async (obj: any) => {
+          try {
+            if (obj.newCat) {
+              obj.issueEntityId = entityID;
+              addCategory(obj, () => { })
+            } else {
+              if (typeof obj.cardImageId === 'object' && obj.cardImageId !== null && 'id' in obj.cardImageId) {
+                obj.cardImageId = obj.cardImageId.id;
+              }
+              updateCategory(obj.id, obj)
+            }
+          } catch (error) {
+            manageErrors(error);
+            return null;
+          }
+        })
+      );
+      await Promise.all(
+        catToDelete.map(async (id: number) => {
+          try {
+            deleteCategory(id);
+          } catch (error) {
+            manageErrors(error);
+            return null;
+          }
+        })
+      );
+      toast.success("Entidad actualizada exitosamente");
+      callback && callback();
+      //return(resultArray);
+
+    } catch (error) {
+      manageErrors(error);
+    }
     setIsFetching(false);
   };
 
+
   //Postman -> delete
   const deleteEntity = async (id: number, callback?: Function) => {
-    setIsFetching(true);
     await query
       .deleteAPI(`/entity/${id}`, {})
-      .then(() => {
+      .then((resp) => {
+        callback && callback();
         toast.success("Entidad Eliminada con éxitosamente");
         //const newUsers = allEntity.filter((item: any) => item.id !== id);
         //setAllEntity(newUsers)
-        getAllEntity({});
-        callback && callback();
+        //getAllEntity({});
       })
       .catch((error) => { manageErrors(error); });
-    setIsFetching(false);
   };
+
 
   //Postman -> setBusiness?
   const getAllBussinnes = async () => {
@@ -221,6 +253,7 @@ const useServerEntity = () => {
     entity,
     business,
     allEntity,
+    category,
     getAllBussinnes,
     getAllEntity,
     addEntity,

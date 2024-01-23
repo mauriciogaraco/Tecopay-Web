@@ -1,13 +1,13 @@
 import { useForm, SubmitHandler, Control } from "react-hook-form";
 import { useState, createContext, useEffect } from "react";
 import StepsComponent from "../../../components/misc/StepsComponent";
-import Fetching from "../../../components/misc/Fetching";
 import EntityGeneralInfo from "./EntityGeneralInfo";
 import EntityCards from "./EntityCards";
 import EntityCategories from "./EntityCategories";
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import SpinnerLoading from '../../../components/misc/SpinnerLoading';
 import { useAppSelector } from "../../../store/hooks";
+import { toast } from "react-toastify";
 
 
 const contextData: ContextData = {};
@@ -19,8 +19,6 @@ interface propsDestructured {
 
 export const ProductContext = createContext(contextData);
 
-
-
 const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
 
 	const {
@@ -31,11 +29,9 @@ const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
 
 	const { businessId } = useAppSelector( ( state ) => state.session );
 
-	const { control, handleSubmit, reset } = useForm<Record<string, string | number>>();
 	const [data, setData] = useState<categoriesData[]>([]);
 	const [imgRelation, setImgRelation] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
-
 
 	function unifyData(imgRelation: any,) {
 		imgRelation.forEach((obj: any) => {
@@ -46,19 +42,20 @@ const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
 			}
 		});
 	}
+	
+	const { control, handleSubmit, formState:{errors} } = useForm<Record<string, string | number>>();
 
-	//Form Handle -----------------------------------------------------------------------------
-
-	const onSubmit: SubmitHandler<any> = async (dataToSubmit) => {
-		if (currentStep !== 2) return;
-		dataToSubmit.ownerId = businessId;
-		dataToSubmit.businessId = 1;
+	const onSubmit: SubmitHandler<Record<string, string | number | null>> = (dataToSubmit) => { 
+		if (currentStep === 0) {stepUp(); return };
+		if (currentStep === 1) { return };
+		dataToSubmit.ownerId = 1;
+		dataToSubmit.businessId = 3;
 		unifyData(imgRelation);
+		console.log(dataToSubmit);
+		console.log(data);
 		addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), data, close);
 	};
-
-
-	//Step Component Data-----------------------------------------------------------------------
+	toast.error(findMessage(errors));
 
 	const stepTitles = [
 		"Información general",
@@ -71,17 +68,15 @@ const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
 		setCurrentStep(currentStep - 1)
 	};
 
-	//-------------------------------------------------------------------------------------------
-
 	return (
 		<>
 			<StepsComponent current={currentStep} titles={stepTitles} />
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<ProductContext.Provider value={{ control, stepUp, stepDown, data, setData, business, setImgRelation }}>
 					{isLoading && <SpinnerLoading />}
-					{currentStep === 0 && !isLoading && <EntityGeneralInfo />}
-					{currentStep === 1 && !isLoading && <EntityCategories />}
-					{currentStep === 2 && !isLoading && <EntityCards />}
+					{currentStep === 0 && <EntityGeneralInfo />}
+					{currentStep === 1 && <EntityCategories />}
+					{currentStep === 2 && <EntityCards />}
 				</ProductContext.Provider>
 			</form>
 		</>
@@ -114,7 +109,6 @@ export type Logo = {
 	blurHash: string;
 }
 
-
 interface ContextData {
 	control?: Control;
 	stepUp?: Function;
@@ -135,19 +129,20 @@ interface categoriesData {
 
 }
 
-
 interface MyObject {
-	address: string;
-	allowCreateAccount: boolean;
-	businessId: string;
-	name: string;
-	ownerId: number;
-	phone: string;
-	responsable: string;
+	address?: string;
+	allowCreateAccount?: boolean;
+	businessId?: string;
+	name?: string;
+	ownerId?: number;
+	phone?: string;
+	responsable?: string;
 	[key: string]: any;
 }
 
 function propertyFilter(objeto: MyObject): MyObject {
+
+
 	const propiedadesPermitidas: Array<keyof MyObject> = [
 		'address',
 		'allowCreateAccount',
@@ -168,4 +163,24 @@ function propertyFilter(objeto: MyObject): MyObject {
 	});
 
 	return resultado as MyObject;
+}
+
+function findMessage(obj: any): string | null {
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const currentProperty = obj[key];
+
+      if (typeof currentProperty === 'object' && currentProperty !== null) {
+        const nestedMessage = findMessage(currentProperty);
+
+        if (nestedMessage !== null) {
+          return nestedMessage;
+        }
+      } else if (key === 'message' && typeof currentProperty === 'string') {
+        return currentProperty;
+      }
+    }
+  }
+
+  return null;
 }

@@ -5,8 +5,7 @@ import EditEntityGeneralInfo from "./EditEntityGeneralInfo";
 import EditEntityCards from "./EditEntityCards";
 import EditEntityCategories from "./EditEntityCategories";
 import { deleteUndefinedAttr } from '../../../utils/helpers';
-import useServerCategories from "../../../api/userServerCategories";
-import SpinnerLoading from '../../../components/misc/SpinnerLoading';
+import { toast } from "react-toastify";
 
 const contextData: ContextData = {};
 
@@ -14,50 +13,38 @@ export const ProductContext = createContext(contextData);
 
 interface propsDestructured {
 	close: Function;
-	id: number;
 	entityCRUD: any;
 }
 
 const EditEntityModal = ({
-	id,
 	close,
 	entityCRUD
 }: propsDestructured) => {
 
 
 	const {
-		getAllBussinnes,
 		business,
 		isLoading: loading,
-		addEntity,
 		updateEntity,
 		entity,
-		getEntity,
+		getCategory,
+		category,
+		allEntity,
+		id,
+		isLoadingCat,
+		setCategory,
 	} = entityCRUD;
 
-	console.log(id)
-	const { control, handleSubmit } = useForm<Record<string, string | number>>();
 	const [data, setData] = useState<categoriesData[]>([]);
 	const [imgRelation, setImgRelation] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
-
-	const {
-		getCategory,
-		category,
-	} = useServerCategories();
-
-	useEffect(() => {
-		getAllBussinnes().then(
-			() => { getEntity(id) }
-		).then(
-			() => { getCategory(1) }
-		)
-	}, []);
-
+	const [catToDelete, setCatToDelete] = useState<number[]>([]);
+	
+	//esta funcion establece el valor de la propiedad 'cardImageId' de las categorias (imagen asociada)
 	function unifyData(imgRelation: any,) {
 		imgRelation.forEach((obj: any) => {
 			const key = Object.keys(obj)[0];
-			const flag = data.find((elemento: any) => elemento.name === key);
+			const flag = category.find((elemento: any) => elemento.name === key);
 			if (flag) {
 				flag.cardImageId = obj[key];
 			}
@@ -65,14 +52,23 @@ const EditEntityModal = ({
 	}
 
 	//Form Handle -----------------------------------------------------------------------------
+
+	const { control, handleSubmit, formState:{errors} } = useForm<Record<string, string | number>>();
+	
 	const onSubmit: SubmitHandler<any> = async (dataToSubmit) => {
-		if (currentStep !== 2) return;
+		if (currentStep === 0) {stepUp(); return };
+		if (currentStep === 1) { return };
 		dataToSubmit.ownerId = 1;
 		dataToSubmit.businessId = 3;
 		unifyData(imgRelation);
-		//addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), data, close);
-		updateEntity(id, deleteUndefinedAttr(propertyFilter(dataToSubmit)), data, close)
+		console.log(category)
+		if(!category.every((obj:any) => obj.cardImageId !== null && obj.cardImageId !== undefined)) {
+			toast.error('Las imágenes de categorías son requeridas');
+			return;
+		}
+		updateEntity(id, deleteUndefinedAttr(propertyFilter(dataToSubmit)), category, catToDelete, close)
 	};
+	toast.error(findMessage(errors));
 
 	//Step Component Data-------------------------------------------------------------
 	const stepTitles = [
@@ -92,11 +88,29 @@ const EditEntityModal = ({
 		<>
 			<StepsComponent current={currentStep} titles={stepTitles} />
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<ProductContext.Provider value={{ control, stepUp, stepDown, data, setData, entity, setImgRelation, close }}>
-					{!entity && <SpinnerLoading />}
-					{currentStep === 0 && entity && <EditEntityGeneralInfo />}
-					{currentStep === 1 && entity && <EditEntityCategories />}
-					{currentStep === 2 && entity && <EditEntityCards />}
+				<ProductContext.Provider value={
+					{
+						stepUp,
+						stepDown,
+						setImgRelation,
+						setData,
+						control,
+						isLoadingCat,
+						getCategory,
+						category,
+						entity,
+						allEntity,
+						close,
+						business,
+						id,
+						setCategory,
+						setCatToDelete,
+						catToDelete,
+					}}>
+					{/*isLoadingCat && <SpinnerLoading />*/}
+					{currentStep === 0 && <EditEntityGeneralInfo />}
+					{currentStep === 1 && <EditEntityCategories />}
+					{currentStep === 2 && <EditEntityCards />}
 				</ProductContext.Provider>
 			</form>
 		</>
@@ -104,9 +118,6 @@ const EditEntityModal = ({
 };
 
 export default EditEntityModal;
-
-
-
 
 
 //Interfaces, Types & Utility functions
@@ -146,6 +157,14 @@ interface ContextData {
 	entity?: any;
 	setImgRelation?: Function;
 	close?: Function;
+	category?: any;
+	allEntity?: any;
+	id?: number;
+	getCategory?: Function;
+	isLoadingCat?: boolean;
+	setCategory?: Function;
+	setCatToDelete?: Function;
+	catToDelete?:number[];
 }
 
 type categoriesData = {
@@ -192,3 +211,23 @@ function propertyFilter(objeto: MyObject): MyObject {
 
 	return resultado as MyObject;
 }
+
+function findMessage(obj: any): string | null {
+	for (const key in obj) {
+	  if (obj.hasOwnProperty(key)) {
+		const currentProperty = obj[key];
+  
+		if (typeof currentProperty === 'object' && currentProperty !== null) {
+		  const nestedMessage = findMessage(currentProperty);
+  
+		  if (nestedMessage !== null) {
+			return nestedMessage;
+		  }
+		} else if (key === 'message' && typeof currentProperty === 'string') {
+		  return currentProperty;
+		}
+	  }
+	}
+  
+	return null;
+  }

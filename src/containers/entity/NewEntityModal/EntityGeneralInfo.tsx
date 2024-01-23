@@ -8,7 +8,7 @@ import GenericImageDrop from "../../../components/misc/Images/GenericImageDrop";
 
 
 const EntityGeneralInfo = () => {
-	const { control, stepUp, business } = useContext(ProductContext);
+	const { control, business } = useContext(ProductContext);
 
 
 	return (
@@ -41,15 +41,15 @@ const EntityGeneralInfo = () => {
 									placeholder='Nombre de la Entidad'
 									control={control}
 									rules={{ required: 'Campo requerido' }}
-								></Input>
+								/>
 							</div><div className="mt-2">
 								<Input
 									name='address'
-									label='Direccion'
-									placeholder='Direccion de la Entidad'
+									label='Dirección'
+									placeholder='Dirección de la Entidad'
 									control={control}
 									rules={{ required: 'Campo requerido' }}
-								></Input>
+								/>
 							</div><div className="mt-2">
 								<Input
 									name='responsable'
@@ -57,15 +57,20 @@ const EntityGeneralInfo = () => {
 									placeholder='Responsable'
 									control={control}
 									rules={{ required: 'Campo requerido' }}
-								></Input>
+								/>
 							</div><div className="mt-2">
 								<Input
 									name='phone'
-									label='Telefono'
-									placeholder='Telefono'
+									label='Teléfono '	
+									placeholder='Teléfono'
 									control={control}
-									rules={{ required: 'Campo requerido' }}
-								></Input>
+									rules={{
+										validate: (value) => {
+											const isValidPhoneNumber = /^[0-9]{8,}$/.test(value);
+											return isValidPhoneNumber || 'Inserte número de teléfono válido';
+										  },
+									}}
+								/>
 							</div><div className="mt-7 flex items-center justify-center m-auto">
 
 								<Toggle
@@ -84,11 +89,11 @@ const EntityGeneralInfo = () => {
 					</div>
 					<Button
 						color="slate-500"
-						action={stepUp}
 						name="Siguiente"
 						full
 						outline
 						textColor="slate-600"
+						type="submit"
 					/>
 				</div>
 
