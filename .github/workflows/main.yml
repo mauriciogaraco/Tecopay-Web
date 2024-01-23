@@ -5,7 +5,7 @@ name: Deploy Tecopay Web
 
 on:
   push:
-    branches: [ "development" ]
+    branches: ["development"]
     
 jobs:
   build:
