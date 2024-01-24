@@ -3,7 +3,6 @@ import {
   type PaginateInterface,
 } from "../interfaces/ServerInterfaces";
 import query from "./APIServices";
-//import useServer from "./useServer";
 import useServer from "./useServerMain";
 import { toast } from "react-toastify";
 import { generateUrlParams } from "../utils/helpers";
@@ -16,41 +15,26 @@ const useServerCategories = () => {
   const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
   const [allCategories, setAllCategories] = useState<any>([]);
   const [category, setCategory] = useState<any>([]);
-  const [imgsFromArray, setImgsFromArray] = useState<any>([]);
 
-
-  //Postman -> all?
 
   //Postman -> register
   const addCategory = async (
-    data: any,
-    close: Function
+    data: any
   ) => {
     setIsFetching(true);
     setIsLoadingCat(true)
-    await query
-      .post("/categories", data)
-      .then((resp) => {
-        //allCategories([...allCategories, resp.data])
-        toast.success("Categoria agregada satisfactoriamente");
-      })
-      .catch((e) => { manageErrors(e); });
+    try {
+      await query.post("/categories", data)
+      toast.success("Categoría agregada satisfactoriamente");
+    } catch (error) {
+      manageErrors(error);
+    }
     setIsFetching(false);
     setIsLoadingCat(false)
   };
 
+
   //Postman -> find by id
-  //const getCategory = async (issueEntityId: any) => {
-  //  setIsLoadingCat(true);
-  //  await query
-  //    .get(`/categories/${issueEntityId}`)
-  //    .then(async (resp) => {
-  //      setCategory(resp.data);
-//
-  //    })
-  //    .catch((error) => { manageErrors(error); });
-  //  setIsLoadingCat(false);
-  //};
   const getCategory = async (issueEntityId: number) => {
     setIsLoadingCat(true);
     try {
@@ -73,7 +57,7 @@ const useServerCategories = () => {
       const resultArray: FirstArrayObject[] = integrateArrays(categories.data, results);
       setCategory(resultArray);
       setIsLoadingCat(false);
-      return(resultArray);
+      return (resultArray);
 
     } catch (error) {
       manageErrors(error);
@@ -82,32 +66,36 @@ const useServerCategories = () => {
   };
 
 
-
+  //Postman ->
   const updateCategory = async (
     categoryID: number,
     dataCategory: any,
   ) => {
     setIsFetching(true);
-    await query
-      .patch(`/categories/${categoryID}`, dataCategory)
-      .then(async (resp) => {
-        setCategory(resp.data);
-        toast.success("Actualización exitosa");
-      })
-      .catch((error) => { manageErrors(error); });
+    try {
+      let resp = await query.patch(`/categories/${categoryID}`, dataCategory)
+      setCategory(resp.data);
+      toast.success("Actualización exitosa");
+    } catch (error) {
+      manageErrors(error);
+    }
     setIsFetching(false);
   };
 
 
+  //Postman ->
   const deleteCategory = async (
     categoryID: number
   ) => {
-    await query.deleteAPI(`/categories/${categoryID}`,{})
-      .then(async (resp) => {
-        toast.success("Categoria eliminada");
-      })
-      .catch((error) => { manageErrors(error); });
+    try {
+      await query.deleteAPI(`/categories/${categoryID}`, {})
+      toast.success("Categoría eliminada");
+    } catch (error) {
+      manageErrors(error);
+    }
   };
+
+
 
   return {
     allCategories,
@@ -117,8 +105,7 @@ const useServerCategories = () => {
     deleteCategory,
     category,
     isLoadingCat,
-    setCategory,
-    imgsFromArray
+    setCategory
   };
 };
 export default useServerCategories;
@@ -146,10 +133,10 @@ function integrateArrays(
   const integratedArray: FirstArrayObject[] = [...firstArray];
 
   // Iterate over the second array
-  secondArray.forEach((secondObj:any) => {
+  secondArray.forEach((secondObj: any) => {
     // Find the corresponding object in the first array based on cardImageId and id
     const matchingObj = integratedArray.find(
-      (firstObj:any) => firstObj.cardImageId === secondObj.id
+      (firstObj: any) => firstObj.cardImageId === secondObj.id
     );
 
     // If a match is found, copy the entire object from the second array

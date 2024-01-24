@@ -15,7 +15,7 @@ const EditEntityCards = () => {
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
 			<div className="max-h-96 min-h-96 h-96 overflow-y-auto">
-			<p className='mb-4 font-semibold text-lg text-center'>Defina los diseños de tarjetas según categorías</p>
+			<p className='mb-4 font-semibold text-lg text-center'>Diseño de tarjetas para categorías</p>
 				<div className="grid grid-cols-2 gap-2 grid-flow-row auto-rows-max">
 					{category?.map((obj:any) => (
 						<div className="flex flex-col items-center p-2" key={obj?.cardImageId?.id}>

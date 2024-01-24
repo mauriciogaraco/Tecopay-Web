@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import TabNav from '../../../components/navigation/TabNav';
-
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../../store/hooks';
 import Breadcrumb, {
@@ -24,7 +23,6 @@ import AssociatedRecords from './AssociatedRecords/AssociatedRecords';
 import { formatCardNumber } from '../../../utils/helpers';
 
 const AccountDetails = () => {
-	const { pathname } = useLocation();
 	const navigate = useNavigate();
 	const {
 		getAccount,
@@ -45,15 +43,13 @@ const AccountDetails = () => {
 	} = useServerAccounts();
 
 	const { getAllCards, paginate, allCards } = useServerCards();
-	//TabNav ------------------------------------------------------------
-
-	const [current, setCurrent] = useState<string>('detalles');
+	const [current, setCurrent] = useState<string>('details');
 	const changeTab = (to: string) => setCurrent(to);
 	const [editModal, setEditModal] = useState(false);
 
+
 	const id = useAppSelector((state) => state.account.id);
 
-	//const account: any = useAppSelector((state) => state.account.items);
 
 	useEffect(() => {
 		getAccount(id);
@@ -62,19 +58,17 @@ const AccountDetails = () => {
 		getAccountOperations(id);
 	}, []);
 
+
 	const showEditModal = () => {
 		setEditModal(!editModal);
 	};
 
-	const close = () => {
-		setEditModal(false);
-	};
-
+	
 	const stockTabs = [
 		{
-			name: 'Detalles',
-			href: 'detalles',
-			current: current === 'detalles',
+			name: 'Información General',
+			href: 'details',
+			current: current === 'details',
 		},
 		{
 			name: 'Tarjetas',
@@ -92,8 +86,6 @@ const AccountDetails = () => {
 			current: current === 'operations',
 		},
 	];
-
-	//-----------------------------------------------------------------------------------
 
 	//Breadcrumb --------------------------------------------------------------------------
 	const paths: PathInterface[] = [
@@ -115,7 +107,7 @@ const AccountDetails = () => {
 					icon={<UserCircleIcon className='h-7 text-gray-500' />}
 					paths={paths}
 				/>
-				{current === 'detalles' && (
+				{current === 'details' && (
 					<div className='absolute right-[45px] mt-[6px] h-7 px-2'>
 						<Button
 							name='Editar'
@@ -137,7 +129,7 @@ const AccountDetails = () => {
 				/>
 
 				<div className='sm:col-span-8 pl-3 pt-1'>
-					{current === 'detalles' && (
+					{current === 'details' && (
 						<SelectedAccountDetails
 							getAccount={getAccount}
 							isFetching={isFetching}
@@ -146,6 +138,9 @@ const AccountDetails = () => {
 							isLoading={isLoading}
 							id={id}
 							account={account}
+							allAccounts={allAccounts}
+							deleteAccount={deleteAccount}
+						editAccount={editAccount}
 						/>
 					)}
 					{current === 'cards' && (

@@ -1,69 +1,64 @@
 import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-
 import GenericTable, {
 	type DataTableInterface,
-	type FilterOpts,
 } from '../../components/misc/GenericTable';
 import useServerAccounts from '../../api/userServerAccounts';
-
 import Paginate from '../../components/misc/Paginate';
 import Modal from '../../components/modals/GenericModal';
 import Breadcrumb, {
 	type PathInterface,
 } from '../../components/navigation/Breadcrumb';
-import {
-	BasicType,
-	type SelectInterface,
-} from '../../interfaces/InterfacesLocal';
-
 import { useEffect, useState } from 'react';
-import { data } from '../../utils/TemporaryArrayData';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import EditAccountContainer from './editAccountWizzard/EditAccountContainer';
+import { useAppDispatch } from '../../store/hooks';
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
 import { saveAccountId } from '../../store/slices/accountSlice';
 import { useNavigate } from 'react-router-dom';
 import NewAccountModal from './NewAccount/NewAccountModal';
-import useServerCards from '../../api/userServerCards';
 import { formatCardNumber } from '../../utils/helpers';
 
 const Accounts = () => {
 	const {
 		paginate,
 		isLoading,
-		isFetching,
 		allAccounts,
-		account,
 		getAllAccounts,
-		getAccount,
-		editAccount,
-		deleteAccount,
-		setSelectedDataToParent,
-		setSelectedDataToParentTwo,
-		selectedDataToParent,
 		addAccount,
 	} = useServerAccounts();
 
+	const [addTicketmodal, setAddTicketmodal] = useState(false);
+	const [nuevoTicketModal, setNuevoTicketModal] = useState(false);
+	const [contactModal, setContactModal] = useState(false);
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
-	const [addTicketmodal, setAddTicketmodal] = useState(false);
+
+	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
-	// const [exportModal, setExportModal] = useState(false);
 
-	/* useEffect(() => {
-			  getAllClients(filter);
-			}, [filter]); */
+	useEffect(() => {
+		getAllAccounts(filter);
+	}, [filter]);
 
-	// Data for table ------------------------------------------------------------------------
+	// Breadcrumb-----------------------------------------------------------------------------------
+
+	const paths: PathInterface[] = [
+		{
+			name: 'Cuentas',
+		},
+	];
+
+	// Data for table ------------------------------------------------------------------------------
+
 	const tableTitles = [
+		'Fecha de Activación',
 		'Código',
 		'Nombre del Propietario',
 		'Entidad',
 		'Moneda',
 		'',
 	];
+
 	const tableData: DataTableInterface[] = [];
 
 	allAccounts?.map((item: any) => {
@@ -90,7 +85,7 @@ const Accounts = () => {
 		});
 	});
 
-	const navigate = useNavigate();
+	
 
 	const actions = [
 		{
@@ -103,32 +98,15 @@ const Accounts = () => {
 	];
 
 	const rowAction = (id: number) => {
-		/*setEditTicketModal({ state: true, id });*/
 		dispatch(saveAccountId(id));
 		navigate('details');
 	};
 
-	// Breadcrumb-----------------------------------------------------------------------------------
-	const paths: PathInterface[] = [
-		{
-			name: 'Cuentas',
-		},
-	];
-	// ------------------------------------------------------------------------------------
-	const [nuevoTicketModal, setNuevoTicketModal] = useState(false);
-	const [contactModal, setContactModal] = useState(false);
-	const [editTicketModal, setEditTicketModal] = useState<{
-		state: boolean;
-		id: number | null;
-	}>({ state: false, id: null });
-
+	
 	const closeAddAccount = () => {
 		setAddTicketmodal(false);
 	};
 
-	useEffect(() => {
-		getAllAccounts(filter);
-	}, [filter]);
 
 	return (
 		<div>

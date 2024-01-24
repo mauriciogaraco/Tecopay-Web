@@ -9,15 +9,19 @@ import { TbTransferIn } from 'react-icons/tb';
 import Modal from '../../../components/modals/GenericModal';
 import Transfer from './transactions/Transfer';
 import Charge from './transactions/Charge';
+import EditAccountContainer from '../editAccountWizzard/EditAccountContainer';
 
 interface PropsInterface {
-	id: number | string | null;
+	id: number | null;
 	isLoading: Boolean;
 	account: any;
 	charge: Function;
 	transfer: Function;
 	isFetching: boolean;
 	getAccount: Function;
+	allAccounts: any;
+	deleteAccount: any;
+	editAccount: any;
 }
 
 const SelectedAccountDetails = ({
@@ -28,11 +32,24 @@ const SelectedAccountDetails = ({
 	transfer,
 	isFetching,
 	getAccount,
+	allAccounts,
+	deleteAccount,
+	editAccount,
 }: PropsInterface) => {
 	const [transferModal, setTranferModal] = useState(false);
 	const [rechargeModal, setRechargeModal] = useState(false);
+	const [editModal, setEditModal] = useState(false);
+	console.log('account');
+	console.log(account);
 
 	const actions = [
+		{
+			icon: <PiHandCoins className='w-10 h-5' />,
+			title: 'Editar',
+			action: () => {
+				setEditModal(true);
+			},
+		},
 		{
 			icon: <TbTransferIn className='w-10 h-5' />,
 			title: 'Transferir',
@@ -47,6 +64,7 @@ const SelectedAccountDetails = ({
 				setRechargeModal(true);
 			},
 		},
+		
 	];
 	return isLoading ? (
 		<div className='relative bottom-20'>
@@ -57,7 +75,7 @@ const SelectedAccountDetails = ({
 			{account && (
 				<GenericList
 					actions={actions}
-					header={{ title: `Detalles de cuenta ${id}` }}
+					header={{ title: `Detalles de ${account.name}` }}
 					body={{
 						'No. cuenta': `${formatCardNumber(account?.address ?? '-')}`,
 
@@ -97,6 +115,21 @@ const SelectedAccountDetails = ({
 						isFetching={isFetching}
 						defaultAddress={parseInt(account?.address)}
 					></Charge>
+				</Modal>
+			)}
+			{editModal && (
+				<Modal state={editModal} close={setEditModal} size='m'>
+					<EditAccountContainer
+						allAccounts={allAccounts}
+						deleteAccount={deleteAccount}
+						isLoading={false}
+						account={account}
+						getAccount={getAccount}
+						id={id}
+						editAccount={editAccount}
+						isFetching={isFetching}
+						closeModal={() => setEditModal(false)}
+					/>
 				</Modal>
 			)}
 		</>

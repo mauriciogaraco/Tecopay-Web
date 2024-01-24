@@ -6,7 +6,7 @@ import type {
 } from "../interfaces/ServerInterfaces";
 import query from "./APIServices";
 import useServer from "./useServer";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import { saveAccount } from "../store/slices/accountSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -30,31 +30,31 @@ const useServerAccounts = () => {
     null
   );
   const [selectedDataToParent, setSelectedDataToParent] =
-  useState<any>(null);
+    useState<any>(null);
   const [selectedDataToParentTwo, setSelectedDataToParentTwo] =
-  useState<any>(null);
+    useState<any>(null);
   const [waiting, setWaiting] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const items = useAppSelector((state)=> state.account.items)
+  const items = useAppSelector((state) => state.account.items)
 
-
+  // 'account / all'
   const getAllAccounts = async (filter: BasicType) => {
     setIsLoading(true);
-    await query
-      .get(`/account${generateUrlParams(filter)}`)
-      .then((resp) => {
-        setPaginate({
-          totalItems: resp.data.totalItems,
-          totalPages: resp.data.totalPages,
-          currentPage: resp.data.currentPage,
-        });
-        setAllAccounts(resp.data.items)
-
-
-      })
-      .catch((error) => { manageErrors(error); });
+    try {
+    let resp = await query.get(`/account${generateUrlParams(filter)}`)
+      setPaginate({
+        totalItems: resp.data.totalItems,
+        totalPages: resp.data.totalPages,
+        currentPage: resp.data.currentPage,
+      });
+      setAllAccounts(resp.data.items)
+    } catch (error) {
+      manageErrors(error);
+    }
     setIsLoading(false);
   };
+
+
   const addAccount = async (
     data: any,
     close: Function
@@ -62,12 +62,12 @@ const useServerAccounts = () => {
     setIsFetching(true);
     setIsLoading(true)
     await query
-    .post("/account", data)
-      .then((resp) => {   
-   setAllAccounts([...allAccounts, resp.data])
-        
+      .post("/account", data)
+      .then((resp) => {
+        setAllAccounts([...allAccounts, resp.data])
+
         toast.success("Cuenta agregada satisfactoriamente");
-      }).then(()=>close())
+      }).then(() => close())
       .catch((e) => { manageErrors(e); });
     setIsFetching(false);
     setIsLoading(false)
@@ -82,9 +82,9 @@ const useServerAccounts = () => {
     await query
       .patch(`/account/${id}`, data)
       .then((resp) => {
-        const newAccounts:any = [...allAccounts];
-        const idx = newAccounts.findIndex((user:any) => user.id === id);
-        newAccounts.splice(idx, 1, resp.data);        
+        const newAccounts: any = [...allAccounts];
+        const idx = newAccounts.findIndex((user: any) => user.id === id);
+        newAccounts.splice(idx, 1, resp.data);
         setAllAccounts(newAccounts)
         callback?.();
       })
@@ -98,8 +98,8 @@ const useServerAccounts = () => {
       const response = await query.get(`/account/${id}`);
       const account = response.data;
       setAccount(account);
-  
-  
+
+
       return account;
     } catch (error) {
       console.error(error);
@@ -115,8 +115,8 @@ const useServerAccounts = () => {
       const response = await query.get(`/account/${id}/records`);
       const account = response.data;
       setRecords(account);
-  
-  
+
+
       return account;
     } catch (error) {
       console.error(error);
@@ -132,8 +132,8 @@ const useServerAccounts = () => {
       const response = await query.get(`/account/${id}/operations`);
       const account = response.data;
       setOperations(account);
-  
-  
+
+
       return account;
     } catch (error) {
       console.error(error);
@@ -142,7 +142,7 @@ const useServerAccounts = () => {
       setIsLoading(false);
     }
   };
-  
+
 
   const deleteAccount = async (id: number, callback?: Function) => {
     setIsFetching(true);
@@ -150,7 +150,7 @@ const useServerAccounts = () => {
       .deleteAPI(`/account/${id}`, {})
       .then(() => {
         toast.success("Usuario Eliminado con éxito");
-        const newAccounts = allAccounts.filter((item:any) => item.id !== id);
+        const newAccounts = allAccounts.filter((item: any) => item.id !== id);
         setAllAccounts(newAccounts)
         callback?.();
       })
@@ -159,19 +159,21 @@ const useServerAccounts = () => {
   };
 
 
-  const Transfer = async (data:any,  callback?: Function) => {
+  const Transfer = async (data: any, callback?: Function) => {
     setIsFetching(true);
     await query
       .post(`/account/transfer`, data)
       .then((resp) => {
-        if(resp.data.sourceAccount.address == account.address){const changed = {...account, amount:resp.data.sourceAccount.amount}
-     
+        if (resp.data.sourceAccount.address == account.address) {
+          const changed = { ...account, amount: resp.data.sourceAccount.amount }
 
-        setAccount(changed)
+
+          setAccount(changed)
         }
-        else if(resp.data.targetAccount.address == account.address){const changed = {...account, amount:resp.data.targetAccount.amount}
+        else if (resp.data.targetAccount.address == account.address) {
+          const changed = { ...account, amount: resp.data.targetAccount.amount }
 
-        setAccount(changed)
+          setAccount(changed)
         }
         callback?.();
         toast.success("Transferencia exitosa");
@@ -180,25 +182,26 @@ const useServerAccounts = () => {
     setIsFetching(false);
   };
 
-  const Charge = async (data:any, callback?: Function) => {
+  const Charge = async (data: any, callback?: Function) => {
     setIsFetching(true);
     await query
       .post(`/account/charge`, data)
       .then((resp) => {
-       
-        if(resp.data.account.address == account.address){const changed = {...account, amount:resp.data.account.amount}
 
-        setAccount(changed)
+        if (resp.data.account.address == account.address) {
+          const changed = { ...account, amount: resp.data.account.amount }
+
+          setAccount(changed)
         }
-        
+
         if (callback) {
-            callback();
+          callback();
         }
         toast.success("Recarga exitosa");
       })
       .catch((error) => { manageErrors(error); });
     setIsFetching(false);
-};
+  };
 
 
 
