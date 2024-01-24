@@ -26,6 +26,6 @@ jobs:
         cache: 'npm'
     - run: npm i
     - run: cp ../.env .env
-    - run: npm run build
+    - run: npm run build 
       env:
         CI: false
