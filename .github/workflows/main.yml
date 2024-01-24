@@ -25,7 +25,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm i
-    - run: echo "hello"
     - run: cp ../.env .env
     - run: npm run build
       env:
