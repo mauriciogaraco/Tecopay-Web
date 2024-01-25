@@ -1,30 +1,19 @@
 import { useEffect, useState } from 'react';
-import TabNav from '../../../components/navigation/TabNav';
-
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../../store/hooks';
 import Breadcrumb, {
 	PathInterface,
 } from '../../../components/navigation/Breadcrumb';
-import {
-	PencilSquareIcon,
-	RectangleGroupIcon,
-	UserCircleIcon,
-} from '@heroicons/react/24/outline';
+import { UserCircleIcon } from '@heroicons/react/24/outline';
 import SideNav from '../../../components/navigation/SideNav';
 import SelectedAccountDetails from './SelectedAccountDetails';
 import useServerAccounts from '../../../api/userServerAccounts';
-import Button from '../../../components/misc/Button';
-import Modal from '../../../components/modals/GenericModal';
-import EditAccountContainer from '../editAccountWizzard/EditAccountContainer';
 import AssociatedCards from './AssociatedCards/AssociatedCards';
 import useServerCards from '../../../api/userServerCards';
 import AssociatedOperations from './AssociatedOperations/AssociatedOperations';
-import AssociatedRecords from './AssociatedRecords/AssociatedRecords';
 import { formatCardNumber } from '../../../utils/helpers';
 
 const AccountDetails = () => {
-	const { pathname } = useLocation();
 	const navigate = useNavigate();
 	const {
 		getAccount,
@@ -32,28 +21,21 @@ const AccountDetails = () => {
 		account,
 		isFetching,
 		editAccount,
-		allAccounts,
-		selectedDataToParent,
 		deleteAccount,
-		getAllAccounts,
 		getAccountRecords,
 		getAccountOperations,
-		records,
 		operations,
 		Charge,
 		Transfer,
 	} = useServerAccounts();
 
 	const { getAllCards, paginate, allCards } = useServerCards();
-	//TabNav ------------------------------------------------------------
-
-	const [current, setCurrent] = useState<string>('detalles');
+	const [current, setCurrent] = useState<string>('details');
 	const changeTab = (to: string) => setCurrent(to);
-	const [editModal, setEditModal] = useState(false);
+
 
 	const id = useAppSelector((state) => state.account.id);
 
-	//const account: any = useAppSelector((state) => state.account.items);
 
 	useEffect(() => {
 		getAccount(id);
@@ -61,30 +43,18 @@ const AccountDetails = () => {
 		getAccountRecords(id);
 		getAccountOperations(id);
 	}, []);
-
-	const showEditModal = () => {
-		setEditModal(!editModal);
-	};
-
-	const close = () => {
-		setEditModal(false);
-	};
-
+	console.log(id)
+	
 	const stockTabs = [
 		{
-			name: 'Detalles',
-			href: 'detalles',
-			current: current === 'detalles',
+			name: 'Información',
+			href: 'details',
+			current: current === 'details',
 		},
 		{
-			name: 'Tarjetas',
+			name: 'Tarjetas asociadas',
 			href: 'cards',
 			current: current === 'cards',
-		},
-		{
-			name: 'Registros',
-			href: 'records',
-			current: current === 'records',
 		},
 		{
 			name: 'Operaciones',
@@ -92,8 +62,6 @@ const AccountDetails = () => {
 			current: current === 'operations',
 		},
 	];
-
-	//-----------------------------------------------------------------------------------
 
 	//Breadcrumb --------------------------------------------------------------------------
 	const paths: PathInterface[] = [
@@ -115,19 +83,6 @@ const AccountDetails = () => {
 					icon={<UserCircleIcon className='h-7 text-gray-500' />}
 					paths={paths}
 				/>
-				{current === 'detalles' && (
-					<div className='absolute right-[45px] mt-[6px] h-7 px-2'>
-						<Button
-							name='Editar'
-							icon={<PencilSquareIcon className=' text-white w-5' />}
-							color='slate-600'
-							type='button'
-							action={() => showEditModal()}
-							loading={isFetching}
-							disabled={isFetching}
-						/>
-					</div>
-				)}
 			</div>
 			<div className='sm:grid grid-cols-10 gap-3'>
 				<SideNav
@@ -137,43 +92,25 @@ const AccountDetails = () => {
 				/>
 
 				<div className='sm:col-span-8 pl-3 pt-1'>
-					{current === 'detalles' && (
+					{current === 'details' && (
 						<SelectedAccountDetails
-							getAccount={getAccount}
 							isFetching={isFetching}
 							charge={Charge}
 							transfer={Transfer}
 							isLoading={isLoading}
-							id={id}
 							account={account}
+							deleteAccount={deleteAccount}
+						editAccount={editAccount}
 						/>
 					)}
 					{current === 'cards' && (
 						<AssociatedCards paginate={paginate} allCards={allCards} />
-					)}
-					{current === 'records' && (
-						<AssociatedRecords paginate={paginate} records={records} />
 					)}
 					{current === 'operations' && (
 						<AssociatedOperations paginate={paginate} operations={operations} />
 					)}
 				</div>
 			</div>
-			{editModal && (
-				<Modal state={editModal} close={setEditModal} size='m'>
-					<EditAccountContainer
-						allAccounts={allAccounts}
-						deleteAccount={deleteAccount}
-						isLoading={isLoading}
-						account={account}
-						getAccount={getAccount}
-						id={id}
-						editAccount={editAccount}
-						isFetching={isFetching}
-						closeModal={() => setEditModal(false)}
-					/>
-				</Modal>
-			)}
 		</>
 	);
 };

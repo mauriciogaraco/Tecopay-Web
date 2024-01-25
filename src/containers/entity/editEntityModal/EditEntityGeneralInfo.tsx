@@ -94,7 +94,7 @@ const EditEntityGeneralInfo = () => {
 								control={control}
 								rules={{
 									validate: (value) => {
-										const isValidPhoneNumber = /^[0-9]{8,}$/.test(value);
+										const isValidPhoneNumber = /^\+?[0-9]{8,}$/.test(value);
 										return isValidPhoneNumber || 'Inserte número de teléfono válido';
 									  },
 								}}

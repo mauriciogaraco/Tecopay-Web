@@ -16,14 +16,13 @@ import { useAppSelector } from '../../store/hooks';
 import useServerEntity from '../../api/userServerEntity';
 import { formatCalendar } from '../../utils/helpers';
 
-import NewEntityModal from '../entity/NewEntityModal/NewEntityModal';
+import NewEntityModal from '../entity/newEntityModal/NewEntityModal';
 //import EditEntityContainer from '../entity/editEntityModal/EditEntityContainer';
 
 const Entity = () => {
 	const [query, setQuery] = useState<string>('');
 	const {
 		getAllEntity,
-		editEntity,
 		deleteEntity,
 		getEntity,
 		setAllEntity,

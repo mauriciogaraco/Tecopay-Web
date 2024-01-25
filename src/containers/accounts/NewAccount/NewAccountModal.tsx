@@ -1,24 +1,11 @@
-import CreateContactModal from '../../../components/modals/CreateContactModal';
-import useServerUser from '../../../api/userServerAccounts';
 import { type SubmitHandler, useForm } from 'react-hook-form';
-import ComboBox from '../../../components/forms/Combobox';
-import TextArea from '../../../components/forms/TextArea';
-import { SelectInterface } from '../../../interfaces/LocalInterfaces';
-import { useAppSelector, useAppDispatch } from '../../../store/hooks';
-import { useEffect } from 'react';
-import Modal from '../../../components/misc/GenericModal';
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import Input from '../../../components/forms/Input';
-import Select from '../../../components/forms/Select';
 import Toggle from '../../../components/forms/Toggle';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 import Button from '../../../components/misc/Button';
 
 interface propsDestructured {
-	setContactModal: (contactModal: boolean) => void;
-	contactModal: boolean;
-	setNuevoTicketModal: (contactModal: boolean) => void;
-	nuevoTicketModal: boolean;
 	close: Function;
 	addAccount: Function;
 	isLoading: boolean;
@@ -26,7 +13,6 @@ interface propsDestructured {
 
 const NewAccountModal = ({
 	addAccount,
-	setContactModal,
 	close,
 	isLoading,
 }: propsDestructured) => {
@@ -35,9 +21,7 @@ const NewAccountModal = ({
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
-		try {
-			addAccount(deleteUndefinedAttr(data), close).then(() => close());
-		} catch (error) {}
+		addAccount(deleteUndefinedAttr(data), close).then(() => close());
 	};
 
 	return (
@@ -45,7 +29,7 @@ const NewAccountModal = ({
 			<div>
 				<p className='mb-4 font-semibold text-lg text-center'>Nueva cuenta</p>
 				<form
-					className='flex flex-col gap-y-3'
+					className='flex flex-col gap-5'
 					onSubmit={handleSubmit(onSubmit)}
 				>
 					<Input
@@ -57,22 +41,6 @@ const NewAccountModal = ({
 					></Input>
 
 					<AsyncComboBox
-						name='currencyId'
-						control={control}
-						rules={{ required: 'Campo requerido' }}
-						label='Moneda'
-						dataQuery={{ url: '/currency' }}
-						normalizeData={{ id: 'id', name: 'symbol' }}
-					></AsyncComboBox>
-					<AsyncComboBox
-						name='ownerId'
-						normalizeData={{ id: 'id', name: 'fullName' }}
-						control={control}
-						label='Dueño'
-						dataQuery={{ url: '/user' }}
-					/>
-
-					<AsyncComboBox
 						name='issueEntityId'
 						control={control}
 						rules={{ required: 'Campo requerido' }}
@@ -81,14 +49,11 @@ const NewAccountModal = ({
 						normalizeData={{ id: 'id', name: 'name' }}
 					></AsyncComboBox>
 
-					<div className='h-full'>
-						<TextArea
-							name='description'
-							control={control}
-							paddingInput='py-0'
-							label='Descripción'
-						></TextArea>
-					</div>
+					<Toggle
+						name="printCard"
+						control={control}
+						title="Imprimir Tarjeta"
+					/>
 					<div className='flex self-end'>
 						<Button
 							name='Insertar'

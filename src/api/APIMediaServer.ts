@@ -40,6 +40,8 @@ axiosApiInstance.interceptors.request.use(
         Authorization: `Bearer ${keys.token}`,
       };
     }
+
+    console.log(config.headers)
     return config;
   },
   (error) => {

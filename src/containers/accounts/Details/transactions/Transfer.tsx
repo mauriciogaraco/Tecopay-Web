@@ -1,35 +1,25 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Input from '../../../../components/forms/Input';
 import Button from '../../../../components/misc/Button';
-import useServerAccounts from '../../../../api/userServerAccounts';
 import { deleteUndefinedAttr } from '../../../../utils/helpers';
-import { useRef } from 'react';
 
 interface propsInterface {
 	defaultAddress?: number;
 	Transfer: Function;
 	isFetching: boolean;
-	id: number | string | null;
-	getAccount: Function;
+	closeModal: Function;
 }
 
 const Transfer = ({
 	defaultAddress,
 	Transfer,
 	isFetching,
-	id,
-	getAccount,
+	closeModal,
 }: propsInterface) => {
 	const { control, handleSubmit, watch, reset } = useForm({
 		mode: 'onChange',
 	});
 
-	const changeState = useRef((newState: any) => {});
-	const changeChildState = (newState: any) => {
-		if (changeState.current) {
-			changeState.current(newState);
-		}
-	};
 	const onSubmit: SubmitHandler<Record<string, string | number>> = (data) => {
 		let StrSource = data.source.toString();
 		let StrTarget = data.target.toString();
@@ -40,27 +30,24 @@ const Transfer = ({
 			source: noSpaceSource,
 			target: noSpaceTarget,
 		};
-		Transfer(deleteUndefinedAttr(dataTosend)).then(() => changeChildState(''));
+		Transfer(deleteUndefinedAttr(dataTosend), closeModal)
 	};
 	return (
 		<form
-			className='relative w-full h-full flex flex-col 2xl:mt-8 mt-2 px-20 2xl:gap-5 gap-4'
+			className='flex flex-col mt-2  gap-6'
 			onSubmit={handleSubmit(onSubmit)}
 		>
 			<p className='font-semibold text-lg text-center'>Transferir</p>
-			<div className='flex flex-col'>
-				<Input
-					defaultValue={defaultAddress}
-					changeState={changeState}
-					name='source'
-					label='Dirección que envia'
-					placeholder='xxxx xxxx xxxx'
-					rules={{ required: 'Campo requerido' }}
-					control={control}
-				></Input>
-			</div>
 			<Input
-				changeState={changeState}
+				defaultValue={defaultAddress}
+				name='source'
+				label='Dirección que envia'
+				placeholder='xxxx xxxx xxxx'
+				rules={{ required: 'Campo requerido' }}
+				control={control}
+			></Input>
+
+			<Input
 				name='target'
 				label='Dirección que recibe'
 				placeholder='xxxx xxxx xxxx'
@@ -68,7 +55,6 @@ const Transfer = ({
 				control={control}
 			></Input>
 			<Input
-				changeState={changeState}
 				name='amount'
 				label='Cantidad'
 				type='number'
@@ -82,6 +68,13 @@ const Transfer = ({
 						return true;
 					},
 				}}
+				control={control}
+			></Input>
+			<Input
+				name='securityPin'
+				label='PIN'
+				placeholder='xxxx xxxx xxxx'
+				rules={{ required: 'Campo requerido' }}
 				control={control}
 			></Input>
 			<div className='flex self-end'>

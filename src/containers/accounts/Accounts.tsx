@@ -1,134 +1,98 @@
 import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-
 import GenericTable, {
 	type DataTableInterface,
-	type FilterOpts,
 } from '../../components/misc/GenericTable';
 import useServerAccounts from '../../api/userServerAccounts';
-
 import Paginate from '../../components/misc/Paginate';
 import Modal from '../../components/modals/GenericModal';
 import Breadcrumb, {
 	type PathInterface,
 } from '../../components/navigation/Breadcrumb';
-import {
-	BasicType,
-	type SelectInterface,
-} from '../../interfaces/InterfacesLocal';
-
 import { useEffect, useState } from 'react';
-import { data } from '../../utils/TemporaryArrayData';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import EditAccountContainer from './editAccountWizzard/EditAccountContainer';
+import { useAppDispatch } from '../../store/hooks';
 import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
 import StateSpanForTable from '../../components/misc/StateSpanForTable';
 import { saveAccountId } from '../../store/slices/accountSlice';
 import { useNavigate } from 'react-router-dom';
 import NewAccountModal from './NewAccount/NewAccountModal';
-import useServerCards from '../../api/userServerCards';
 import { formatCardNumber } from '../../utils/helpers';
 
 const Accounts = () => {
 	const {
 		paginate,
 		isLoading,
-		isFetching,
 		allAccounts,
-		account,
 		getAllAccounts,
-		getAccount,
-		editAccount,
-		deleteAccount,
-		setSelectedDataToParent,
-		setSelectedDataToParentTwo,
-		selectedDataToParent,
 		addAccount,
 	} = useServerAccounts();
 
+	const [addAccountModal, setAddAccountModal] = useState(false);
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
-	const [addTicketmodal, setAddTicketmodal] = useState(false);
-	const dispatch = useAppDispatch();
-	// const [exportModal, setExportModal] = useState(false);
-
-	/* useEffect(() => {
-			  getAllClients(filter);
-			}, [filter]); */
-
-	// Data for table ------------------------------------------------------------------------
-	const tableTitles = [
-		'Código',
-		'Nombre del Propietario',
-		'Entidad',
-		'Moneda',
-		'',
-	];
-	const tableData: DataTableInterface[] = [];
-
-	allAccounts?.map((item: any) => {
-		tableData.push({
-			rowId: item.id,
-			payload: {
-				'No.': item.id,
-				Código: `${formatCardNumber(item?.address)}`,
-				'Nombre del Propietario': item.owner?.fullName,
-				Entidad: item?.issueEntity?.name,
-
-				Moneda: item.currency ?? '-',
-				'': (
-					<span className='flex whitespace-nowrap gap-4'>
-						<BlockedStateForTable currentState={item.isBlocked} />
-						<StateSpanForTable
-							currentState={item?.isActive}
-							greenState='Activa'
-							redState='Inactiva'
-						/>
-					</span>
-				),
-			},
-		});
-	});
 
 	const navigate = useNavigate();
+	const dispatch = useAppDispatch();
 
-	const actions = [
-		{
-			icon: <PlusIcon className='h-5' />,
-			title: 'Agregar cuenta',
-			action: () => {
-				setAddTicketmodal(true);
-			},
-		},
-	];
-
-	const rowAction = (id: number) => {
-		/*setEditTicketModal({ state: true, id });*/
-		dispatch(saveAccountId(id));
-		navigate('details');
-	};
+	useEffect(() => {
+		getAllAccounts(filter);
+	}, [filter]);
 
 	// Breadcrumb-----------------------------------------------------------------------------------
+
 	const paths: PathInterface[] = [
 		{
 			name: 'Cuentas',
 		},
 	];
-	// ------------------------------------------------------------------------------------
-	const [nuevoTicketModal, setNuevoTicketModal] = useState(false);
-	const [contactModal, setContactModal] = useState(false);
-	const [editTicketModal, setEditTicketModal] = useState<{
-		state: boolean;
-		id: number | null;
-	}>({ state: false, id: null });
 
-	const closeAddAccount = () => {
-		setAddTicketmodal(false);
+	// Data for table ------------------------------------------------------------------------------
+
+	const tableTitles = [
+		'Fecha de Activación',
+		'Número de Cuenta',
+		'Propietario',
+		'Entidad',
+		'Negocio',
+		'',
+	];
+
+	const tableData: DataTableInterface[] = [];
+	console.log(allAccounts);
+	allAccounts?.map((item: any) => {
+		tableData.push({
+			rowId: item.id,
+			payload: {
+				'No.': item.id,
+				'Número de Cuenta': `${formatCardNumber(item?.address)}`,
+				'Propietario': item?.owner?.fullName,
+				'Entidad': item?.issueEntity?.name,
+				'Negocio': ''
+			},
+		});
+	});
+
+	
+	const actions = [
+		{
+			icon: <PlusIcon className='h-5' />,
+			title: 'Agregar cuenta',
+			action: () => {
+				setAddAccountModal(true);
+			},
+		},
+	];
+
+	const rowAction = (id: number) => {
+		dispatch(saveAccountId(id));
+		navigate('details');
 	};
 
-	useEffect(() => {
-		getAllAccounts(filter);
-	}, [filter]);
+	
+	const closeAddAccount = () => {
+		setAddAccountModal(false);
+	};
+
 
 	return (
 		<div>
@@ -153,14 +117,10 @@ const Accounts = () => {
 				}
 			/>
 
-			{addTicketmodal && (
-				<Modal state={addTicketmodal} close={setAddTicketmodal}>
+			{addAccountModal && (
+				<Modal state={addAccountModal} close={setAddAccountModal}>
 					<NewAccountModal
-						setContactModal={setContactModal}
 						close={closeAddAccount}
-						contactModal={contactModal}
-						setNuevoTicketModal={setNuevoTicketModal}
-						nuevoTicketModal={nuevoTicketModal}
 						isLoading={isLoading}
 						addAccount={addAccount}
 					/>

@@ -12,10 +12,10 @@ import Breadcrumb, {
 import { useEffect, useState } from 'react';
 import useServerEntity from '../../api/userServerEntity';
 import useServerCategories from '../../api/userServerCategories';
-import NewEntityModal from './NewEntityModal/NewEntityModal';
+import NewEntityModal from './newEntityModal/NewEntityModal';
 import { HomeModernIcon } from '@heroicons/react/24/outline';
 import EditEntityModal from './editEntityModal/EditEntityModal';
-import StateSpanForTable from '../../components/misc/StateSpanForTable';
+import StatusBadge from '../../components/misc/badges/StatusBadge';
 
 
 const Entity = () => {
@@ -41,12 +41,12 @@ const Entity = () => {
 		isFetching
 	} = useServerEntity();
 
+
 	const {
 		getCategory,
 		category,
 		isLoadingCat,
 		setCategory,
-		imgsFromArray,
 	} = useServerCategories();
 
 
@@ -73,9 +73,19 @@ const Entity = () => {
 		 entity,
 		 id: editEntityModal.id,
 		 isLoadingCat,
-		 imgsFromArray,
 		 setCategory,
 		};
+
+	//let entityCRUD = {
+	//	...useServerEntity(),
+	//   getCategory,
+	//   category, 
+	//   id: editEntityModal.id,
+	//   isLoadingCat,
+	//   setCategory,
+	//  };
+
+	console.log(entityCRUD);
 
 
 	//Breadcrumb------------------------------------------------------------------------------------
@@ -91,7 +101,7 @@ const Entity = () => {
 	const tableTitles =
 		['Nombre',
 			'Dirección',
-			'Telefono',
+			'Teléfono',
 			''
 		];
 
@@ -102,12 +112,10 @@ const Entity = () => {
 			rowId: item.id,
 			payload: {
 				Nombre: item?.name,
-				Telefono: item.phone,
+				Teléfono: item.phone,
 				'': (
-					<StateSpanForTable
-						currentState={item.status}
-						greenState='Activa'
-						redState='Inactiva'
+					<StatusBadge
+					status={item.status}
 					/>
 				),
 				Dirección: item.address,

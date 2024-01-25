@@ -74,9 +74,9 @@ const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<ProductContext.Provider value={{ control, stepUp, stepDown, data, setData, business, setImgRelation }}>
 					{isLoading && <SpinnerLoading />}
-					{currentStep === 0 && <EntityGeneralInfo />}
-					{currentStep === 1 && <EntityCategories />}
-					{currentStep === 2 && <EntityCards />}
+					{currentStep === 0 && !isLoading && <EntityGeneralInfo />}
+					{currentStep === 1 && !isLoading && <EntityCategories />}
+					{currentStep === 2 && !isLoading && <EntityCards />}
 				</ProductContext.Provider>
 			</form>
 		</>
