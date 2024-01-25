@@ -1,20 +1,12 @@
 import { useState } from "react";
 import type {
   PaginateInterface,
-  AccountData,
-  TicketsInterface,
 } from "../interfaces/ServerInterfaces";
 import query from "./APIServices";
 import useServer from "./useServer";
 import { toast } from "react-toastify";
-
-import { saveAccount } from "../store/slices/accountSlice";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-
 import { generateUrlParams } from "../utils/helpers";
 import type { BasicType } from "../interfaces/LocalInterfaces";
-import { SelectInterface } from "../interfaces/InterfacesLocal";
-import { da } from "date-fns/locale";
 
 const useServerAccounts = () => {
   const { manageErrors } = useServer();
@@ -25,23 +17,14 @@ const useServerAccounts = () => {
   const [account, setAccount] = useState<any | null>(null);
   const [records, setRecords] = useState<any | null>(null);
   const [operations, setOperations] = useState<any | null>(null);
-  const [modalWaiting, setModalWaiting] = useState<boolean>(false);
-  const [modalWaitingError, setModalWaitingError] = useState<string | null>(
-    null
-  );
-  const [selectedDataToParent, setSelectedDataToParent] =
-    useState<any>(null);
-  const [selectedDataToParentTwo, setSelectedDataToParentTwo] =
-    useState<any>(null);
-  const [waiting, setWaiting] = useState<boolean>(false);
-  const dispatch = useAppDispatch();
-  const items = useAppSelector((state) => state.account.items)
+
+
 
   // 'account / all'
   const getAllAccounts = async (filter: BasicType) => {
     setIsLoading(true);
     try {
-    let resp = await query.get(`/account${generateUrlParams(filter)}`)
+      let resp = await query.get(`/account${generateUrlParams(filter)}`)
       setPaginate({
         totalItems: resp.data.totalItems,
         totalPages: resp.data.totalPages,
@@ -50,170 +33,167 @@ const useServerAccounts = () => {
       setAllAccounts(resp.data.items)
     } catch (error) {
       manageErrors(error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
+
   };
 
-
+  // 'account / register'
   const addAccount = async (
     data: any,
     close: Function
   ) => {
     setIsFetching(true);
     setIsLoading(true)
-    await query
-      .post("/account", data)
-      .then((resp) => {
-        setAllAccounts([...allAccounts, resp.data])
-
-        toast.success("Cuenta agregada satisfactoriamente");
-      }).then(() => close())
-      .catch((e) => { manageErrors(e); });
-    setIsFetching(false);
-    setIsLoading(false)
+    try {
+      let resp = await query.post("/account", data);
+      setAllAccounts([...allAccounts, resp.data]);
+      toast.success("Cuenta agregada satisfactoriamente");
+      close()
+    } catch (error) {
+      manageErrors(error);
+    } finally {
+      setIsFetching(false);
+      setIsLoading(false)
+    }
   };
 
+  // 'account / update'
   const editAccount = async (
     id: number,
-    data: Record<string, string | number | boolean | string[]>,
+    data: Record<string, string | number | boolean | (number[])>,
     callback?: Function
   ) => {
     setIsFetching(true);
-    await query
-      .patch(`/account/${id}`, data)
-      .then((resp) => {
-        const newAccounts: any = [...allAccounts];
-        const idx = newAccounts.findIndex((user: any) => user.id === id);
-        newAccounts.splice(idx, 1, resp.data);
-        setAllAccounts(newAccounts)
-        callback?.();
-      })
-      .catch((e) => { manageErrors(e); });
-    setIsFetching(false);
+    try {
+      let resp = await query.patch(`/account/${id}`, data)
+      const newAccounts: any = [...allAccounts];
+      const idx = newAccounts.findIndex((user: any) => user.id === id);
+      newAccounts.splice(idx, 1, resp.data);
+      setAllAccounts(newAccounts)
+      callback && callback();
+      setAccount(UnifyProperties(account, resp.data));
+      toast.success("Cuenta modificada con éxito");
+    } catch (error) {
+      manageErrors(error);
+    } finally {
+      setIsFetching(false);
+    }
+
   };
 
+  // 'account / find by id'
   const getAccount = async (id: any): Promise<any> => {
     try {
       setIsLoading(true);
       const response = await query.get(`/account/${id}`);
       const account = response.data;
       setAccount(account);
-
-
       return account;
     } catch (error) {
-      console.error(error);
-      // Display a user-friendly error message.
+      manageErrors(error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // 'account / getAccountRecords'
   const getAccountRecords = async (id: any): Promise<any> => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const response = await query.get(`/account/${id}/records`);
       const account = response.data;
       setRecords(account);
-
-
       return account;
     } catch (error) {
-      console.error(error);
-      // Display a user-friendly error message.
+      manageErrors(error);
     } finally {
       setIsLoading(false);
     }
   };
 
+  // 'account / getAccountOp'
   const getAccountOperations = async (id: any): Promise<any> => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const response = await query.get(`/account/${id}/operations`);
       const account = response.data;
       setOperations(account);
-
-
       return account;
     } catch (error) {
-      console.error(error);
-      // Display a user-friendly error message.
+      manageErrors(error);
     } finally {
       setIsLoading(false);
     }
   };
 
-
+  // 'account / delete'
   const deleteAccount = async (id: number, callback?: Function) => {
     setIsFetching(true);
-    await query
-      .deleteAPI(`/account/${id}`, {})
-      .then(() => {
-        toast.success("Usuario Eliminado con éxito");
-        const newAccounts = allAccounts.filter((item: any) => item.id !== id);
-        setAllAccounts(newAccounts)
-        callback?.();
-      })
-      .catch((error) => { manageErrors(error); });
-    setIsFetching(false);
+    try {
+      await query.deleteAPI(`/account/${id}`, {})
+      toast.success("Cuenta eliminada con éxito");
+      const newAccounts = allAccounts.filter((item: any) => item.id !== id);
+      setAllAccounts(newAccounts)
+      callback && callback();
+    } catch (error) {
+      manageErrors(error);
+    } finally {
+      setIsFetching(false);
+    }
   };
 
-
+  // 'account operation / transfer'
   const Transfer = async (data: any, callback?: Function) => {
     setIsFetching(true);
-    await query
-      .post(`/account/transfer`, data)
-      .then((resp) => {
-        if (resp.data.sourceAccount.address == account.address) {
-          const changed = { ...account, amount: resp.data.sourceAccount.amount }
-
-
-          setAccount(changed)
-        }
-        else if (resp.data.targetAccount.address == account.address) {
-          const changed = { ...account, amount: resp.data.targetAccount.amount }
-
-          setAccount(changed)
-        }
-        callback?.();
-        toast.success("Transferencia exitosa");
-      })
-      .catch((error) => { manageErrors(error); });
-    setIsFetching(false);
+    try {
+      let resp = await query.post(`/account/transfer`, data)
+      if (resp.data.sourceAccount.address == account.address) {
+        const changed = { ...account, amount: resp.data.sourceAccount.amount }
+        setAccount(changed)
+      }
+      else if (resp.data.targetAccount.address == account.address) {
+        const changed = { ...account, amount: resp.data.targetAccount.amount }
+        setAccount(changed)
+      }
+      callback && callback();
+      toast.success("Transferencia exitosa");
+    } catch (error) {
+      manageErrors(error);
+    } finally {
+      setIsFetching(false);
+    }
   };
 
-  const Charge = async (data: any, callback?: Function) => {
+  // 'account operation / charge'
+  const Charge = async (data: any, id: number, callback?: Function) => {
     setIsFetching(true);
-    await query
-      .post(`/account/charge`, data)
-      .then((resp) => {
-
-        if (resp.data.account.address == account.address) {
-          const changed = { ...account, amount: resp.data.account.amount }
-
-          setAccount(changed)
-        }
-
-        if (callback) {
-          callback();
-        }
-        toast.success("Recarga exitosa");
-      })
-      .catch((error) => { manageErrors(error); });
-    setIsFetching(false);
+    try {
+      let resp = await query.post(`/account/charge`, data)
+      if (resp.data.account.address == account.address) {
+        const changed = { ...account, amount: resp.data.account.amount }
+        setAccount(changed)
+      }
+      await getAccountOperations(id);
+      callback && callback();
+      toast.success("Recarga exitosa");
+    } catch (error) {
+      manageErrors(error);
+    } finally {
+      setIsFetching(false);
+    }
   };
-
-
 
 
   return {
     paginate,
     isLoading,
     isFetching,
-    waiting,
-    modalWaiting,
     allAccounts,
     account,
+    records,
+    operations,
     getAllAccounts,
     addAccount,
     getAccount,
@@ -221,17 +201,27 @@ const useServerAccounts = () => {
     deleteAccount,
     setAllAccounts,
     manageErrors,
-    modalWaitingError,
-    setSelectedDataToParent,
-    selectedDataToParent,
-    setSelectedDataToParentTwo,
     getAccountOperations,
     getAccountRecords,
-    records,
-    operations,
     Transfer,
     Charge
-
   };
 };
 export default useServerAccounts;
+
+
+
+function UnifyProperties(objetoBase:any, nuevoObjeto:any) {
+  // Obtener las propiedades comunes entre los dos objetos
+  const propiedadesComunes = Object.keys(objetoBase)
+      .filter(propiedad => nuevoObjeto.hasOwnProperty(propiedad));
+
+  // Reemplazar las propiedades comunes
+  propiedadesComunes.forEach(propiedad => {
+      objetoBase[propiedad] = nuevoObjeto[propiedad];
+  });
+
+  // Devolver el objeto base actualizado
+  return objetoBase;
+}
+

@@ -26,9 +26,7 @@ const Accounts = () => {
 		addAccount,
 	} = useServerAccounts();
 
-	const [addTicketmodal, setAddTicketmodal] = useState(false);
-	const [nuevoTicketModal, setNuevoTicketModal] = useState(false);
-	const [contactModal, setContactModal] = useState(false);
+	const [addAccountModal, setAddAccountModal] = useState(false);
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
@@ -52,47 +50,35 @@ const Accounts = () => {
 
 	const tableTitles = [
 		'Fecha de Activación',
-		'Código',
-		'Nombre del Propietario',
+		'Número de Cuenta',
+		'Propietario',
 		'Entidad',
-		'Moneda',
+		'Negocio',
 		'',
 	];
 
 	const tableData: DataTableInterface[] = [];
-
+	console.log(allAccounts);
 	allAccounts?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
 				'No.': item.id,
-				Código: `${formatCardNumber(item?.address)}`,
-				'Nombre del Propietario': item.owner?.fullName,
-				Entidad: item?.issueEntity?.name,
-
-				Moneda: item.currency ?? '-',
-				'': (
-					<span className='flex whitespace-nowrap gap-4'>
-						<BlockedStateForTable currentState={item.isBlocked} />
-						<StateSpanForTable
-							currentState={item?.isActive}
-							greenState='Activa'
-							redState='Inactiva'
-						/>
-					</span>
-				),
+				'Número de Cuenta': `${formatCardNumber(item?.address)}`,
+				'Propietario': item?.owner?.fullName,
+				'Entidad': item?.issueEntity?.name,
+				'Negocio': ''
 			},
 		});
 	});
 
 	
-
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
 			title: 'Agregar cuenta',
 			action: () => {
-				setAddTicketmodal(true);
+				setAddAccountModal(true);
 			},
 		},
 	];
@@ -104,7 +90,7 @@ const Accounts = () => {
 
 	
 	const closeAddAccount = () => {
-		setAddTicketmodal(false);
+		setAddAccountModal(false);
 	};
 
 
@@ -131,14 +117,10 @@ const Accounts = () => {
 				}
 			/>
 
-			{addTicketmodal && (
-				<Modal state={addTicketmodal} close={setAddTicketmodal}>
+			{addAccountModal && (
+				<Modal state={addAccountModal} close={setAddAccountModal}>
 					<NewAccountModal
-						setContactModal={setContactModal}
 						close={closeAddAccount}
-						contactModal={contactModal}
-						setNuevoTicketModal={setNuevoTicketModal}
-						nuevoTicketModal={nuevoTicketModal}
 						isLoading={isLoading}
 						addAccount={addAccount}
 					/>

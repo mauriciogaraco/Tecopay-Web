@@ -1,35 +1,28 @@
 import { SubmitHandler, useForm } from 'react-hook-form';
 import Input from '../../../../components/forms/Input';
 import Button from '../../../../components/misc/Button';
-import useServerAccounts from '../../../../api/userServerAccounts';
 import { deleteUndefinedAttr } from '../../../../utils/helpers';
-import { useRef } from 'react';
+import { useAppSelector } from '../../../../store/hooks';
 
 interface propsInterface {
 	defaultAddress?: number;
 	Charge: Function;
 	isFetching: boolean;
-	id: number | string | null;
-	getAccount: Function;
+	closeModal: Function;
 }
 
 const Charge = ({
 	defaultAddress,
 	Charge,
 	isFetching,
-	id,
-	getAccount,
+	closeModal,
 }: propsInterface) => {
 	const { control, handleSubmit, reset } = useForm({
 		mode: 'onChange',
 	});
 
-	const changeState = useRef((newState: any) => {});
-	const changeChildState = (newState: any) => {
-		if (changeState.current) {
-			changeState.current(newState);
-		}
-	};
+	const id = useAppSelector((state) => state.account.id);
+
 	const onSubmit: SubmitHandler<Record<string, string | number>> = (data) => {
 		let Str = data.address.toString();
 		let noSpace = Str.replace(/\s+/g, '');
@@ -37,17 +30,16 @@ const Charge = ({
 			...data,
 			address: noSpace,
 		};
-		Charge(deleteUndefinedAttr(dataTosend)).then(() => changeChildState(''));
+		Charge(deleteUndefinedAttr(dataTosend), id, closeModal)
 	};
 	return (
 		<form
-			className='relative w-full h-full flex flex-col 2xl:mt-8 mt-2 2xl:gap-5 gap-4'
+			className='flex flex-col'
 			onSubmit={handleSubmit(onSubmit)}
 		>
-			<div className='gap-10 items-center w-full justify-center flex flex-col px-20'>
+			<div className='flex flex-col gap-6 items-center w-full justify-center'>
 				<p className='font-semibold text-lg text-center'>Recargar</p>
 				<Input
-					changeState={changeState}
 					defaultValue={defaultAddress}
 					name='address'
 					label='Dirección a recargar'
@@ -56,7 +48,7 @@ const Charge = ({
 					control={control}
 				></Input>
 				<Input
-					changeState={changeState}
+
 					name='amount'
 					label='Cantidad'
 					type='number'
@@ -72,7 +64,7 @@ const Charge = ({
 					}}
 					control={control}
 				></Input>
-				<div className='flex self-end'>
+				<div className='flex self-end mt-4'>
 					<Button
 						name='Recargar'
 						color='slate-600'

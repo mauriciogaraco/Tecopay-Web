@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import GenericList from '../../../components/misc/GenericList';
-import { useAppSelector } from '../../../store/hooks';
 import { formatCalendar } from '../../../utils/helpersAdmin';
-import Loading from '../../../components/misc/Loading';
+import SpinnerLoading from '../../../components/misc/SpinnerLoading';
 import { formatCardNumber } from '../../../utils/helpers';
 import { PiHandCoins } from 'react-icons/pi';
 import { TbTransferIn } from 'react-icons/tb';
@@ -10,29 +9,27 @@ import Modal from '../../../components/modals/GenericModal';
 import Transfer from './transactions/Transfer';
 import Charge from './transactions/Charge';
 import EditAccountContainer from '../editAccountWizzard/EditAccountContainer';
+import StatusBadge from '../../../components/misc/badges/StatusBadge';
+import {
+	PencilSquareIcon,
+} from '@heroicons/react/24/outline';
 
 interface PropsInterface {
-	id: number | null;
 	isLoading: Boolean;
 	account: any;
 	charge: Function;
 	transfer: Function;
 	isFetching: boolean;
-	getAccount: Function;
-	allAccounts: any;
 	deleteAccount: any;
 	editAccount: any;
 }
 
 const SelectedAccountDetails = ({
-	id,
 	charge,
 	isLoading,
 	account,
 	transfer,
 	isFetching,
-	getAccount,
-	allAccounts,
 	deleteAccount,
 	editAccount,
 }: PropsInterface) => {
@@ -44,7 +41,7 @@ const SelectedAccountDetails = ({
 
 	const actions = [
 		{
-			icon: <PiHandCoins className='w-10 h-5' />,
+			icon: <PencilSquareIcon className='w-10 h-5' />,
 			title: 'Editar',
 			action: () => {
 				setEditModal(true);
@@ -64,11 +61,11 @@ const SelectedAccountDetails = ({
 				setRechargeModal(true);
 			},
 		},
-		
+
 	];
 	return isLoading ? (
-		<div className='relative bottom-20'>
-			<Loading />
+		<div className='top-20'>
+			<SpinnerLoading />
 		</div>
 	) : (
 		<>
@@ -77,19 +74,19 @@ const SelectedAccountDetails = ({
 					actions={actions}
 					header={{ title: `Detalles de ${account.name}` }}
 					body={{
+						'Fecha de activación': `${formatCalendar(account?.createdAt ?? '-')}`,
+
 						'No. cuenta': `${formatCardNumber(account?.address ?? '-')}`,
 
-						'Fecha de emisión': `${formatCalendar(account?.createdAt ?? '-')}`,
-						'Creada por': `${account?.createdBy.fullName ?? '-'}`,
+						'Propietario': account?.owner?.fullName ?? '-',
 
-						Código: `${account?.code ?? '-'}`,
-						Moneda: account?.currency ?? '-',
-						Balance: account?.amount ?? '-',
-						Propietario: account?.owner?.fullName ?? '-',
+						'Entidad': account?.issueEntity.name ?? '-',
 
-						Entidad: account?.issueEntity.name ?? '-',
+						'Negocio': account?.currency ?? '-',
 
-						Descripción: account?.description ?? '-',
+						'Balance': account?.amount ?? '-',
+
+						'Estado': <StatusBadge status={account.isActive ? 'ACTIVE' : "INACTIVE"} />,
 					}}
 				></GenericList>
 			)}
@@ -97,11 +94,10 @@ const SelectedAccountDetails = ({
 			{transferModal && (
 				<Modal state={transferModal} close={setTranferModal}>
 					<Transfer
-						getAccount={getAccount}
-						id={id}
 						Transfer={transfer}
 						isFetching={isFetching}
 						defaultAddress={parseInt(account?.address)}
+						closeModal={() => setTranferModal(false)}
 					></Transfer>
 				</Modal>
 			)}
@@ -109,23 +105,18 @@ const SelectedAccountDetails = ({
 			{rechargeModal && (
 				<Modal state={rechargeModal} close={setRechargeModal}>
 					<Charge
-						getAccount={getAccount}
-						id={id}
 						Charge={charge}
 						isFetching={isFetching}
 						defaultAddress={parseInt(account?.address)}
+						closeModal={() => setRechargeModal(false)}
 					></Charge>
 				</Modal>
 			)}
 			{editModal && (
-				<Modal state={editModal} close={setEditModal} size='m'>
+				<Modal state={editModal} close={setEditModal} size='m' >
 					<EditAccountContainer
-						allAccounts={allAccounts}
 						deleteAccount={deleteAccount}
-						isLoading={false}
 						account={account}
-						getAccount={getAccount}
-						id={id}
 						editAccount={editAccount}
 						isFetching={isFetching}
 						closeModal={() => setEditModal(false)}

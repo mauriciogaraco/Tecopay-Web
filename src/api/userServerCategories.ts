@@ -25,7 +25,7 @@ const useServerCategories = () => {
     setIsLoadingCat(true)
     try {
       await query.post("/categories", data)
-      toast.success("Categoría agregada satisfactoriamente");
+      //toast.success("Categoría agregada satisfactoriamente");
     } catch (error) {
       manageErrors(error);
     }
@@ -75,7 +75,7 @@ const useServerCategories = () => {
     try {
       let resp = await query.patch(`/categories/${categoryID}`, dataCategory)
       setCategory(resp.data);
-      toast.success("Actualización exitosa");
+      //toast.success("Actualización exitosa");
     } catch (error) {
       manageErrors(error);
     }
@@ -89,7 +89,7 @@ const useServerCategories = () => {
   ) => {
     try {
       await query.deleteAPI(`/categories/${categoryID}`, {})
-      toast.success("Categoría eliminada");
+      //toast.success("Categoría eliminada");
     } catch (error) {
       manageErrors(error);
     }

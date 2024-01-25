@@ -17,8 +17,8 @@ function classNames(...classes: string[]) {
 const getColorStatus = (value: string | null) => {
   switch (value) {
     case "ACTIVE":
-    case "COMPLETED": 
-    case "DELIVERED":   
+    case "COMPLETED":
+    case "DELIVERED":
       return "bg-green-100 text-green-800";
 
     case "CLOSED":
@@ -26,7 +26,7 @@ const getColorStatus = (value: string | null) => {
 
     case "REFUNDED":
     case "CANCELLED":
-      case "INACTIVE":
+    case "INACTIVE":
       return "bg-red-200 text-red-800";
 
     default:
