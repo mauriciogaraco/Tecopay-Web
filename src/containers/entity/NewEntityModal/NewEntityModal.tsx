@@ -1,13 +1,14 @@
 import { useForm, SubmitHandler, Control } from "react-hook-form";
 import { useState, createContext, useEffect } from "react";
 import StepsComponent from "../../../components/misc/StepsComponent";
-import EntityGeneralInfo from "./EntityGeneralInfo";
-import EntityCards from "./EntityCards";
-import EntityCategories from "./EntityCategories";
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import SpinnerLoading from '../../../components/misc/SpinnerLoading';
 import { useAppSelector } from "../../../store/hooks";
 import { toast } from "react-toastify";
+import EntityGeneralInfo from "./EntityGeneralInfo";
+import EntityCategories from "./EntityCategories";
+import EntityCards from "./EntityCards";
+
 
 
 const contextData: ContextData = {};
@@ -75,7 +76,7 @@ const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
 				<ProductContext.Provider value={{ control, stepUp, stepDown, data, setData, business, setImgRelation }}>
 					{isLoading && <SpinnerLoading />}
 					{currentStep === 0 && !isLoading && <EntityGeneralInfo />}
-					{currentStep === 1 && !isLoading && <EntityCategories />}
+					{currentStep === 1 && !isLoading && <EntityCategories/>}
 					{currentStep === 2 && !isLoading && <EntityCards />}
 				</ProductContext.Provider>
 			</form>
