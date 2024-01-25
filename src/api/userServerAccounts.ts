@@ -186,6 +186,22 @@ const useServerAccounts = () => {
   };
 
 
+   // 'account operation / charge'
+   const registerAccountCategory = async (data: any) => {
+    setIsFetching(true);
+    try {
+      await query.post(`/account/assignCategory`, data)
+      toast.success("Categoría registrada");
+    } catch (error) {
+      manageErrors(error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+
+
+
   return {
     paginate,
     isLoading,
@@ -204,7 +220,8 @@ const useServerAccounts = () => {
     getAccountOperations,
     getAccountRecords,
     Transfer,
-    Charge
+    Charge,
+    registerAccountCategory,
   };
 };
 export default useServerAccounts;

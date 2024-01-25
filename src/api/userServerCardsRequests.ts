@@ -9,6 +9,31 @@ import { toast } from 'react-toastify';
 import { generateUrlParams } from '../utils/helpers';
 import { type BasicType } from '../interfaces/LocalInterfaces';
 import { SelectInterface } from '../interfaces/InterfacesLocal';
+import useServerEntity from './userServerEntity';
+
+export type CardsRequests = {
+	id: number;
+	queryNumber: string;
+	holderName: string;
+	quantity: number;
+	priority: string;
+	status: string;
+	observations: string;
+	issueEntityId: number;
+	requestedToId: number;
+	createdAt: Date;
+	updatedAt: Date;
+	requestedBy: RequestedBy;
+	requestedTo: number;
+	account: number;
+	issueEntity: number;
+	card: any[];
+}
+
+export type RequestedBy = {
+	fullName: string;
+}
+
 
 const useServerCardsRequests = () => {
 	const { manageErrors } = useServer();
@@ -21,28 +46,53 @@ const useServerCardsRequests = () => {
 
 	const [selectedDataToParent, setSelectedDataToParent] =
 		useState<SelectInterface | null>(null);
+	const { getEntity } = useServerEntity();
 
+	//Postman -> 'cardRequest / findAllRequest'	
 	const getAllCardsRequests = async (filter: BasicType) => {
 		setIsLoading(true);
-		await query
-			.get(`/cardRequest${generateUrlParams(filter)}`)
-			.then((resp) => {
-				setPaginate({
-					totalItems: resp.data.totalItems,
-					totalPages: resp.data.totalPages,
-					currentPage: resp.data.currentPage,
-				});
-
-				setAllCardsRequests(resp.data.items);
-			})
-			.catch((error) => {
-				manageErrors(error);
+		try {
+			let resp = await query.get(`/cardRequest${generateUrlParams(filter)}`)
+			setPaginate({
+				totalItems: resp.data.totalItems,
+				totalPages: resp.data.totalPages,
+				currentPage: resp.data.currentPage,
 			});
-		setIsLoading(false);
+			//This code will add to each object an issueEntityIdName property with the name of the associated Entity
+			const results = await Promise.all(
+				resp?.data?.items?.map(async (obj: CardsRequests) => {
+					try {
+						if (obj?.issueEntityId) {
+							let entityName = await getEntity(obj?.issueEntityId);
+							return { issueEntityId: entityName?.data?.entity?.id, name: entityName?.data?.entity?.name };
+						}
+						return { issueEntityId: null, name: null };
+					} catch (error) {
+						manageErrors(error);
+						return null;
+					}
+				})
+			);
+			let returnResult = [...resp?.data?.items];
+			returnResult.forEach((objeto1: any) => {
+				const matchingObjeto2 = results.find((objeto2: any) => objeto2.issueEntityId === objeto1.issueEntityId);
+
+				if (matchingObjeto2 && matchingObjeto2.name !== null && matchingObjeto2.name !== undefined) {
+					objeto1.issueEntityIdName = matchingObjeto2.name;
+				}
+			});
+			setAllCardsRequests(returnResult);
+		}
+		catch (error) {
+			manageErrors(error);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
+	//Postman -> 'card / findAllCards'
 	const GetRequestRecord = async (id: number, filter: BasicType) => {
-		setIsLoading(true);
+		setIsFetching(true);
 		await query
 			.get(`/cardRequest/${id}/record${generateUrlParams(filter)}`)
 			.then((resp) => {
@@ -51,8 +101,9 @@ const useServerCardsRequests = () => {
 			.catch((error) => {
 				manageErrors(error);
 			});
-		setIsLoading(false);
+			setIsFetching(false);
 	};
+
 	const addSimpleCardRequest = async (data: any, close: Function) => {
 		setIsFetching(true);
 		setIsLoading(true);
@@ -188,6 +239,9 @@ const useServerCardsRequests = () => {
 			});
 		setIsFetching(false);
 	};
+
+
+
 	return {
 		paginate,
 		isLoading,

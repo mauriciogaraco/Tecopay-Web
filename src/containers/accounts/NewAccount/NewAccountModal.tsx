@@ -1,9 +1,12 @@
+//import { useState, useEffect } from "react";
 import { type SubmitHandler, useForm } from 'react-hook-form';
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import Input from '../../../components/forms/Input';
 import Toggle from '../../../components/forms/Toggle';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 import Button from '../../../components/misc/Button';
+//import useServerCategories from '../../../api/userServerCategories';
+//import Select from "../../../components/forms/Select";
 
 interface propsDestructured {
 	close: Function;
@@ -16,6 +19,21 @@ const NewAccountModal = ({
 	close,
 	isLoading,
 }: propsDestructured) => {
+
+	//const {
+	//	getCategory,
+	//	category,
+	//	isLoadingCat,
+	//} = useServerCategories();
+
+	//const [selectedToParent, setSelectedToParent] = useState({ id: null, name: null });
+
+	//useEffect(() => {
+	//	if (selectedToParent?.id) {
+	//		getCategory(selectedToParent?.id);
+	//	}
+	//}, [selectedToParent?.id]);
+
 	const { control, handleSubmit } = useForm();
 
 	const onSubmit: SubmitHandler<
@@ -47,7 +65,18 @@ const NewAccountModal = ({
 						label='Entidad'
 						dataQuery={{ url: '/entity' }}
 						normalizeData={{ id: 'id', name: 'name' }}
+						//setSelectedDataToParent={setSelectedToParent}
 					></AsyncComboBox>
+
+					{/*selectedToParent?.id && Array.isArray(category) && category.length > 0 && (
+						<Select
+							label='Categoría'
+							data={category ? category : []}
+							name='categoryName'
+							control={control}
+							rules={{ required: 'Campo requerido' }}
+						/>
+					)*/}
 
 					<Toggle
 						name="printCard"

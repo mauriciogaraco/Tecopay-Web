@@ -88,7 +88,12 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 			icon: HomeIcon,
 			current: mainCurrent === '',
 		},
-
+		{
+			name: 'Entidades',
+			href: 'entities',
+			icon: HomeModernIcon,
+			current: mainCurrent === 'entities',
+		},
 		{
 			name: 'Cuentas',
 			href: 'accounts',
@@ -113,12 +118,6 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 					current: secondaryCurrent === 'requests' && mainCurrent === 'cards',
 				},
 			],
-		},
-		{
-			name: 'Entidades',
-			href: 'entities',
-			icon: HomeModernIcon,
-			current: mainCurrent === 'entities',
 		},
 		{
 			name: 'Usuarios',

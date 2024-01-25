@@ -51,8 +51,6 @@ const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
 		dataToSubmit.ownerId = 1;
 		dataToSubmit.businessId = 3;
 		unifyData(imgRelation);
-		console.log(dataToSubmit);
-		console.log(data);
 		addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), data, close);
 	};
 	toast.error(findMessage(errors));

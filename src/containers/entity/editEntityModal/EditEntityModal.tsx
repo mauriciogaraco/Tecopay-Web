@@ -33,6 +33,9 @@ const EditEntityModal = ({
 		id,
 		isLoadingCat,
 		setCategory,
+		setAllEntity,
+		deleteEntity,
+		isFetching,
 	} = entityCRUD;
 
 	const [data, setData] = useState<categoriesData[]>([]);
@@ -61,7 +64,6 @@ const EditEntityModal = ({
 		dataToSubmit.ownerId = 1;
 		dataToSubmit.businessId = 3;
 		unifyData(imgRelation);
-		console.log(category)
 		if(!category.every((obj:any) => obj.cardImageId !== null && obj.cardImageId !== undefined)) {
 			toast.error('Las imágenes de categorías son requeridas');
 			return;
@@ -94,6 +96,8 @@ const EditEntityModal = ({
 						stepDown,
 						setImgRelation,
 						setData,
+						deleteEntity,
+						setAllEntity,
 						control,
 						isLoadingCat,
 						getCategory,
@@ -106,6 +110,7 @@ const EditEntityModal = ({
 						setCategory,
 						setCatToDelete,
 						catToDelete,
+						isFetching,
 					}}>
 					{/*isLoadingCat && <SpinnerLoading />*/}
 					{currentStep === 0 && <EditEntityGeneralInfo />}
@@ -165,6 +170,9 @@ interface ContextData {
 	setCategory?: Function;
 	setCatToDelete?: Function;
 	catToDelete?:number[];
+	setAllEntity?: Function;
+	deleteEntity?: Function;
+	isFetching?: boolean;
 }
 
 type categoriesData = {

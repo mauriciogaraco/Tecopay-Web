@@ -10,44 +10,6 @@ import { type BasicType } from "../interfaces/LocalInterfaces";
 import userServerCategories from "./userServerCategories";
 
 
-export type Entidad = {
-  entity: Entity;
-  profileImage: ProfileImage;
-  category?: null;
-}
-
-type Entity = {
-  id: number;
-  name: string;
-  address: string;
-  phone: string;
-  color: string;
-  allowCreateAccount: boolean;
-  profileImageId: number;
-  owner: Owner;
-  category: null;
-}
-
-type Owner = {
-  fullName: string;
-}
-
-type ProfileImage = {
-  id: number;
-  url: string;
-  hash: string;
-}
-
-type categoriesData = {
-  name: string;
-  color: `#${string}`;
-  points?: number;
-  id: number;
-  issueEntityId: number;
-  cardImageId?: number;
-}
-
-
 const useServerEntity = () => {
 
   const { manageErrors } = useServer();
@@ -63,7 +25,7 @@ const useServerEntity = () => {
   const { category, addCategory, updateCategory, getCategory, deleteCategory } = userServerCategories();
 
 
-  //Postman -> all Entities
+  //Postman -> 'entity / all'
   const getAllEntity = async (filter: BasicType) => {
     setIsFetching(true);
     try {
@@ -76,12 +38,13 @@ const useServerEntity = () => {
       setAllEntity(resp.data.items)
     } catch (error) {
       manageErrors(error);
+    } finally {
+      setIsFetching(false);
     }
-    setIsFetching(false);
   };
 
 
-  //Postman -> register
+  //Postman -> 'entity / register'
   const addEntity = async (
     data: any,
     categories: any,
@@ -111,27 +74,30 @@ const useServerEntity = () => {
       setIsLoading(false)
     } catch (error) {
       manageErrors(error);
+    } finally {
+      setIsFetching(false);
     }
-    setIsFetching(false);
   };
 
 
-  //Postman -> find by id
-  const getEntity = async (id: any) => {
+  //Postman -> 'entity / find by id'
+  const getEntity = async (id: number) => {
     setIsLoading(true);
     try {
       let entities = await query.get(`/entity/${id}`)
       setEntity(entities.data);
       await getCategory(entities?.data?.entity?.id)
       setIsLoading(false)
+      return entities;
     } catch (error) {
       manageErrors(error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
 
-  //Postman -> update
+  //Postman -> 'entity / update'
   const updateEntity = async (
     entityID: number,
     dataEntity: categoriesData[],
@@ -178,24 +144,26 @@ const useServerEntity = () => {
 
     } catch (error) {
       manageErrors(error);
+    } finally {
+      setIsFetching(false);
     }
-    setIsFetching(false);
   };
 
 
-  //Postman -> delete
+  //Postman -> 'entity / delete'
   const deleteEntity = async (id: number, callback?: Function) => {
     try {
-      await query.deleteAPI(`/entity/${id}`, {})
       callback && callback();
-      toast.success("Entidad Eliminada con éxitosamente");
+      await query.deleteAPI(`/entity/${id}`, {})
+      setAllEntity(allEntity.filter((obj: any) => obj.id !== id))
+      toast.success("Entidad eliminada exitosamente");
     } catch (error) {
       manageErrors(error);
     }
   };
 
 
-  //Postman -> setBusiness?
+  //Postman -> 'bussines / findAll'
   const getAllBussinnes = async () => {
     setIsLoading(true);
     try {
@@ -208,8 +176,9 @@ const useServerEntity = () => {
       setBusiness(resp.data.items)
     } catch (error) {
       manageErrors(error);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
 
@@ -228,8 +197,49 @@ const useServerEntity = () => {
     updateEntity,
     deleteEntity,
     manageErrors,
-    setAllEntity
+    setAllEntity,
   };
 };
 
 export default useServerEntity;
+
+
+
+
+
+export type Entidad = {
+  entity: Entity;
+  profileImage: ProfileImage;
+  category?: null;
+}
+
+type Entity = {
+  id: number;
+  name: string;
+  address: string;
+  phone: string;
+  color: string;
+  allowCreateAccount: boolean;
+  profileImageId: number;
+  owner: Owner;
+  category: null;
+}
+
+type Owner = {
+  fullName: string;
+}
+
+type ProfileImage = {
+  id: number;
+  url: string;
+  hash: string;
+}
+
+type categoriesData = {
+  name: string;
+  color: `#${string}`;
+  points?: number;
+  id: number;
+  issueEntityId: number;
+  cardImageId?: number;
+}

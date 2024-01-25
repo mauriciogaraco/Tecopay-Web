@@ -1,26 +1,11 @@
 import { Route, Routes } from 'react-router-dom';
-
 import NotFoundpage from '../pages/NotFoundPage';
-import Dashboard from '../pages/DashboardPage';
 import 'react-toastify/dist/ReactToastify.css';
-
 import AppContainer from '../containers/AppContainer';
-
-import Accounts from '../containers/accounts/Accounts';
 import { Suspense, lazy, useEffect, useState } from 'react';
-import Loading from '../components/misc/Loading';
-import Entity from '../containers/entity/Entity';
-import Card from '../containers/card/Card';
-import CardRequests from '../containers/card/CardRequests';
 import { useAppDispatch } from '../store/hooks';
-import useInitialLoad from '../api/useInitialLoad';
-import AccountDetails from '../containers/accounts/Details/AccountDetails';
-import Users from '../containers/users/Users';
-import CurrencyList from '../containers/currencys/currencyList/CurrencyList';
-import CurrencyExchangeRate from '../containers/currencys/currencyExchangeRate/CurrencyExchangeRate';
 import { fetchRole } from '../store/slices/roleSlice';
-import Transfer from '../containers/accounts/Details/transactions/Transfer';
-import Charge from '../containers/accounts/Details/transactions/Charge';
+import SpinnerLoading from '../components/misc/SpinnerLoading';
 
 const AppRoute = () => {
 	const dispatch = useAppDispatch();
@@ -29,24 +14,35 @@ const AppRoute = () => {
 		dispatch(fetchRole());
 	}, [dispatch]);
 
+	const LazyDashboard = lazy(() => import('../pages/DashboardPage'));
+	const LazyAccounts = lazy(() => import('../containers/accounts/Accounts'));
+	const LazyCard = lazy(() => import('../containers/card/Card'));
+	const LazyCardRequests = lazy(() => import('../containers/card/CardRequests'));
+	const LazyEntity = lazy(() => import('../containers/entity/Entity'));
+	const LazyAccountDetails = lazy(() => import('../containers/accounts/Details/AccountDetails'));
+	const LazyUsers = lazy(() => import('../containers/users/Users'));
+	const LazyCurrencyList = lazy(() => import('../containers/currencys/currencyList/CurrencyList'));
+	const LazyCurrencyExchangeRate = lazy(() => import('../containers/currencys/currencyExchangeRate/CurrencyExchangeRate'));
+
 	return (
-		<Routes>
-			<Route path='/' element={<AppContainer />}>
-				<Route index element={<Dashboard />} />
-				<Route path='/accounts' element={<Accounts />} />
-				<Route path='/cards/all' element={<Card />} />
-				<Route path='/cards/requests' element={<CardRequests />} />
-				<Route path='/entities' element={<Entity />} />
-				<Route path='/accounts/details' element={<AccountDetails />} />
-				<Route path='/users' element={<Users />} />
-				<Route path='/coins/list' element={<CurrencyList />} />
-				<Route
-					path='/coins/exchangeRate'
-					element={<CurrencyExchangeRate />}
-				/>{' '}
-			</Route>
-			<Route path='/*' element={<NotFoundpage />} />
-		</Routes>
+		<Suspense fallback={ 
+		<div className='w-screen h-screen flex justify-center items-center'><SpinnerLoading /></div>
+		 }>
+			<Routes>
+				<Route path='/' element={<AppContainer />}>
+					<Route index Component={LazyDashboard} />
+					<Route path='/accounts' Component={LazyAccounts} />
+					<Route path='/cards/all' Component={LazyCard} />
+					<Route path='/cards/requests' Component={LazyCardRequests} />
+					<Route path='/entities' Component={LazyEntity} />
+					<Route path='/accounts/details' Component={LazyAccountDetails} />
+					<Route path='/users' Component={LazyUsers} />
+					<Route path='/coins/list' Component={LazyCurrencyList} />
+					<Route path='/coins/exchangeRate' Component={LazyCurrencyExchangeRate} />
+				</Route>
+				<Route path='/*' element={<NotFoundpage />} />
+			</Routes>
+		</Suspense>
 	);
 };
 
