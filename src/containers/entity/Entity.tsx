@@ -33,12 +33,14 @@ const Entity = () => {
 		addEntity,
 		updateEntity,
 		getEntity,
+		setAllEntity,
 		paginate,
 		isLoading,
 		allEntity,
 		business,
 		entity,
-		isFetching
+		isFetching,
+		deleteEntity,
 	} = useServerEntity();
 
 
@@ -59,22 +61,25 @@ const Entity = () => {
 	}, []);
 
 	let entityCRUD = {
-		 getAllEntity, 
-		 getEntity, 
-		 getAllBussinnes, 
-		 addEntity, 
-		 updateEntity, 
-		 getCategory,
-		 category, 
-		 paginate, 
-		 isLoading, 
-		 allEntity, 
-		 business, 
-		 entity,
-		 id: editEntityModal.id,
-		 isLoadingCat,
-		 setCategory,
-		};
+		getAllEntity,
+		getEntity,
+		getAllBussinnes,
+		addEntity,
+		updateEntity,
+		getCategory,
+		setAllEntity,
+		category,
+		paginate,
+		isLoading,
+		allEntity,
+		business,
+		entity,
+		id: editEntityModal.id,
+		isLoadingCat,
+		isFetching,
+		setCategory,
+		deleteEntity,
+	};
 
 	//let entityCRUD = {
 	//	...useServerEntity(),
@@ -100,8 +105,10 @@ const Entity = () => {
 	//Table -----------------------------------------------------------------------------------------
 	const tableTitles =
 		['Nombre',
-			'Dirección',
+			'Responsable',
 			'Teléfono',
+			'Dirección',
+
 			''
 		];
 
@@ -111,14 +118,15 @@ const Entity = () => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				Nombre: item?.name,
-				Teléfono: item.phone,
+				'Nombre': item?.name,
+				'Responsable':'-',
+				'Teléfono': item.phone,
 				'': (
 					<StatusBadge
-					status={item.status}
+						status={item.status}
 					/>
 				),
-				Dirección: item.address,
+				'Dirección': item.address,
 			},
 		});
 	});

@@ -4,20 +4,18 @@ import {
 } from "../interfaces/ServerInterfaces";
 import query from "./APIServices";
 import useServer from "./useServerMain";
-import { toast } from "react-toastify";
-import { generateUrlParams } from "../utils/helpers";
 
 
 const useServerCategories = () => {
-  const { manageErrors, getImg, imgView } = useServer();
+  const { manageErrors, getImg } = useServer();
   const [isLoadingCat, setIsLoadingCat] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
+  //const [paginate, setPaginate] = useState<PaginateInterface | null>(null);
   const [allCategories, setAllCategories] = useState<any>([]);
   const [category, setCategory] = useState<any>([]);
 
 
-  //Postman -> register
+  //Postman -> 'categories / register'
   const addCategory = async (
     data: any
   ) => {
@@ -25,21 +23,20 @@ const useServerCategories = () => {
     setIsLoadingCat(true)
     try {
       await query.post("/categories", data)
-      //toast.success("Categoría agregada satisfactoriamente");
     } catch (error) {
       manageErrors(error);
+    } finally {
+      setIsFetching(false);
+      setIsLoadingCat(false)
     }
-    setIsFetching(false);
-    setIsLoadingCat(false)
   };
 
 
-  //Postman -> find by id
+  //Postman -> 'categories / find by id'
   const getCategory = async (issueEntityId: number) => {
     setIsLoadingCat(true);
     try {
       let categories = await query.get(`/categories/${issueEntityId}`)
-
       const imgsToRequest: number[] = categories.data
         .filter((obj: any) => typeof obj.cardImageId === 'number')
         .map((obj: any) => obj.cardImageId as number);
@@ -61,12 +58,13 @@ const useServerCategories = () => {
 
     } catch (error) {
       manageErrors(error);
+    } finally {
+      setIsLoadingCat(false);
     }
-    setIsLoadingCat(false);
   };
 
 
-  //Postman ->
+  //Postman -> 'categories / update'
   const updateCategory = async (
     categoryID: number,
     dataCategory: any,
@@ -75,37 +73,36 @@ const useServerCategories = () => {
     try {
       let resp = await query.patch(`/categories/${categoryID}`, dataCategory)
       setCategory(resp.data);
-      //toast.success("Actualización exitosa");
     } catch (error) {
       manageErrors(error);
+    } finally {
+      setIsFetching(false);
     }
-    setIsFetching(false);
   };
 
 
-  //Postman ->
+  //Postman -> 'categories / delete'
   const deleteCategory = async (
     categoryID: number
   ) => {
     try {
-      await query.deleteAPI(`/categories/${categoryID}`, {})
-      //toast.success("Categoría eliminada");
+      await query.deleteAPI(`/categories/${categoryID}`, {});
     } catch (error) {
       manageErrors(error);
     }
   };
 
 
-
   return {
     allCategories,
+    category,
+    isLoadingCat,
+    isFetching,
     addCategory,
     getCategory,
     updateCategory,
     deleteCategory,
-    category,
-    isLoadingCat,
-    setCategory
+    setCategory,
   };
 };
 export default useServerCategories;
@@ -117,12 +114,10 @@ export default useServerCategories;
 
 interface FirstArrayObject {
   cardImageId: number | SecondArrayObject;
-  // Other properties of the object in the first array
 }
 
 interface SecondArrayObject {
   id: number;
-  // Other properties of the object in the second array
 }
 
 function integrateArrays(

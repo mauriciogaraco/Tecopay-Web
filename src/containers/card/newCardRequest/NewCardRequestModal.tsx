@@ -1,12 +1,8 @@
-import useServerUser from '../../../api/userServerAccounts';
 import { type SubmitHandler, useForm } from 'react-hook-form';
-
 import TextArea from '../../../components/forms/TextArea';
-
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import Input from '../../../components/forms/Input';
 import Toggle from '../../../components/forms/Toggle';
-
 import Button from '../../../components/misc/Button';
 import Select from '../../../components/forms/Select';
 import { useState } from 'react';
@@ -33,6 +29,7 @@ const NewCardRequestModal = ({
 	const onSubmit: SubmitHandler<
 		Record<string, string | number | boolean | string[]>
 	> = (data) => {
+
 		if (!createManyState) {
 			if (data.priority === 'Normal')
 				dataTosend = {
@@ -44,17 +41,13 @@ const NewCardRequestModal = ({
 					...data,
 					priority: 'EXPRESS',
 				};
-			try {
-				addSimpleCardRequest(deleteUndefinedAttr(dataTosend), close).then(() =>
-					close(),
-				);
-			} catch (error) { }
+			addSimpleCardRequest(deleteUndefinedAttr(dataTosend), close).then(() =>
+				close(),
+			);
 		} else {
-			try {
-				addBulkCardRequest(deleteUndefinedAttr(dataTosend), close).then(() =>
-					close(),
-				);
-			} catch (error) { }
+			addBulkCardRequest(deleteUndefinedAttr(dataTosend), close).then(() =>
+				close(),
+			);
 		}
 	};
 
@@ -123,7 +116,7 @@ const NewCardRequestModal = ({
 
 					<div className='h-full'>
 						<TextArea
-							name='observation'
+							name='observations'
 							control={control}
 							paddingInput='py-0'
 							label='Observaciones'

@@ -7,13 +7,16 @@ import { type SubmitHandler, useForm } from 'react-hook-form';
 import {
 	type BasicType,
 } from '../../../interfaces/InterfacesLocal';
-import { deleteUndefinedAttr, validateEmail } from '../../../utils/helpers';
+import { deleteUndefinedAttr } from '../../../utils/helpers';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import Modal from '../../../components/modals/GenericModal';
 import AlertContainer from '../../../components/misc/AlertContainer';
 import Input from '../../../components/forms/Input';
 import Button from '../../../components/misc/Button';
 import Toggle from '../../../components/forms/Toggle';
+import useServerCategories from '../../../api/userServerCategories';
+import userServerAccounts from '../../../api/userServerAccounts';
+import Select from "../../../components/forms/Select";
 
 interface UserWizzardInterface {
 	editAccount: Function;
@@ -50,7 +53,29 @@ const EditAccountContainer = ({
 		},
 	);
 
+	const {
+		getCategory,
+		category,
+	} = useServerCategories();
+
+	const {
+		registerAccountCategory,
+	} = userServerAccounts();
+
+	useEffect(() => {
+		if (account?.issueEntity?.id) {
+			getCategory(account?.issueEntity?.id);
+		}
+	}, [account?.issueEntity?.id]);
+
 	const onSubmit: SubmitHandler<any> = (data) => {
+		let registerCategory = {
+			"categoryName": data.categoryName,
+			"accountAddress": account.address
+		}
+
+		registerAccountCategory(registerCategory);
+
 		if (!data.allowedUsersId) data.allowedUsersId = [];
 		editAccount(account?.id, deleteUndefinedAttr(data), closeModal)
 
@@ -60,7 +85,7 @@ const EditAccountContainer = ({
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className='overflow-auto scrollbar-thin scrollbar-thumb-slate-100 pr-5 pl-2'>
-					
+
 					<div className='flex flex-col gap-5 mt-5'>
 						<Input
 							name='name'
@@ -71,6 +96,17 @@ const EditAccountContainer = ({
 								required: 'Campo requerido',
 							}}
 						/>
+
+						{Array.isArray(category) && category.length > 0 && (
+							<Select
+								label='Categoría'
+								data={category ? category : []}
+								name='categoryName'
+								control={control}
+								rules={{ required: 'Campo requerido' }}
+								defaultValue={account?.category?.name}
+							/>
+						)}
 
 						<AsyncMultiSelect
 							name='allowedUsersId'
@@ -122,17 +158,17 @@ const EditAccountContainer = ({
 						/>
 
 						<div className='flex justify-between mt-5'>
-						<Button
-							color="slate-500"
-							action={() => {
-								setDelAction(true);
-							}}
-							name="Eliminar cuenta"
-							outline
-							textColor="text-red-500"
-							iconAfter={<TrashIcon className='text-red-500  w-4 h-4' />}
-							type={'button'}
-						/>
+							<Button
+								color="slate-500"
+								action={() => {
+									setDelAction(true);
+								}}
+								name="Eliminar cuenta"
+								outline
+								textColor="text-red-500"
+								iconAfter={<TrashIcon className='text-red-500  w-4 h-4' />}
+								type={'button'}
+							/>
 							<Button
 								name='Insertar'
 								color='slate-600'

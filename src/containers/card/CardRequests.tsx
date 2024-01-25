@@ -2,156 +2,74 @@ import {
 	PlusIcon,
 	CreditCardIcon,
 } from '@heroicons/react/24/outline';
-
 import GenericTable, {
 	DataTableInterface,
 } from '../../components/misc/GenericTable';
-
 import Paginate from '../../components/misc/Paginate';
 import Modal from '../../components/modals/GenericModal';
 import Breadcrumb, {
 	PathInterface,
 } from '../../components/navigation/Breadcrumb';
-
 import { useEffect, useState } from 'react';
-
-import { formatDateForCard } from '../../utils/helpers';
 import useServerCardsRequests from '../../api/userServerCardsRequests';
 import NewCardRequestModal from './newCardRequest/NewCardRequestModal';
-import EditCardRequestContainer from './editCardRequestWizzard/EditCardRequestContainer';
 import StatusForCardRequest from '../../components/misc/StatusForCardRequest';
 import { translateCardRequestType } from '../../utils/translateCardStatus';
 import { formatDate } from '../../utils/helpersAdmin';
-import { exportExcel, generateUrlParams } from '../../utils/helpersAdmin2';
-import ExcelFileExport from '../../components/commos/ExcelFileExport';
-import query from '../../api/APIServices';
-import { BsFiletypeXlsx } from 'react-icons/bs';
-import Button from '../../components/misc/Button';
-import { DocumentMagnifyingGlassIcon, InformationCircleIcon } from '@heroicons/react/20/solid';
-import { translateOrderState } from '../../utils/translate';
+import ModalCardRequest from './CardRequestModal/ModalCardRequest'
 
 const CardRequests = () => {
 
-	const {
-		acceptRequest,
-		paginate,
-		isLoading,
-		isFetching,
-		cardRequest,
-		getAllCardsRequests,
-		addSimpleCardRequest,
-		getCardRequest,
-		addBulkCardRequest,
-		editCardRequest,
-		deleteCardRequest,
-		manageErrors,
-		allCardsRequests,
-		setSelectedDataToParent,
-		cardRequestRecords,
-		updateCardStatus,
-	} = useServerCardsRequests();
+	const CRUD = useServerCardsRequests();
 
-	const [filter, setFilter] = useState<
-		Record<string, string | number | boolean | null>
-	>({ page: 1 });
-
+	const [filter, setFilter] = useState<Record<string, string | number | boolean | null>>({ page: 1 });
+	const [newCardRequestModal, setNewCardRequestModal] = useState(false);
 	const [editCardRequestModal, setEditCardRequestModal] = useState<{
 		state: boolean;
-		id: number | null;
-		active: string | null;
-		status: string | null;
-	}>({ state: false, id: null, active: null, status: null });
+		id: number;
+	}>({ state: false, id: 0 });
 
-	const [addTicketmodal, setAddTicketmodal] = useState(false);
+	useEffect(() => {
+		CRUD.getAllCardsRequests(filter);
+	}, [filter]);
 
-	//Export to excel
-	const [loadingExport, setloadingExport] = useState(false);
-	const [exportModal, setExportModal] = useState(false);
+	//Breadcrumb-----------------------------------------------------------------------------------
 
-	let allResults: any = [];
+	const paths: PathInterface[] = [
+		{
+			name: 'Tarjetas',
+		},
+		{
+			name: ' Solicitudes',
+		},
+	];
 
-	const exportBankAccounts = async (filename: string) => {
-		const dataToExport: Record<string, string | number>[] = [];
-		setloadingExport(true);
+	//Data for table ------------------------------------------------------------------------------
 
-		await query
-			.get(`/cardRequest${generateUrlParams({ all_data: true })}`)
-			.then((resp: any) => {
-				allResults = allResults.concat(resp.data.items);
-			})
-			.catch((e: any) => manageErrors(e));
-
-		allResults.forEach((item: any) => {
-				dataToExport.push({
-					'No. Solicitud': item?.queryNumber ?? '-',
-					'Fecha de Creación': formatDate(item?.createdAt) ?? '-',
-					'Tipo': translateCardRequestType(item?.priority),
-					'Propietario': item?.holderName ?? '-',
-					'Cuenta':item?.account ?? '-',
-					'Estado':item.status ? translateOrderState(item.status) : '-',
-				});
-			
-		});
-		exportExcel(dataToExport, filename);
-		setloadingExport(false);
-		setExportModal(false);
-	};
-
-	const exportAction = async (name: string) => {
-		exportBankAccounts(name);
-	};
-
-	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [
 		'No. Solicitud',
-		'Fecha de Creación',
+		'Fecha de Solicitud',
+		'Titular',
+		'Categoria',
+		'Entidad',
 		'Tipo',
-		'Propietario',
 		'Cuenta',
 		'Estado',
-		'Acciones',
 	];
 
 	const tableData: DataTableInterface[] = [];
-
-	allCardsRequests?.map((item: any) => {
+	console.log(CRUD?.allCardsRequests);
+	CRUD?.allCardsRequests?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
 				'No. Solicitud': item?.queryNumber ?? '-',
-				'Fecha de Creación': formatDate(item?.createdAt) ?? '-',
-				Tipo: translateCardRequestType(item?.priority),
-				Propietario: item?.holderName ?? '-',
-				Cuenta: item?.account ?? '-',
-				Estado: <StatusForCardRequest currentState={item.status} />,
-				Acciones: (
-					<div className='flex'>
-						<div className='mx-1'>
-							<Button color='slate-500' textColor='slate-500' icon={<DocumentMagnifyingGlassIcon className='w-5' />} name={"Detalles"}
-								action={() => {
-									setEditCardRequestModal({ state: true, id: item.id, active: "details", status: null });
-								}}></Button>
-						</div>
-						<div className='mx-1'>
-							<Button color='slate-500' textColor='slate-500' icon={<InformationCircleIcon className='w-5' />} name={"Reporte"}
-								action={() => {
-									setEditCardRequestModal({ state: true, id: item.id, active: "reports", status: null });
-								}}></Button>
-						</div>
-						{
-							item?.status === 'PRINTED' ||
-								item?.status === 'DENIED' ? null : (
-								<div className='mx-1'>
-									<Button color='slate-500' textColor='slate-500' icon={<CreditCardIcon className='w-5' />} name={"Cambiar estado"}
-										action={() => {
-											setEditCardRequestModal({ state: true, id: item.id, active: "changeStatus", status: item.status });
-										}}></Button>
-								</div>
-							)
-						}
-
-					</div>
-				),
+				'Entidad': item?.issueEntityIdName ? item?.issueEntityIdName : '',
+				'Fecha de Solicitud': formatDate(item?.createdAt) ?? '-',
+				'Tipo': translateCardRequestType(item?.priority),
+				'Titular': item?.holderName ?? '-',
+				'Cuenta': item?.account ?? '-',
+				'Estado': <StatusForCardRequest currentState={item.status} />,
 			},
 		});
 	});
@@ -161,38 +79,19 @@ const CardRequests = () => {
 		placeholder: 'Buscar Solicitud',
 	};
 
-	const close = () => setEditCardRequestModal({ state: false, id: null, active: null, status: null });
-
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
 			title: 'Agregar Solicitud',
-			action: () => setAddTicketmodal(true),
-		},
-		{
-			icon: <BsFiletypeXlsx className='h-5' />,
-			title: 'Exportar a Excel',
-			action: () => setExportModal(true),
+			action: () => setNewCardRequestModal(true),
 		},
 	];
 
-	//Breadcrumb-----------------------------------------------------------------------------------
-	const paths: PathInterface[] = [
-		{
-			name: 'Tarjetas',
-		},
-		{
-			name: ' Solicitudes',
-		},
-	];
-	//------------------------------------------------------------------------------------
+	const closeAddAccount = () => setNewCardRequestModal(false);
 
-	const closeAddAccount = () => setAddTicketmodal(false);
-
-	useEffect(() => {
-		getAllCardsRequests(filter);
-	}, [filter]);
-
+	const rowAction = (id: number) => {
+		setEditCardRequestModal({ state: true, id });
+	};
 
 	return (
 		<div className=''>
@@ -203,56 +102,37 @@ const CardRequests = () => {
 			<GenericTable
 				tableData={tableData}
 				tableTitles={tableTitles}
-				loading={isLoading}
+				loading={CRUD?.isLoading}
 				searching={searching}
 				actions={actions}
+				rowAction={rowAction}
 				paginateComponent={
 					<Paginate
 						action={(page: number) => setFilter({ ...filter, page })}
-						data={paginate}
+						data={CRUD?.paginate}
 					/>
 				}
 			/>
-
-			{addTicketmodal && (
-				<Modal state={addTicketmodal} close={setAddTicketmodal}>
+			{/*Modal to Create Card Request*/}
+			{newCardRequestModal && (
+				<Modal state={newCardRequestModal} close={setNewCardRequestModal}>
 					<NewCardRequestModal
 						close={closeAddAccount}
 						contactModal={false}
-						addBulkCardRequest={addBulkCardRequest}
-						isFetching={isFetching}
-						addSimpleCardRequest={addSimpleCardRequest}
-					/>
-				</Modal>
-			)}
-			{editCardRequestModal.state && (
-				<Modal state={editCardRequestModal.state} close={close} size='m'>
-					<EditCardRequestContainer
-						updateCardStatus={updateCardStatus}
-						cardRequestRecords={cardRequestRecords}
-						acceptRequest={acceptRequest}
-						id={editCardRequestModal.id}
-						editCardRequest={editCardRequest}
-						deleteCardRequest={deleteCardRequest}
-						isFetching={isFetching}
-						closeModal={close}
-						allCardsRequests={allCardsRequests}
-						cardRequest={cardRequest}
-						isLoading={isLoading}
-						getCardRequest={getCardRequest}
-						setSelectedDataToParent={setSelectedDataToParent}
-						active={editCardRequestModal.active}
-						status={editCardRequestModal.status ?? null}
+						addBulkCardRequest={CRUD.addBulkCardRequest}
+						isFetching={CRUD?.isFetching}
+						addSimpleCardRequest={CRUD.addSimpleCardRequest}
 					/>
 				</Modal>
 			)}
 
-			{exportModal && (
-				<Modal state={exportModal} close={setExportModal}>
-					<ExcelFileExport
-						exportAction={exportAction}
-						loading={loadingExport}
-					/>
+			{/*Modal to Edit Card Request*/}
+			{editCardRequestModal && (
+				<Modal state={editCardRequestModal?.state} close={setEditCardRequestModal} size='m'>
+					<div className="min-h-96">
+						<ModalCardRequest close={() => setEditCardRequestModal({ state: false, id: 0 })} CRUD={CRUD}
+							id={editCardRequestModal?.id} />
+					</div>
 				</Modal>
 			)}
 		</div>

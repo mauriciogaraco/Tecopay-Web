@@ -16,7 +16,7 @@ const EntityGeneralInfo = () => {
 			<div>
 				<div className="max-h-96 h-96 overflow-y-auto">
 					<div>
-						<p className='mb-4 font-semibold text-lg text-center'>Crear entidad</p>
+						<p className='mb-4 font-semibold text-lg text-center'>Crear entidad emisora</p>
 						<div className="mt-2">
 							<GenericImageDrop
 								className="h-40 w-40 rounded-full border border-gray-400 m-auto overflow-hidden"
