@@ -5,8 +5,8 @@ import GenericImageDrop from "../../../components/misc/Images/GenericImageDrop";
 
 
 const EntityCards = () => {
-	const { control, stepDown, data, setImgRelation } = useContext(ProductContext);
-	  
+	const { control, stepDown, data, setImgRelation, imgRelation } = useContext(ProductContext);
+
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
 			<div className="max-h-96 min-h-96 h-96 overflow-y-auto">
@@ -22,8 +22,10 @@ const EntityCards = () => {
 									name={`cardImageId${obj.id}`}
 									key={obj.id}
 									dataUp={setImgRelation}
-									dataIndex={obj.name}
 									rules={{ required: 'Las imágenes de categorías son requeridas' }}
+									dataIndex={obj.name}
+									//previewDefault={imgRelation.find((obj:any) => obj.hasOwnProperty(obj.name)) ? imgRelation.find((obj:any) => obj.hasOwnProperty(obj.name)).src : undefined}
+									//previewHash={imgRelation.find((obj:any) => obj.hasOwnProperty(obj.name)) ? imgRelation.find((obj:any) => obj.hasOwnProperty(obj.name)).hash : undefined}
 								/>
 							</div>
 						</div>

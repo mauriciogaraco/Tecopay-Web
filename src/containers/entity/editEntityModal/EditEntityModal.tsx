@@ -1,11 +1,14 @@
-import { useForm, SubmitHandler, Control } from "react-hook-form";
-import { useState, createContext, useEffect } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useState, createContext } from "react";
 import StepsComponent from "../../../components/misc/StepsComponent";
 import EditEntityGeneralInfo from "./EditEntityGeneralInfo";
 import EditEntityCards from "./EditEntityCards";
 import EditEntityCategories from "./EditEntityCategories";
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import { toast } from "react-toastify";
+import { BasicNomenclator } from "../../../interfaces/ServerInterfaces";
+import { ContextData , CategoriesData } from "../EntityInterfaces";
+import { findMessage , propertyFilter } from "../entityUtilityFunctions";
 
 const contextData: ContextData = {};
 
@@ -13,12 +16,12 @@ export const ProductContext = createContext(contextData);
 
 interface propsDestructured {
 	close: Function;
-	entityCRUD: any;
+	CRUD: any;
 }
 
 const EditEntityModal = ({
 	close,
-	entityCRUD
+	CRUD
 }: propsDestructured) => {
 
 
@@ -36,20 +39,21 @@ const EditEntityModal = ({
 		setAllEntity,
 		deleteEntity,
 		isFetching,
-	} = entityCRUD;
+	} = CRUD;
 
-	const [data, setData] = useState<categoriesData[]>([]);
+	const [data, setData] = useState<CategoriesData[]>([]);
 	const [imgRelation, setImgRelation] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [catToDelete, setCatToDelete] = useState<number[]>([]);
+	const [selected, setSelected] = useState<BasicNomenclator[]>([]);
 	
-	//esta funcion establece el valor de la propiedad 'cardImageId' de las categorias (imagen asociada)
+	//This function sets the value of the 'cardImageId' property of the categories (associated image)
 	function unifyData(imgRelation: any,) {
 		imgRelation.forEach((obj: any) => {
 			const key = Object.keys(obj)[0];
 			const flag = category.find((elemento: any) => elemento.name === key);
 			if (flag) {
-				flag.cardImageId = obj[key];
+				flag.cardImageId = obj[key]?.id;
 			}
 		});
 	}
@@ -68,7 +72,23 @@ const EditEntityModal = ({
 			toast.error('Las imágenes de categorías son requeridas');
 			return;
 		}
-		updateEntity(id, deleteUndefinedAttr(propertyFilter(dataToSubmit)), category, catToDelete, close)
+		if ( category.length === 0 || selected.length === 0 ) {
+			toast.error("Por favor defina una categoría básica");
+			return;
+		}
+		const dataCategories: { id: number, name: string, basic?: boolean | null }[] =  category.map((obj:any) => ({
+			...obj,
+			basic: null,
+		  }));
+		const idObjeto2 = selected[0]?.id;
+		const objectMatch = dataCategories.find(objeto => objeto.id === idObjeto2);
+		if (objectMatch) {
+			objectMatch.basic = true;
+		} else {
+			toast.error("Por favor defina una categoría básica");
+		}
+		
+		updateEntity(id, deleteUndefinedAttr(propertyFilter(dataToSubmit)), dataCategories, catToDelete, close)
 	};
 	toast.error(findMessage(errors));
 
@@ -111,6 +131,8 @@ const EditEntityModal = ({
 						setCatToDelete,
 						catToDelete,
 						isFetching,
+						selected, 
+						setSelected,
 					}}>
 					{/*isLoadingCat && <SpinnerLoading />*/}
 					{currentStep === 0 && <EditEntityGeneralInfo />}
@@ -124,118 +146,3 @@ const EditEntityModal = ({
 
 export default EditEntityModal;
 
-
-//Interfaces, Types & Utility functions
-export type Welcome = {
-	id: number;
-	name: string;
-	status: string;
-	slug: string;
-	dni: string;
-	businessCategory: BusinessCategory;
-	logo: Logo | null;
-}
-
-export type BusinessCategory = {
-	id: number;
-	name: string;
-	description: null;
-}
-
-export type Logo = {
-	id: number;
-	src: string;
-	thumbnail: string;
-	blurHash: string;
-}
-
-
-interface ContextData {
-	control?: Control;
-	stepUp?: Function;
-	stepDown?: Function;
-	data?: categoriesData[];
-	setData?: Function;
-	business?: Welcome[];
-	entityInfo?: any;
-	loadingEntity?: boolean;
-	entity?: any;
-	setImgRelation?: Function;
-	close?: Function;
-	category?: any;
-	allEntity?: any;
-	id?: number;
-	getCategory?: Function;
-	isLoadingCat?: boolean;
-	setCategory?: Function;
-	setCatToDelete?: Function;
-	catToDelete?:number[];
-	setAllEntity?: Function;
-	deleteEntity?: Function;
-	isFetching?: boolean;
-}
-
-type categoriesData = {
-	name: string;
-	color: `#${string}`;
-	points?: number;
-	id: number;
-	issueEntityId: number;
-	cardImageId?: number;
-
-}
-
-
-interface MyObject {
-	address: string;
-	allowCreateAccount: boolean;
-	businessId: string;
-	name: string;
-	ownerId: number;
-	phone: string;
-	responsable: string;
-	[key: string]: any;
-}
-
-function propertyFilter(objeto: MyObject): MyObject {
-	const propiedadesPermitidas: Array<keyof MyObject> = [
-		'address',
-		'allowCreateAccount',
-		'businessId',
-		'name',
-		'ownerId',
-		'phone',
-		'responsable',
-	];
-
-	const resultado: Partial<MyObject> = {};
-
-
-	Object.keys(objeto).forEach((clave) => {
-		if (propiedadesPermitidas.includes(clave as keyof MyObject)) {
-			resultado[clave as keyof MyObject] = objeto[clave];
-		}
-	});
-
-	return resultado as MyObject;
-}
-
-function findMessage(obj: any): string | null {
-	for (const key in obj) {
-	  if (obj.hasOwnProperty(key)) {
-		const currentProperty = obj[key];
-  
-		if (typeof currentProperty === 'object' && currentProperty !== null) {
-		  const nestedMessage = findMessage(currentProperty);
-  
-		  if (nestedMessage !== null) {
-			return nestedMessage;
-		  }
-		} else if (key === 'message' && typeof currentProperty === 'string') {
-		  return currentProperty;
-		}
-	  }
-	}
-  
-	return null;
-  }

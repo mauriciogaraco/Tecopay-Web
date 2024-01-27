@@ -13,23 +13,23 @@ const AssociatedOperations = (operations: any, paginate: any) => {
 	const [tableData, setTableData] = useState<DataTableInterface[]>([]);
 
 	// Data for table ------------------------------------------------------------------------
-	const tableTitles = ['Fecha', 'Operación', 'Monto', 'Concepto'];
+	const tableTitles = ['Fecha', 'Tipo de Operación', 'Monto', 'Concepto'];
 
 	const operationMapping = async () => {
 		const loadedAllCards = await operations;
 
 		const items = loadedAllCards.operations;
-
-		items.map((item: any) => {
+		console.log(operations);
+		items?.map((item: any) => {
 			setTableData((prevTableData) => [
 				...prevTableData,
 				{
 					rowId: item.id,
 					payload: {
-						Fecha: formatCalendar(item?.createdAt),
-						Operación: translateOperationType(item?.operation ?? '-'),
-						Monto: item?.amount ?? '-',
-						Concepto: translateOperationConcept(item?.description ?? '-'),
+						'Fecha': formatCalendar(item?.createdAt),
+						'Tipo de Operación': translateOperationType(item?.operation ?? '-'),
+						'Monto': item?.amount ?? '-',
+						'Concepto': translateOperationConcept(item?.description ?? '-'),
 					},
 				},
 			]);

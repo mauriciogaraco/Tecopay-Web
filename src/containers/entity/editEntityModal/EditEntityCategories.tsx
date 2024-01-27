@@ -12,19 +12,24 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Modal from '../../../components/modals/GenericModal';
 import { Wheel } from '@uiw/react-color';
 import { TrashIcon } from '@heroicons/react/24/outline';
+import Checkbox from '../../../components/forms/CheckboxCat';
 
 
 const EditEntityCategories = () => {
 
-	const { stepUp, stepDown, getCategory, category, id, isLoadingCat, setCategory, setCatToDelete, catToDelete } = useContext(ProductContext);
+	const { stepUp, stepDown, getCategory, category, isLoadingCat, setCategory, setCatToDelete, selected, setSelected } = useContext(ProductContext);
 	const [addEntityCategory, setaddEntityCategory] = useState(false);
 	const [modifyEntityCategory, setmodifyEntityCategory] = useState(false);
 	const [modifyIndex, setmodifyIndex] = useState(0);
 
 
+	function basicCategory (params: any) {
+		setSelected && setSelected(params);
+	}
+
 	//Table ------------------------------------------------------------------------
 	const tableTitles =
-		['Nombre', 'Color', 'Puntos'];
+		['Nombre', 'Color', 'Puntos', 'Básica', ''];
 
 	const tableData: DataTableInterface[] = [];
 
@@ -32,9 +37,18 @@ const EditEntityCategories = () => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				Nombre: item?.name,
-				Color: <div style={{ backgroundColor: item.color, width: '20px', height: '20px', margin: 'auto' }}></div>,
-				Puntos: item.points,
+				'Nombre': item?.name,
+				'Color': <div style={{ backgroundColor: item.color, width: '20px', height: '20px', margin: 'auto' }}></div>,
+				'Puntos': item.points,
+				'Básica': <Checkbox 
+				data={[{ id: item.id, name: '' }]} 
+				selected={selected} 
+				setSelected={basicCategory} 
+				displayCol={true} 
+				/>,
+				'': <Button name='Editar' action={() => rowAction(item.id)} color="slate-500"
+					outline
+					textColor="slate-600" />
 			},
 		});
 	});
@@ -63,7 +77,6 @@ const EditEntityCategories = () => {
 						tableTitles={tableTitles}
 						loading={isLoadingCat}
 						actions={actions}
-						rowAction={rowAction}
 					/>
 				</div>
 				<div className="grid grid-cols-2 gap-3 py-2 mt-9 mx-2">
@@ -174,7 +187,7 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 			let newArray = categories.filter(obj => obj.id !== indexModify)
 			action && action(newArray);
 		} else {
-			deleteCat && deleteCat((c:number[])=>[...c,indexModify]);
+			deleteCat && deleteCat((c: number[]) => [...c, indexModify]);
 			let newArray = categories.filter(obj => obj.id !== indexModify)
 			action && action(newArray);
 		}
@@ -248,6 +261,14 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 	);
 };
 
+function getNextAvailableId(objects: {id: number}[]): number {
+	const existingIds = objects.map(obj => obj.id);
+	const maxId = Math.max(...existingIds);
+
+	// Return the next available id (one point bigger than the largest existing id)
+	return maxId + 1;
+}
+
 function ColorSelect({ ExternsetHex, color = "#ffffff" }: { ExternsetHex: Function, color?: string }) {
 	const [hex, setHex] = useState(color);
 	return (
@@ -286,28 +307,4 @@ interface ModifyModalContainer {
 	deleteCat?: Function,
 }
 
-function eliminarYReorganizar(array: any, idAEliminar: number) {
-	// Filtrar el array para excluir el objeto con el ID a eliminar
-	const newArray = array.filter((objeto: any) => objeto.id !== idAEliminar);
 
-	// Reorganizar los IDs para que sean secuenciales
-	const nuevoArray = newArray.map((objeto: any, index: any) => ({
-		...objeto,
-		id: index,
-	}));
-
-	return nuevoArray;
-}
-
-interface MyObject {
-	id: number;
-	// Other properties of the object
-}
-
-function getNextAvailableId(objects: MyObject[]): number {
-	const existingIds = objects.map(obj => obj.id);
-	const maxId = Math.max(...existingIds);
-
-	// Return the next available id (one point bigger than the largest existing id)
-	return maxId + 1;
-}

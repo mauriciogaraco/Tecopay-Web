@@ -11,37 +11,50 @@ import {
 import { useForm, SubmitHandler } from "react-hook-form";
 import Modal from '../../../components/modals/GenericModal';
 import { Wheel } from '@uiw/react-color';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { TrashIcon } from '@heroicons/react/24/outline';
-
+import Checkbox from '../../../components/forms/CheckboxCat';
+import { ExportModalContainer, ModifyModal } from "../EntityInterfaces";
+import { reFormat } from "../entityUtilityFunctions";
 
 
 const EntityCategories = () => {
 
-	const { stepUp, stepDown, data, setData } = useContext(ProductContext);
-	const [isLoading, setIsLoading] = useState(false);
+	const { stepUp, stepDown, data, setData, selected, setSelected } = useContext(ProductContext);
+	const [isLoading] = useState(false);
 	const [addEntityCategory, setaddEntityCategory] = useState(false);
 	const [modifyEntityCategory, setmodifyEntityCategory] = useState(false);
 	const [modifyIndex, setmodifyIndex] = useState(0);
-	const [delAction, setDelAction] = useState(false);
 
+	function basicCategory(params: any) {
+		setSelected && setSelected(params);
+	}
 
 	//Table ------------------------------------------------------------------------
 	const tableTitles =
-		['Nombre', 'Color', 'Puntos'];
+		['Nombre', 'Color', 'Puntos', 'Básica', ''];
 
 	const tableData: DataTableInterface[] = [];
-	
+
 	data?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				Nombre: item?.name,
-				Color: <div style={{ backgroundColor: item.color, width: '20px', height: '20px', margin: 'auto' }}></div>,
-				Puntos: item.points,
+				'Nombre': item?.name,
+				'Color': <div style={{ backgroundColor: item.color, width: '20px', height: '20px', margin: 'auto' }}></div>,
+				'Puntos': item.points,
+				'Básica': <Checkbox
+					data={[{ id: item.id, name: '' }]}
+					selected={selected}
+					setSelected={basicCategory}
+					displayCol={true}
+				/>,
+				'': <Button name='Editar' action={() => rowAction(item.id)} color="slate-500"
+					outline
+					textColor="slate-600" />
 			},
 		});
 	});
+
 	const rowAction = (id: number) => {
 		setmodifyIndex(id);
 		setmodifyEntityCategory(true);
@@ -67,7 +80,6 @@ const EntityCategories = () => {
 						tableTitles={tableTitles}
 						loading={isLoading}
 						actions={actions}
-						rowAction={rowAction}
 					/>
 				</div>
 				<div className="grid grid-cols-2 gap-3 py-2 mt-9 mx-2">
@@ -107,7 +119,6 @@ const EntityCategories = () => {
 						categories={data ? data : []}
 						close={setmodifyEntityCategory}
 						indexModify={modifyIndex}
-						deleteCat={setDelAction}
 					/>
 				</Modal>
 			)}
@@ -170,7 +181,7 @@ const AddModalContainer = ({ action, categories, close }: ExportModalContainer) 
 	);
 };
 
-const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCat }: ModifyModalContainer) => {
+const ModifyModalContainer = ({ action, categories, close, indexModify }: ModifyModal) => {
 	const [hex, setHex] = useState('#fff');
 	const { control: controlForm, handleSubmit: handleSubmitAdd } = useForm<Record<string, string | number>>();
 
@@ -224,7 +235,7 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 							color="slate-500"
 							action={() => {
 								let finalCategories = [...categories];
-								const nuevoArray = eliminarYReorganizar(finalCategories, indexModify);
+								const nuevoArray = reFormat(finalCategories, indexModify);
 								action && action(nuevoArray);
 								close && close();
 							}}
@@ -259,38 +270,4 @@ function ColorSelect({ ExternsetHex, color = "#ffffff" }: { ExternsetHex: Functi
 	);
 }
 
-interface categoriesData {
-	name: string;
-	color: `#${string}`;
-	points?: number;
-	id: number;
-	issueEntityId: number;
-	cardImageId?: number;
-}
 
-interface ExportModalContainer {
-	action: Function | undefined,
-	categories: categoriesData[],
-	close: Function | undefined
-}
-
-interface ModifyModalContainer {
-	action?: Function,
-	categories: categoriesData[],
-	close?: Function,
-	indexModify: number
-	deleteCat?: Function,
-}
-
-function eliminarYReorganizar(array: any, idAEliminar: number) {
-	// Filtrar el array para excluir el objeto con el ID a eliminar
-	const newArray = array.filter((objeto: any) => objeto.id !== idAEliminar);
-
-	// Reorganizar los IDs para que sean secuenciales
-	const nuevoArray = newArray.map((objeto: any, index: any) => ({
-		...objeto,
-		id: index,
-	}));
-
-	return nuevoArray;
-}

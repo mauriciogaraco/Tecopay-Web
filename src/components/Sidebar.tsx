@@ -125,26 +125,26 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 			icon: UsersIcon,
 			current: mainCurrent === 'users',
 		},
-		{
-			name: 'Monedas',
-			href: 'coins',
-			icon: CircleStackIcon,
-			current: mainCurrent === 'coins',
-
-			children: [
-				{
-					name: 'Listado',
-					href: `/coins/list`,
-					current: secondaryCurrent === 'list' && mainCurrent === 'coins',
-				},
-				{
-					name: 'Tasa de cambio',
-					href: `/coins/exchangeRate`,
-					current:
-						secondaryCurrent === 'exchangeRate' && mainCurrent === 'coins',
-				},
-			],
-		},
+		//{
+		//	name: 'Monedas',
+		//	href: 'coins',
+		//	icon: CircleStackIcon,
+		//	current: mainCurrent === 'coins',
+//
+		//	children: [
+		//		{
+		//			name: 'Listado',
+		//			href: `/coins/list`,
+		//			current: secondaryCurrent === 'list' && mainCurrent === 'coins',
+		//		},
+		//		{
+		//			name: 'Tasa de cambio',
+		//			href: `/coins/exchangeRate`,
+		//			current:
+		//				secondaryCurrent === 'exchangeRate' && mainCurrent === 'coins',
+		//		},
+		//	],
+		//},
 	];
 
 	const [changeBusinessModal, setChangeBusinessModal] = useState(false);

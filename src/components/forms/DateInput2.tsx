@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useState} from "react";
 import es from "date-fns/locale/es";
 import subDays from "date-fns/subDays";
 import DatePicker from "react-datepicker";
@@ -6,68 +6,49 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useController, UseControllerProps } from "react-hook-form";
 import moment from "moment";
 import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
+import { ChevronDownIcon } from "@heroicons/react/24/solid";
 
 interface DateInput {
   label: string;
-  untilToday?: boolean;
-  fromToday?: boolean;
-  fromCustom?: string;
-  includeTime?:boolean
-  minutesInterval?: number
-  disabled?: boolean
+  untilToday?:boolean;
+  fromToday?:boolean
 }
 
 const DateInput = (props: UseControllerProps & DateInput) => {
   const { field, fieldState } = useController(props);
-  const { label, fromToday, fromCustom, untilToday, includeTime, defaultValue, disabled, minutesInterval } = props;
+  const {label, fromToday, untilToday} = props
+  
+  const defaultValue = field.value ? moment(field.value).toDate() : null
 
-  const initialValue = field.value
-    ? moment(field.value).toDate()
-    : defaultValue;
-
-  const [currentDate, setcurrentDate] = useState<Date | null>(initialValue);
-  useEffect(() => {
-    setcurrentDate(initialValue);
-  }, [field.value]);
-
+  const [currentDate, setcurrentDate] = useState<Date | null>(defaultValue)
+  
   return (
-    <div className="w-full">
+    <div className="py-2">
       <label
         htmlFor="label"
         className="block text-sm font-medium text-gray-700"
       >
         {label}
       </label>
-      <div className="relative rounded-md shadow-sm">
+      <div className="relative mt-1 rounded-md shadow-sm">
         <div className="relative w-full">
           <DatePicker
-            onChange={(e) => {
+            selected={currentDate}
+            onChange={(e)=>{
               setcurrentDate(e);
-              field.onChange(moment(e).format(`YYYY-MM-DD${includeTime ? " HH:mm" : ""}`));
+              field.onChange(moment(e).format('YYYY-MM-DD'))
             }}
-            className={`${fieldState.error
+            className={`${
+              fieldState.error
                 ? "border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500"
                 : "focus:ring-gray-500 border-gray-500 focus:border-gray-600 text-gray-500"
-
-              } ${!!disabled ? "bg-slate-100" : ""} w-full rounded-md sm:text-sm placeholder:text-slate-400 cursor-pointer`}
-            selected={currentDate}
+            } w-full rounded-md sm:text-sm placeholder:text-slate-400 cursor-pointer`}
             placeholderText="DD-MM-YYYY"
             locale={es}
-            timeIntervals={minutesInterval ?? 30}
-            timeCaption="Hora"
-            timeFormat="hh:mm a"
-            dateFormat={`dd MMMM yyyy ${includeTime ? "- hh:mm a" : ""}`}
-            minDate={
-              fromCustom
-                ? subDays(moment(fromCustom).toDate(), 0)
-                : fromToday
-                  ? subDays(new Date(), 0)
-                  : undefined
-            }
+            dateFormat="dd MMMM yyyy"
+            minDate={fromToday ? subDays(new Date(), 0) : undefined}
             maxDate={untilToday ? subDays(new Date(), 0) : undefined}
-            popperPlacement="bottom"
-            showTimeSelect={!!includeTime}
-            disabled={!!disabled}
+            popperPlacement="bottom"           
           />
           <div className="absolute p-2 gap-1 right-0 top-0 flex items-center rounded-r-md px-2 focus:outline-none">
             {fieldState.error && (
@@ -75,7 +56,7 @@ const DateInput = (props: UseControllerProps & DateInput) => {
                 <ExclamationCircleIcon
                   className="h-5 w-5 text-red-500"
                   aria-hidden="true"
-                />
+                /> 
               </>
             )}
           </div>

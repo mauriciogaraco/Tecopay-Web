@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import NotFoundpage from '../pages/NotFoundPage';
 import 'react-toastify/dist/ReactToastify.css';
 import AppContainer from '../containers/AppContainer';
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect } from 'react';
 import { useAppDispatch } from '../store/hooks';
 import { fetchRole } from '../store/slices/roleSlice';
 import SpinnerLoading from '../components/misc/SpinnerLoading';

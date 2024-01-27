@@ -71,11 +71,11 @@ const AccountDetails = () => {
 		},
 
 		{
-			name: formatCardNumber(account?.address ?? '-'),
+			name: 'Detalles',
 		},
 	];
 	//--------------------------------------------------------------------------------------
-
+	
 	return (
 		<>
 			<div className=' flex'>

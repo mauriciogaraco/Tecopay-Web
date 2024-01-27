@@ -40,20 +40,20 @@ const SelectedAccountDetails = ({
 	console.log(account);
 
 	const actions = [
-		{
-			icon: <PencilSquareIcon className='w-10 h-5' />,
-			title: 'Editar',
-			action: () => {
-				setEditModal(true);
-			},
-		},
-		{
-			icon: <TbTransferIn className='w-10 h-5' />,
-			title: 'Transferir',
-			action: () => {
-				setTranferModal(true);
-			},
-		},
+		//{
+		//	icon: <PencilSquareIcon className='w-10 h-5' />,
+		//	title: 'Editar',
+		//	action: () => {
+		//		setEditModal(true);
+		//	},
+		//},
+		//{
+		//	icon: <TbTransferIn className='w-10 h-5' />,
+		//	title: 'Transferir',
+		//	action: () => {
+		//		setTranferModal(true);
+		//	},
+		//},
 		{
 			icon: <PiHandCoins className='w-10 h-5' />,
 			title: 'Recargar',
@@ -63,6 +63,7 @@ const SelectedAccountDetails = ({
 		},
 
 	];
+	console.log(account)
 	return isLoading ? (
 		<div className='top-20'>
 			<SpinnerLoading />
@@ -72,7 +73,7 @@ const SelectedAccountDetails = ({
 			{account && (
 				<GenericList
 					actions={actions}
-					header={{ title: `Detalles de ${account.name}` }}
+					header={{ title: `Detalles de ${formatCardNumber(account.address)}` }}
 					body={{
 						'Fecha de activación': `${formatCalendar(account?.createdAt ?? '-')}`,
 
@@ -84,7 +85,7 @@ const SelectedAccountDetails = ({
 
 						'Negocio': account?.currency ?? '-',
 
-						'Balance': account?.amount ?? '-',
+						'Total de Puntos': account?.amount ?? '-',
 
 						'Estado': <StatusBadge status={account.isActive ? 'ACTIVE' : "INACTIVE"} />,
 					}}

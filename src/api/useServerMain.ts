@@ -21,7 +21,6 @@ export const useServer = () => {
   const [imgsFromArray, setImgsFromArray] = useState<any>([]);
 
   const manageErrors = (error: any) => {
-    console.log(error);
     if (error.status === 401 || error.status === 403) {
       toast.error(error.response?.data?.message);
       return;
@@ -42,7 +41,6 @@ export const useServer = () => {
     await mediaQuery
       .post("/image", data)
       .then((resp) => {
-        console.log(resp);
         if (multiple) {
           setImgPreview([
             ...imgPreview,
@@ -71,7 +69,7 @@ export const useServer = () => {
     try {
       // Código asíncrono que puede generar errores
       const resp = await mediaQuery.get(`/image/${id}`)
-      //setImgView(resp.data);
+      setImgView(resp.data);
       return resp.data
     } catch (error) {
       manageErrors(error);
@@ -90,7 +88,6 @@ export const useServer = () => {
         .get(`/image/${id}`)
         .then((resp) => {
           setImgsFromArray([...imgsFromArray, resp.data]);
-          console.log(imgsFromArray);
         })
         .catch((error) => { manageErrors(error); });
     }));

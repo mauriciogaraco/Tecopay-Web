@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import { ProductContext } from "./EditEntityModal";
 import Button from '../../../components/misc/Button';
 import GenericImageDrop from "../../../components/misc/Images/GenericImageDrop";
@@ -10,7 +10,7 @@ export interface ImageView {
 }
 
 const EditEntityCards = () => {
-	const { control, stepUp, stepDown, data, setData, setImgRelation, category } = useContext(ProductContext);
+	const { control, stepDown, data, setData, setImgRelation, category } = useContext(ProductContext);
 
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
@@ -27,9 +27,9 @@ const EditEntityCards = () => {
 									name={`obj?.cardImageId?.id`}
 									key={obj?.cardImageId?.id}
 									dataUp={setImgRelation}
-									dataIndex={obj.name}
-									previewDefault={obj?.cardImageId?.url}
-									previewHash={obj?.cardImageId?.hash}
+									dataIndex={obj?.name ? obj?.name : undefined}
+									previewDefault={obj?.cardImageId?.url ? `https://apidevpay.tecopos.com${obj?.cardImageId?.url}` : undefined}
+									previewHash={obj?.cardImageId?.hash ? obj?.cardImageId?.hash : undefined}
 								/>
 							</div>
 						</div>

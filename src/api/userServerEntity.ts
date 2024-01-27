@@ -43,7 +43,6 @@ const useServerEntity = () => {
     }
   };
 
-
   //Postman -> 'entity / register'
   const addEntity = async (
     data: any,
@@ -79,7 +78,6 @@ const useServerEntity = () => {
     }
   };
 
-
   //Postman -> 'entity / find by id'
   const getEntity = async (id: number) => {
     setIsLoading(true);
@@ -95,7 +93,6 @@ const useServerEntity = () => {
       setIsLoading(false);
     }
   };
-
 
   //Postman -> 'entity / update'
   const updateEntity = async (
@@ -149,7 +146,6 @@ const useServerEntity = () => {
     }
   };
 
-
   //Postman -> 'entity / delete'
   const deleteEntity = async (id: number, callback?: Function) => {
     try {
@@ -161,7 +157,6 @@ const useServerEntity = () => {
       manageErrors(error);
     }
   };
-
 
   //Postman -> 'bussines / findAll'
   const getAllBussinnes = async () => {

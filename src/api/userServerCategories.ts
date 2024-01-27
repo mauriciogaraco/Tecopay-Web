@@ -31,7 +31,6 @@ const useServerCategories = () => {
     }
   };
 
-
   //Postman -> 'categories / find by id'
   const getCategory = async (issueEntityId: number) => {
     setIsLoadingCat(true);
@@ -63,7 +62,6 @@ const useServerCategories = () => {
     }
   };
 
-
   //Postman -> 'categories / update'
   const updateCategory = async (
     categoryID: number,
@@ -79,7 +77,6 @@ const useServerCategories = () => {
       setIsFetching(false);
     }
   };
-
 
   //Postman -> 'categories / delete'
   const deleteCategory = async (

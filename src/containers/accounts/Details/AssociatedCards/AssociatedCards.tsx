@@ -24,13 +24,12 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 	const [addAssociatedCard, setAddAssociatedCard] = useState(false);
 	const [loadedPaginate, setLoadedPaginate] = useState(null);
 	// const [exportModal, setExportModal] = useState(false);
-
+	console.log(allCards)
 	// Data for table ------------------------------------------------------------------------
 	const tableTitles = [
 		'No. Tarjeta',
-		'Nombre',
 		'Propietario',
-		'Moneda',
+		'Categoría',
 		'Fecha de Expiración',
 	];
 
@@ -46,14 +45,13 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 				{
 					rowId: item.id,
 					payload: {
-						'No. Tarjeta': formatCardNumber(item.address),
-						Nombre: item?.account.name ?? '-',
-						Propietario: item?.holderName ?? '-',
-						Moneda: item.account.currency ?? '-',
+						'No. Tarjeta': formatCardNumber(item?.address),
+						'Propietario': item?.holderName ?? '-',
+						'Categoría': item?.category?.name ?? '-',
 						'Fecha de Expiración': formatCalendar(item?.expiratedAt),
 						'': (
 							<span className='flex whitespace-nowrap gap-4'>
-								<BlockedStateForTable currentState={item.isBlocked} />
+								<BlockedStateForTable currentState={item?.isBlocked} />
 							</span>
 						),
 					},
