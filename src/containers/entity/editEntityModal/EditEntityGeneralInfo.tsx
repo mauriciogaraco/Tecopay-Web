@@ -7,8 +7,8 @@ import Select from "../../../components/forms/Select";
 import GenericImageDrop from "../../../components/misc/Images/GenericImageDrop";
 import AlertContainer from '../../../components/misc/AlertContainer';
 import Modal from '../../../components/modals/GenericModal';
-import useServerEntity from '../../../api/userServerEntity';
 import { TrashIcon } from '@heroicons/react/24/outline';
+import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 
 
 const EditEntityGeneralInfo = () => {
@@ -24,7 +24,7 @@ const EditEntityGeneralInfo = () => {
 	function deleteEntityModal() {
 		setDelAction(true);
 	}
-
+	console.log(id)
 	function deleteEntityAction() {
 		if (id) {
 			deleteEntity && deleteEntity(id, close);
@@ -42,9 +42,9 @@ const EditEntityGeneralInfo = () => {
 							control={control}
 							name='imageId'
 							text='Logo de la Entidad'
-							defaultValue={filteredArray[0]?.profileImage?.id}
-							previewDefault={`https://apidevpay.tecopos.com${filteredArray[0]?.profileImage?.url}`}
-							previewHash={filteredArray[0]?.profileImage?.hash}
+							defaultValue={filteredArray[0]?.profileImage?.id ? filteredArray[0]?.profileImage?.id : undefined}
+							previewDefault={filteredArray[0]?.profileImage?.url ? `https://apidevpay.tecopos.com${filteredArray[0]?.profileImage?.url}` : undefined}
+							previewHash={filteredArray[0]?.profileImage?.hash ? filteredArray[0]?.profileImage?.hash : undefined}
 						/>
 					</div>
 
@@ -67,23 +67,14 @@ const EditEntityGeneralInfo = () => {
 								defaultValue={filteredArray[0]?.name}
 							></Input>
 						</div><div className="mt-2">
-							<Input
-								name='address'
-								label='Direccion'
-								placeholder={filteredArray[0]?.address}
+							<AsyncComboBox
+								//rules={{ required: 'Campo requerido' }}
+								name='ownerId'
+								normalizeData={{ id: 'id', name: 'name' }}
 								control={control}
-								rules={{ required: 'Campo requerido' }}
-								defaultValue={filteredArray[0]?.address}
-							></Input>
-						</div><div className="mt-2">
-							<Input
-								name='responsable'
 								label='Responsable'
-								placeholder='Responsable'
-								control={control}
-								rules={{ required: 'Campo requerido' }}
-								defaultValue={'responsable'}
-							></Input>
+								dataQuery={{ url: '/user/findAll' }}
+							></AsyncComboBox>
 						</div><div className="mt-2">
 							<Input
 								name='phone'
@@ -97,6 +88,15 @@ const EditEntityGeneralInfo = () => {
 									},
 								}}
 								defaultValue={filteredArray[0]?.phone}
+							></Input>
+						</div><div className="mt-2">
+							<Input
+								name='address'
+								label='Direccion'
+								placeholder={filteredArray[0]?.address}
+								control={control}
+								rules={{ required: 'Campo requerido' }}
+								defaultValue={filteredArray[0]?.address}
 							></Input>
 						</div><div className="mt-7 flex items-center justify-center m-auto">
 

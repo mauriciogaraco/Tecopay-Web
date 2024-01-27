@@ -5,11 +5,11 @@ import Button from '../../../components/misc/Button';
 import Toggle from "../../../components/forms/Toggle";
 import Select from "../../../components/forms/Select";
 import GenericImageDrop from "../../../components/misc/Images/GenericImageDrop";
+import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 
 
 const EntityGeneralInfo = () => {
 	const { control, business } = useContext(ProductContext);
-
 
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
@@ -43,33 +43,34 @@ const EntityGeneralInfo = () => {
 									rules={{ required: 'Campo requerido' }}
 								/>
 							</div><div className="mt-2">
-								<Input
-									name='address'
-									label='Dirección'
-									placeholder='Dirección de la Entidad'
+								<AsyncComboBox
+									//rules={{ required: 'Campo requerido' }}
+									name='ownerId'
+									normalizeData={{ id: 'id', name: 'name' }}
 									control={control}
-									rules={{ required: 'Campo requerido' }}
-								/>
-							</div><div className="mt-2">
-								<Input
-									name='responsable'
 									label='Responsable'
-									placeholder='Responsable'
-									control={control}
-									rules={{ required: 'Campo requerido' }}
-								/>
+									dataQuery={{ url: '/user/findAll' }}
+								></AsyncComboBox>
 							</div><div className="mt-2">
 								<Input
 									name='phone'
-									label='Teléfono '	
+									label='Teléfono '
 									placeholder='Teléfono'
 									control={control}
 									rules={{
 										validate: (value) => {
 											const isValidPhoneNumber = /^\+?[0-9]{8,}$/.test(value);
 											return isValidPhoneNumber || 'Inserte número de teléfono válido';
-										  },
+										},
 									}}
+								/>
+							</div><div className="mt-2">
+								<Input
+									name='address'
+									label='Dirección'
+									placeholder='Dirección de la Entidad'
+									control={control}
+									rules={{ required: 'Campo requerido' }}
 								/>
 							</div><div className="mt-7 flex items-center justify-center m-auto">
 

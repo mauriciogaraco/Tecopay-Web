@@ -10,12 +10,21 @@ import Breadcrumb, {
 } from '../../components/navigation/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { useAppDispatch } from '../../store/hooks';
-import BlockedStateForTable from '../../components/misc/BlockedStateForTable';
-import StateSpanForTable from '../../components/misc/StateSpanForTable';
 import { saveAccountId } from '../../store/slices/accountSlice';
 import { useNavigate } from 'react-router-dom';
 import NewAccountModal from './NewAccount/NewAccountModal';
 import { formatCardNumber } from '../../utils/helpers';
+import SearchCriteriaComponent, {
+	BasicTypeFilter,
+	DateTypeFilter,
+	SelectTypeFilter,
+  } from "../../components/misc/SearchCriteriaComponent";
+  import { FieldValues, SubmitHandler } from "react-hook-form";
+  import { deleteUndefinedAttr } from '../../utils/helpers';
+  import {
+	BasicType
+  } from "../../interfaces/InterfacesLocal";
+  import { formatDate } from '../../utils/helpersAdmin';
 
 const Accounts = () => {
 	const {
@@ -45,7 +54,7 @@ const Accounts = () => {
 			name: 'Cuentas',
 		},
 	];
-
+	
 	// Data for table ------------------------------------------------------------------------------
 
 	const tableTitles = [
@@ -58,21 +67,22 @@ const Accounts = () => {
 	];
 
 	const tableData: DataTableInterface[] = [];
-	console.log(allAccounts);
 	allAccounts?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
+				'Fecha de Activación': formatDate(item?.createdAt) ?? '-',
 				'No.': item.id,
 				'Número de Cuenta': `${formatCardNumber(item?.address)}`,
-				'Propietario': item?.owner?.fullName,
+				'Nombre': item?.name,
+				'Propietario': item?.owner?.fullName ? item?.owner?.fullName : '-',
 				'Entidad': item?.issueEntity?.name,
-				'Negocio': ''
+				'Negocio': item?.issueEntity?.business?.name ? item?.issueEntity?.business?.name : '-',
 			},
 		});
 	});
 
-	
+
 	const actions = [
 		{
 			icon: <PlusIcon className='h-5' />,
@@ -88,10 +98,87 @@ const Accounts = () => {
 		navigate('details');
 	};
 
-	
+
 	const closeAddAccount = () => {
 		setAddAccountModal(false);
 	};
+	
+	 //Submit form ----------------------------------------------------------------------------------
+	 const onSubmit: SubmitHandler<BasicType> = (data) => {
+		if (Object.keys(data).length > 0) {
+		  const allFilters = deleteUndefinedAttr({
+			...data,
+		  });
+		  setFilter(allFilters);
+		} else setFilter({});
+	  };
+	  console.log('filter')
+	  console.log(filter)
+	 //Management filters ------------------------------------------------------------------------
+	 const availableFilters: (
+		| BasicTypeFilter
+		| DateTypeFilter
+		| SelectTypeFilter
+	  )[] = [];
+	
+	  availableFilters.push(
+		{
+		  name: "dateRange",
+		  isRequired: true,
+		  label: "Rango de fechas",
+		  type: "datepicker-range",
+		  datepickerRange: [
+			{
+			  name: "dateFrom",
+			  label: "Desde",
+			  isUnitlToday: true,
+			},
+			{
+			  name: "dateTo",
+			  label: "Hasta",
+			  isUnitlToday: true,
+			},
+		  ],
+		},
+		//{
+		//  label: "Origen",
+		//  name: "origin",
+		//  type: "multiselect",
+		//  data: [
+		//	{ name: "Puntos de venta", id: "pos" },
+		//	{ name: "Tienda online", id: "online" },
+		//  ],
+		//},
+		//{
+		//  label: "Incluir órdenes consumo casa",
+		//  name: "includeHouseCostedOrder",
+		//  type: "boolean",
+		//},
+		//{
+		//  label: "Entidad",
+		//  name: "issueEntityId",
+		//  type: "select",
+		//  asyncData: {
+		//	url: "/entity",
+		//	dataCode: ["id", "lastName", "email"],
+		//	defaultParams: { page: 1 },
+		//	idCode: "id",
+		//  },
+		//},
+		{
+		  label: "Entidad",
+		  name: "issueEntityId",
+		  type: "select",
+		  asyncData: {
+			url: "/entity",
+			dataCode: "name",
+			defaultParams: { page: 1 },
+			idCode: "id",
+		  },
+		}
+	  );
+	
+	  //---------------------------------------------------------------------------------------
 
 
 	return (
@@ -100,11 +187,17 @@ const Accounts = () => {
 				icon={<UserCircleIcon className='h-6 text-gray-500' />}
 				paths={paths}
 			/>
+
+			<SearchCriteriaComponent
+				filterAction={(data: FieldValues) => onSubmit(data)}
+				filters={availableFilters}
+			/>
+
 			<GenericTable
 				tableData={tableData}
 				tableTitles={tableTitles}
 				loading={isLoading}
-				actions={actions}
+				//actions={actions}
 				rowAction={rowAction}
 				// filterComponent={{ availableFilters, filterAction }}
 				paginateComponent={

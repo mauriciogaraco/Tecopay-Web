@@ -47,13 +47,13 @@ const CardRequests = () => {
 	//Data for table ------------------------------------------------------------------------------
 
 	const tableTitles = [
-		'No. Solicitud',
 		'Fecha de Solicitud',
 		'Titular',
-		'Categoria',
+		'Categoría',
 		'Entidad',
+		'Negocio',
+		'No. Cuenta',
 		'Tipo',
-		'Cuenta',
 		'Estado',
 	];
 
@@ -63,12 +63,11 @@ const CardRequests = () => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				'No. Solicitud': item?.queryNumber ?? '-',
+				'No. Cuenta': item?.queryNumber ?? '-',
 				'Entidad': item?.issueEntityIdName ? item?.issueEntityIdName : '',
 				'Fecha de Solicitud': formatDate(item?.createdAt) ?? '-',
 				'Tipo': translateCardRequestType(item?.priority),
 				'Titular': item?.holderName ?? '-',
-				'Cuenta': item?.account ?? '-',
 				'Estado': <StatusForCardRequest currentState={item.status} />,
 			},
 		});

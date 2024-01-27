@@ -1,5 +1,5 @@
-import { useForm, SubmitHandler, Control } from "react-hook-form";
-import { useState, createContext, useEffect } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useState, createContext } from "react";
 import StepsComponent from "../../../components/misc/StepsComponent";
 import EntityGeneralInfo from "./EntityGeneralInfo";
 import EntityCards from "./EntityCards";
@@ -8,52 +8,77 @@ import { deleteUndefinedAttr } from '../../../utils/helpers';
 import SpinnerLoading from '../../../components/misc/SpinnerLoading';
 import { useAppSelector } from "../../../store/hooks";
 import { toast } from "react-toastify";
+import { BasicNomenclator } from "../../../interfaces/ServerInterfaces";
+import { ContextData , CategoriesData } from "../EntityInterfaces";
+import { findMessage , propertyFilter } from "../entityUtilityFunctions";
 
 
 const contextData: ContextData = {};
 
 interface propsDestructured {
 	close: Function;
-	entityCRUD: any;
+	CRUD: any;
 }
 
 export const ProductContext = createContext(contextData);
 
-const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
+const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 
 	const {
 		isLoading,
 		business,
 		addEntity,
-	} = entityCRUD;
+	} = CRUD;
 
-	const { businessId } = useAppSelector( ( state ) => state.session );
+	const { businessId } = useAppSelector((state) => state.session);
 
-	const [data, setData] = useState<categoriesData[]>([]);
+	const [data, setData] = useState<CategoriesData[]>([]);
 	const [imgRelation, setImgRelation] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
+	const [selected, setSelected] = useState<BasicNomenclator[]>([]);
 
+	//This function sets the value of the 'cardImageId' property of the categories (associated image)
 	function unifyData(imgRelation: any,) {
 		imgRelation.forEach((obj: any) => {
 			const key = Object.keys(obj)[0];
 			const flag = data.find((elemento: any) => elemento.name === key);
 			if (flag) {
-				flag.cardImageId = obj[key];
+				flag.cardImageId = obj[key]?.id;
 			}
 		});
 	}
-	
-	const { control, handleSubmit, formState:{errors} } = useForm<Record<string, string | number>>();
 
-	const onSubmit: SubmitHandler<Record<string, string | number | null>> = (dataToSubmit) => { 
-		if (currentStep === 0) {stepUp(); return };
+	const { control, handleSubmit, formState: { errors } } = useForm<Record<string, string | number>>();
+
+	const onSubmit: SubmitHandler<Record<string, string | number | null>> = (dataToSubmit) => {
+	
+		if (currentStep === 0) { stepUp(); return };
 		if (currentStep === 1) { return };
 		dataToSubmit.ownerId = 1;
 		dataToSubmit.businessId = 3;
 		unifyData(imgRelation);
-		addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), data, close);
+
+		if ( data.length === 0 || selected.length === 0 ) {
+			toast.error("Por favor defina una categoría básica");
+			return;
+		}
+		const dataCategories: { id: number, name: string, basic?: boolean | null }[] =  data.map(obj => ({
+			...obj,
+			basic: null,
+		  }));
+		const idObject = selected[0]?.id;
+		const objectMatch = dataCategories.find(objeto => objeto.id === idObject);
+		if (objectMatch) {
+			objectMatch.basic = true;
+		} else {
+			toast.error("Por favor defina una categoría básica");
+		}
+		addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), dataCategories, close);
 	};
+
+
 	toast.error(findMessage(errors));
+
 
 	const stepTitles = [
 		"Información general",
@@ -70,7 +95,8 @@ const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
 		<>
 			<StepsComponent current={currentStep} titles={stepTitles} />
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<ProductContext.Provider value={{ control, stepUp, stepDown, data, setData, business, setImgRelation }}>
+				<ProductContext.Provider
+					value={{ control, stepUp, stepDown, data, setData, business, setImgRelation, imgRelation, selected, setSelected }}>
 					{isLoading && <SpinnerLoading />}
 					{currentStep === 0 && !isLoading && <EntityGeneralInfo />}
 					{currentStep === 1 && !isLoading && <EntityCategories />}
@@ -83,102 +109,3 @@ const NewEntityModal = ({close, entityCRUD}: propsDestructured) => {
 
 export default NewEntityModal;
 
-
-export type Welcome = {
-	id: number;
-	name: string;
-	status: string;
-	slug: string;
-	dni: string;
-	businessCategory: BusinessCategory;
-	logo: Logo | null;
-}
-
-export type BusinessCategory = {
-	id: number;
-	name: string;
-	description: null;
-}
-
-export type Logo = {
-	id: number;
-	src: string;
-	thumbnail: string;
-	blurHash: string;
-}
-
-interface ContextData {
-	control?: Control;
-	stepUp?: Function;
-	stepDown?: Function;
-	data?: categoriesData[];
-	setData?: Function;
-	business?: Welcome[];
-	setImgRelation?: Function;
-}
-
-interface categoriesData {
-	name: string;
-	color: `#${string}`;
-	points?: number;
-	id: number;
-	issueEntityId: number;
-	cardImageId?: number;
-
-}
-
-interface MyObject {
-	address?: string;
-	allowCreateAccount?: boolean;
-	businessId?: string;
-	name?: string;
-	ownerId?: number;
-	phone?: string;
-	responsable?: string;
-	[key: string]: any;
-}
-
-function propertyFilter(objeto: MyObject): MyObject {
-
-
-	const propiedadesPermitidas: Array<keyof MyObject> = [
-		'address',
-		'allowCreateAccount',
-		'businessId',
-		'name',
-		'ownerId',
-		'phone',
-		'responsable',
-	];
-
-	const resultado: Partial<MyObject> = {};
-
-
-	Object.keys(objeto).forEach((clave) => {
-		if (propiedadesPermitidas.includes(clave as keyof MyObject)) {
-			resultado[clave as keyof MyObject] = objeto[clave];
-		}
-	});
-
-	return resultado as MyObject;
-}
-
-function findMessage(obj: any): string | null {
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      const currentProperty = obj[key];
-
-      if (typeof currentProperty === 'object' && currentProperty !== null) {
-        const nestedMessage = findMessage(currentProperty);
-
-        if (nestedMessage !== null) {
-          return nestedMessage;
-        }
-      } else if (key === 'message' && typeof currentProperty === 'string') {
-        return currentProperty;
-      }
-    }
-  }
-
-  return null;
-}

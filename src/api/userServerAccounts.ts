@@ -185,9 +185,8 @@ const useServerAccounts = () => {
     }
   };
 
-
-   // 'account operation / charge'
-   const registerAccountCategory = async (data: any) => {
+  // 'account operation / charge'
+  const registerAccountCategory = async (data: any) => {
     setIsFetching(true);
     try {
       await query.post(`/account/assignCategory`, data)
@@ -228,14 +227,14 @@ export default useServerAccounts;
 
 
 
-function UnifyProperties(objetoBase:any, nuevoObjeto:any) {
+function UnifyProperties(objetoBase: any, nuevoObjeto: any) {
   // Obtener las propiedades comunes entre los dos objetos
   const propiedadesComunes = Object.keys(objetoBase)
-      .filter(propiedad => nuevoObjeto.hasOwnProperty(propiedad));
+    .filter(propiedad => nuevoObjeto.hasOwnProperty(propiedad));
 
   // Reemplazar las propiedades comunes
   propiedadesComunes.forEach(propiedad => {
-      objetoBase[propiedad] = nuevoObjeto[propiedad];
+    objetoBase[propiedad] = nuevoObjeto[propiedad];
   });
 
   // Devolver el objeto base actualizado

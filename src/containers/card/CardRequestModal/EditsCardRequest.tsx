@@ -56,8 +56,6 @@ const EditCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 
 		close();
 	};
-	console.log(id);
-	console.log(cardRequest);
 	const priorityData = [
 		{ id: 1, name: 'Normal', code: "NORMAL" },
 		{ id: 2, name: 'Expresa', code: "EXPRESS" },
@@ -158,7 +156,7 @@ const EditCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 					<AlertContainer
 						onAction={() => CRUD.deleteCardRequest(id, close)}
 						onCancel={setDelAction}
-						title={`Eliminar tarjeta ${cardRequest.queryNumber}`}
+						title={`Eliminar tarjeta ${cardRequest?.queryNumber}`}
 						text='¿Seguro que desea eliminar esta tarjeta del sistema?'
 						loading={CRUD.isFetching}
 					/>

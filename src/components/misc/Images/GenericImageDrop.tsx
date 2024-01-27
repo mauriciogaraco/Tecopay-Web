@@ -29,10 +29,20 @@ const GenericImageDrop = ({
 }: DropInterface & UseControllerProps) => {
   const { imgPreview, uploadImg, isFetching } = useServer();
   const { field } = useController(props);
-
+ 
   useEffect(() => {
 		if (dataIndex && dataUp && Array.isArray(imgPreview) && imgPreview.length > 0 && imgPreview[0]?.id) {
-      dataUp( (c:any) => [...c, {[dataIndex]:imgPreview[0]?.id} ] );
+      dataUp( (c:any) => {
+        const c_copy = [...c];
+        const check = c.find((obj:any) => obj.hasOwnProperty(dataIndex));
+        if (check) {
+          check[dataIndex] = imgPreview[0];
+        } else {
+          const newObject = { [dataIndex]: imgPreview[0] };
+          c_copy.push(newObject);
+        }
+        return c_copy; 
+      });
     }
 	}, [imgPreview]);
 

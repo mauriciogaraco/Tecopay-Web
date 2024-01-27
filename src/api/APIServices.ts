@@ -23,35 +23,33 @@ axiosApiInstance.interceptors.request.use(
     async config => {
 
         const url = config.url || '';
-        let xAppOriginValue = 'Tecopos-Tecopay';    
+        let xAppOriginValue = 'Tecopos-Tecopay';
 
         if (url.includes('idapidev.tecopos.com')) {
             xAppOriginValue = 'Tecopay-Web';
-          } else if (url.includes('apidevpay.tecopos.com')) {
+        } else if (url.includes('apidevpay.tecopos.com')) {
             xAppOriginValue = 'Tecopos-Tecopay';
-          }
-          config.headers['X-App-Origin'] = xAppOriginValue;
-
+        }
+        config.headers['X-App-Origin'] = xAppOriginValue;
 
         const session = store?.getState().session;
         const keys = session?.key;
 
 
-      //@ts-ignore
+        //@ts-ignore
         config.headers = {
             ...config.headers,
             Accept: "*/*",
             "Content-Type": "application/json",
-            
         };
 
-       if (keys !== null) {
-     //@ts-ignore
-           config.headers = {
-               ...config.headers,
-               Authorization: `Bearer ${keys.token}`,
-           };
-       }
+        if (keys !== null) {
+            //@ts-ignore
+            config.headers = {
+                ...config.headers,
+                Authorization: `Bearer ${keys.token}`,
+            };
+        }
         return config;
     },
     error => {
@@ -71,17 +69,17 @@ axiosApiInstance.interceptors.response.use(
             store.dispatch(setKeys(null));
         }
 
-        if ( (error.response.status === 401 || error.response.status === 400 ) && !originalRequest._retry) {
+        if (error.response.status === 401  && !originalRequest._retry) {
             originalRequest._retry = true;
             const keys = store.getState().session.key;
 
             if (keys) {
                 return await postAuth(
-                        `/refresh-token`,
-                        {
-                            refresh_token: keys.refresh_token,
-                        }
-                    )
+                    `/refresh-token`,
+                    {
+                        refresh_token: keys.refresh_token,
+                    }
+                )
                     .then(async response => {
                         const new_session = {
                             token: response.data.token,

@@ -3,10 +3,8 @@ import { setKeys } from "../store/slices/sessionSlice";
 
 let store: any;
 export const injectMediaStore = (_store: any) => {
-    store = _store;
+  store = _store;
 };
-
-const no_authentication = ["/files/"];
 
 const axiosApiInstance = axios.create();
 
@@ -14,37 +12,46 @@ const axiosApiInstance = axios.create();
 //"https://apidevpay.tecopos.com"
 const baseUrl = `${process.env.REACT_APP_API_HOST_TICKET}`;
 
+//Authentication
+//"https://idapidev.tecopos.com/api"  +   "/v1"
+const baseAuthUrl = `${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_VERSION_API}`;
+
 
 // Request interceptor for API calls
 axiosApiInstance.interceptors.request.use(
   async (config) => {
+
+    const url = config.url || '';
+    let xAppOriginValue = 'Tecopos-Tecopay';
+
+    if (url.includes('idapidev.tecopos.com')) {
+      xAppOriginValue = 'Tecopay-Web';
+    } else if (url.includes('apidevpay.tecopos.com')) {
+      xAppOriginValue = 'Tecopos-Tecopay';
+    }
+    config.headers['X-App-Origin'] = xAppOriginValue;
+
+    const session = store?.getState().session;
+    const keys = session?.key;
+    
+
     //@ts-ignore
     config.headers = {
       ...config.headers,
       Accept: "*/*",
-      "Content-Type": "multipart/form-data",
-      "X-App-Origin": "Tecopos-Tecopay",
+      'Content-Type': 'multipart/form-data',
     };
 
-    const session = store.getState().session;
-
-    const rute = config.url?.split(`${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_VERSION_API}`)[1] ?? "";
-
-    
-
-    if (session !== null && !no_authentication.includes(rute)) {
-      const keys = session.key;
+    if (keys !== null) {
       //@ts-ignore
       config.headers = {
         ...config.headers,
         Authorization: `Bearer ${keys.token}`,
       };
     }
-
-    console.log(config.headers)
     return config;
   },
-  (error) => {
+  error => {
     Promise.reject(error);
   }
 );
@@ -57,35 +64,40 @@ axiosApiInstance.interceptors.response.use(
   async function (error) {
     const originalRequest = error.config;
 
+    if (error.response.status === 403) {
+      store.dispatch(setKeys(null));
+      return Promise.reject(error);
+    }
+
     if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const session = store.getState().session.key;
+      const keys = store.getState().session.key;
 
-      if (session) {
-        try {
-          await axios
-            .post(`${process.env.VITE_APP_API_HOST}${process.env.VITE_APP_VERSION_API}/refresh-token`, {
-              refresh_token: session.refresh_token,
-            })
-            .then(async (response) => {
-              const new_session = {
-                token: response.data.token,
-                refresh_token: response.data.refresh_token,
-              };
-              store.dispatch(setKeys(new_session));
+      if (keys) {
+        return await postAuth(
+          `/refresh-token`,
+          {
+            refresh_token: keys.refresh_token,
+          }
+        )
+          .then(async response => {
+            const new_session = {
+              token: response.data.token,
+              refresh_token: response.data.refresh_token,
+            };
 
-              axiosApiInstance.defaults.headers.common["Authorization"] =
-                "Bearer " + response.data.token;
-              return axiosApiInstance(originalRequest);
-            })
-            .catch(async (error) => {
-              localStorage.removeItem("session");
-              return Promise.reject(error);
-            });
-        } catch (e) {
-          localStorage.removeItem("session");
-          return Promise.reject(error);
-        }
+            store.dispatch(setKeys(new_session));
+
+            axiosApiInstance.defaults.headers.common[
+              "Authorization"
+            ] = "Bearer " + response.data.token;
+
+            return axiosApiInstance(originalRequest);
+          })
+          .catch(async error => {
+            store.dispatch(setKeys(null));
+            return Promise.reject(error);
+          });
       }
     }
     return Promise.reject(error);
@@ -101,10 +113,18 @@ const get = async (path: string) => {
   return axiosApiInstance.get(request.url);
 };
 
-
 const post = async (path: string, body: object, config = {}) => {
   const request = {
     url: `${baseUrl + path}`,
+    method: "POST",
+  };
+
+  return axiosApiInstance.post(request.url, body, config);
+};
+
+const postAuth = async (path: string, body: object, config = {}) => {
+  const request = {
+    url: `${baseAuthUrl + path}`,
     method: "POST",
   };
 

@@ -24,7 +24,7 @@ const Charge = ({
 	const id = useAppSelector((state) => state.account.id);
 
 	const onSubmit: SubmitHandler<Record<string, string | number>> = (data) => {
-		let Str = data.address.toString();
+		let Str = defaultAddress ? defaultAddress?.toString() : '';
 		let noSpace = Str.replace(/\s+/g, '');
 		let dataTosend = {
 			...data,
@@ -38,14 +38,15 @@ const Charge = ({
 			onSubmit={handleSubmit(onSubmit)}
 		>
 			<div className='flex flex-col gap-6 items-center w-full justify-center'>
-				<p className='font-semibold text-lg text-center'>Recargar</p>
+				<p className='font-semibold text-lg text-center'>Recargar Cuenta</p>
 				<Input
 					defaultValue={defaultAddress}
 					name='address'
-					label='Dirección a recargar'
+					label='Cuenta a recargar'
 					placeholder='xxxx xxxx xxxx'
 					rules={{ required: 'Campo requerido' }}
 					control={control}
+					disabled={true}
 				></Input>
 				<Input
 

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Blurhash } from "react-blurhash";
 import { CiImageOn } from "react-icons/ci";
+import { useAppSelector } from '../../../store/hooks';
 
 interface ImageInterface {
   className?: string;
@@ -19,6 +20,8 @@ const ImageComponent = ({ className, hash, src }: ImageInterface) => {
       img.onerror = () => setImgLoaded(true);
     }
   }, [src]);
+
+  const { key } = useAppSelector((state) => state.session);
 
   if (!imgLoaded && src && !hash)
     return (
