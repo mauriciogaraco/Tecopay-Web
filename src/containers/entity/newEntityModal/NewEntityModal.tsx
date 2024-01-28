@@ -9,7 +9,7 @@ import SpinnerLoading from '../../../components/misc/SpinnerLoading';
 import { useAppSelector } from "../../../store/hooks";
 import { toast } from "react-toastify";
 import { BasicNomenclator } from "../../../interfaces/ServerInterfaces";
-import { ContextData , CategoriesData } from "../entityInterfaces";
+import { ContextData , CategoriesData } from "../entitiesInterfaces";
 import { findMessage , propertyFilter } from "../entityUtilityFunctions";
 
 

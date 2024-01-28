@@ -13,7 +13,7 @@ import Modal from '../../../components/modals/GenericModal';
 import { Wheel } from '@uiw/react-color';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import Checkbox from '../../../components/forms/CheckboxCat';
-import { ExportModalContainer, ModifyModal } from "../entityInterfaces";
+import { ExportModalContainer, ModifyModal } from "../entitiesInterfaces";
 import { reFormat } from "../entityUtilityFunctions";
 
 
