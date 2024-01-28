@@ -7,7 +7,7 @@ import EditEntityCategories from "./EditEntityCategories";
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import { toast } from "react-toastify";
 import { BasicNomenclator } from "../../../interfaces/ServerInterfaces";
-import { ContextData , CategoriesData } from "../EntityInterfaces";
+import { ContextData , CategoriesData } from "../entityInterfaces";
 import { findMessage , propertyFilter } from "../entityUtilityFunctions";
 
 const contextData: ContextData = {};
@@ -87,7 +87,8 @@ const EditEntityModal = ({
 		} else {
 			toast.error("Por favor defina una categoría básica");
 		}
-		
+		console.log(dataToSubmit);
+		console.log(dataCategories);
 		updateEntity(id, deleteUndefinedAttr(propertyFilter(dataToSubmit)), dataCategories, catToDelete, close)
 	};
 	toast.error(findMessage(errors));

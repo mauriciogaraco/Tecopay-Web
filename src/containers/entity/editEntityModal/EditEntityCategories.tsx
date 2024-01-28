@@ -32,7 +32,7 @@ const EditEntityCategories = () => {
 		['Nombre', 'Color', 'Puntos', 'Básica', ''];
 
 	const tableData: DataTableInterface[] = [];
-
+	console.log(category)
 	category?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
