@@ -10,11 +10,11 @@ const axiosApiInstance = axios.create();
 
 //Data
 //"https://apidevpay.tecopos.com"
-const baseUrl = `${process.env.REACT_APP_API_HOST_TICKET}`;
+const baseUrl = `${process.env.REACT_APP_API_HOST}`;
 
 //Authentication
 //"https://idapidev.tecopos.com/api"  +   "/v1"
-const baseAuthUrl = `${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_VERSION_API}`;
+const baseAuthUrl = `${process.env.REACT_APP_API_HOST_AUTH}`;
 
 
 // Request interceptor for API calls
