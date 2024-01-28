@@ -12,10 +12,10 @@ import Breadcrumb, {
 import { useEffect, useState } from 'react';
 import useServerEntity from '../../api/userServerEntity';
 import useServerCategories from '../../api/userServerCategories';
-import NewEntityModal from './newEntityModal/NewEntityModal';
 import { HomeModernIcon } from '@heroicons/react/24/outline';
 import EditEntityModal from './editEntityModal/EditEntityModal';
 import StatusBadge from '../../components/misc/badges/StatusBadge';
+import NewEntityModal from './newEntityModal/NewEntityModal';
 
 const Entity = () => {
 

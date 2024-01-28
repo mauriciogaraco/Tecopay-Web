@@ -3,11 +3,11 @@ import { setKeys } from "../store/slices/sessionSlice";
 
 //Data
 //"https://apidevpay.tecopos.com"
-const baseUrl = `${process.env.REACT_APP_API_HOST}`;
+const baseUrl = `${process.env.REACT_APP_API_HOST_TICKET}`;
 
 //Authentication
-//"https://idapidev.tecopos.com/api/v1"
-const baseAuthUrl = `${process.env.REACT_APP_API_HOST_AUTH}`;
+//"https://idapidev.tecopos.com/api"  +   "/v1"
+const baseAuthUrl = `${process.env.REACT_APP_API_HOST}${process.env.REACT_APP_VERSION_API}`;
 
 
 //const no_authentication = ["/identity/login"];
