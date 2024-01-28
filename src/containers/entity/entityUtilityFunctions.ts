@@ -1,4 +1,4 @@
-import { FilterInterface } from "./EntityInterfaces"
+import { FilterInterface } from "./entityInterfaces"
 
 
 export function findMessage(obj: any): string | null {

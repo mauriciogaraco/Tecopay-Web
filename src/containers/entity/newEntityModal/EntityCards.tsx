@@ -5,7 +5,7 @@ import GenericImageDrop from "../../../components/misc/Images/GenericImageDrop";
 
 
 const EntityCards = () => {
-	const { control, stepDown, data, setImgRelation, imgRelation } = useContext(ProductContext);
+	const { control, stepDown, data, setImgRelation } = useContext(ProductContext);
 
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
