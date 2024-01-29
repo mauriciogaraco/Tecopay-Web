@@ -1,26 +1,6 @@
 import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import {
-  //updateAreas,
-  //updateCurrentArea,
-  //updateAreaAfterDelete,
-} from "../store/slices/nomenclatorSlice";
 import query from "./APIServices";
-/*import {
-  AreasInterface,
-  PaginateInterface,
-  Movement,
-  DispatchItemInterface,
-  StockAreaProducts,
-  AreaResourcesInterface,
-  ProductInterface,
-  StockInventoryReport,
-  StockReport,
-  ShareArea,
-  StockAviable,
-  StockAviableInterface,
-  StockAvailableCategoriesInterface,
-} from "./../interfaces/ServerInterfaces";*/
 import { toast } from "react-toastify";
 import {
   //exportExcel,

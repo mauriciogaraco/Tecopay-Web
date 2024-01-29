@@ -48,6 +48,7 @@ const useServerUsers = () => {
       .catch((error) => { manageErrors(error); });
     setIsLoading(false);
   };
+  
   const registerUser = async (
     data: any,
     close: Function

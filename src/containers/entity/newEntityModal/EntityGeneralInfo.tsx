@@ -21,7 +21,7 @@ const EntityGeneralInfo = () => {
 							<GenericImageDrop
 								className="h-40 w-40 rounded-full border border-gray-400 m-auto overflow-hidden"
 								control={control}
-								name='imageId'
+								name='profileImageId'
 								text='Logo de la Entidad'
 							/>
 						</div>
@@ -89,11 +89,10 @@ const EntityGeneralInfo = () => {
 						{/*Empty space for button*/}
 					</div>
 					<Button
-						color="slate-500"
+						color="indigo-700"
 						name="Siguiente"
 						full
 						outline
-						textColor="slate-600"
 						type="submit"
 					/>
 				</div>

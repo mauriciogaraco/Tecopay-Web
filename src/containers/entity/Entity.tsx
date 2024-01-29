@@ -16,6 +16,8 @@ import { HomeModernIcon } from '@heroicons/react/24/outline';
 import EditEntityModal from './editEntityModal/EditEntityModal';
 import StatusBadge from '../../components/misc/badges/StatusBadge';
 import NewEntityModal from './newEntityModal/NewEntityModal';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { fetchEntities } from '../../store/slices/EntitySlice';
 
 const Entity = () => {
 
@@ -26,23 +28,25 @@ const Entity = () => {
 		id: number;
 	}>({ state: false, id: 0 });
 
+	const dispatch = useAppDispatch();
+
 	const CRUD:any = useServerEntity();
 	const {
 		getCategory,
 		category,
 		isLoadingCat,
-		setCategory,
 	} = useServerCategories();
 	
 	CRUD.getCategory = getCategory;
-	CRUD.setCategory = setCategory;
 	CRUD.category = category;
 	CRUD.id = editEntityModal.id;
 	CRUD.isLoadingCat = isLoadingCat;
 
 	useEffect(() => {
-		CRUD.getAllEntity(filter);
-	}, [filter]);
+		dispatch(fetchEntities());
+	}, [dispatch]);
+
+	const {entities, loading } = useAppSelector((state)=> state.Entity)
 
 	useEffect(() => {
 		CRUD.getAllBussinnes();
@@ -61,19 +65,21 @@ const Entity = () => {
 	const tableTitles =
 		['Nombre',
 			'Responsable',
+			'Negocio',
 			'Teléfono',
 			'Dirección',
 			'Estado'
 		];
 
 	const tableData: DataTableInterface[] = [];
-	// @ts-ignore
-	CRUD.allEntity?.map((item: any) => {
+	
+	entities?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
 				'Nombre': item?.name,
 				'Responsable':'-',
+				'Negocio': item?.business?.name,
 				'Teléfono': item.phone,
 				'Estado': (
 					<StatusBadge
@@ -107,7 +113,7 @@ const Entity = () => {
 			<GenericTable
 				tableData={tableData}
 				tableTitles={tableTitles}
-				loading={CRUD.isFetching}
+				loading={loading}
 				actions={actions}
 				rowAction={rowAction}
 				paginateComponent={

@@ -4,14 +4,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import AppContainer from '../containers/AppContainer';
 import { Suspense, lazy, useEffect } from 'react';
 import { useAppDispatch } from '../store/hooks';
-import { fetchRole } from '../store/slices/roleSlice';
+import { fetchLoggedUser } from '../store/slices/loggedUserSlice';
 import SpinnerLoading from '../components/misc/SpinnerLoading';
 
 const AppRoute = () => {
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		dispatch(fetchRole());
+		dispatch(fetchLoggedUser());
 	}, [dispatch]);
 
 	const LazyDashboard = lazy(() => import('../pages/DashboardPage'));

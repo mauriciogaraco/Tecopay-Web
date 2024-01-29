@@ -31,7 +31,7 @@ const NewUserModalVariantOne = ({
 
 	const role = useAppSelector((state) =>
 		// @ts-ignore
-		state.Roles.roles.roles.map((i) => i.code),
+		state.User.user.roles.map((i) => i.code),
 	);
 	let roleToFind = 'ADMIN';
 

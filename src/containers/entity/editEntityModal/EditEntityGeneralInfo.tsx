@@ -9,25 +9,23 @@ import AlertContainer from '../../../components/misc/AlertContainer';
 import Modal from '../../../components/modals/GenericModal';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
-
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { fetchEntities } from '../../../store/slices/EntitySlice';
 
 const EditEntityGeneralInfo = () => {
-	const { control, close, business, allEntity, id, getCategory, isFetching, deleteEntity } = useContext(ProductContext);
+	const { entity, control, close, business, id, isFetching, deleteEntity } = useContext(ProductContext);
 	const [delAction, setDelAction] = useState(false);
 
-	let filteredArray = allEntity.filter((obj: any) => obj.id === id) ?? [];
-
-	useEffect(() => {
-		getCategory && getCategory(id)
-	}, [id]);
+	const dispatch = useAppDispatch();
 
 	function deleteEntityModal() {
 		setDelAction(true);
 	}
-	console.log(id)
+
 	function deleteEntityAction() {
 		if (id) {
-			deleteEntity && deleteEntity(id, close);
+			deleteEntity && deleteEntity(id, close).then(
+				() => dispatch(fetchEntities()));
 		}
 	}
 
@@ -35,16 +33,16 @@ const EditEntityGeneralInfo = () => {
 		<div className="h-auto border border-slate-300 rounded p-2 overflow-y-visible">
 			<div className="max-h-96 h-96 overflow-y-auto z-20">
 				<div>
-					<p className='mb-4 font-semibold text-lg text-center'>{filteredArray[0]?.name}</p>
+					<p className='mb-4 font-semibold text-lg text-center'>{entity?.name}</p>
 					<div className="mt-2">
 						<GenericImageDrop
 							className="h-40 w-40 rounded-full border border-gray-400 m-auto overflow-hidden"
 							control={control}
 							name='imageId'
 							text='Logo de la Entidad'
-							defaultValue={filteredArray[0]?.profileImage?.id ? filteredArray[0]?.profileImage?.id : undefined}
-							previewDefault={filteredArray[0]?.profileImage?.url ? `https://apidevpay.tecopos.com${filteredArray[0]?.profileImage?.url}` : undefined}
-							previewHash={filteredArray[0]?.profileImage?.hash ? filteredArray[0]?.profileImage?.hash : undefined}
+							defaultValue={entity?.profileImage?.id ? entity?.profileImage?.id : undefined}
+							previewDefault={entity?.profileImage?.url ? `https://apidevpay.tecopos.com${entity?.profileImage?.url}` : undefined}
+							previewHash={entity?.profileImage?.hash ? entity?.profileImage?.hash : undefined}
 						/>
 					</div>
 
@@ -56,15 +54,16 @@ const EditEntityGeneralInfo = () => {
 								name='businessId'
 								control={control}
 								rules={{ required: 'Campo requerido' }}
+								defaultValue={entity?.business?.name}
 							/>
 						</div><div className="mt-2">
 							<Input
 								name='name'
 								label='Nombre de la entidad'
-								placeholder={filteredArray[0]?.name}
+								placeholder={entity?.name}
 								control={control}
 								rules={{ required: 'Campo requerido' }}
-								defaultValue={filteredArray[0]?.name}
+								defaultValue={entity?.name}
 							></Input>
 						</div><div className="mt-2">
 							<AsyncComboBox
@@ -79,7 +78,7 @@ const EditEntityGeneralInfo = () => {
 							<Input
 								name='phone'
 								label='Telefono'
-								placeholder={filteredArray[0]?.phone}
+								placeholder={entity?.phone}
 								control={control}
 								rules={{
 									validate: (value) => {
@@ -87,23 +86,23 @@ const EditEntityGeneralInfo = () => {
 										return isValidPhoneNumber || 'Inserte número de teléfono válido';
 									},
 								}}
-								defaultValue={filteredArray[0]?.phone}
+								defaultValue={entity?.phone}
 							></Input>
 						</div><div className="mt-2">
 							<Input
 								name='address'
 								label='Direccion'
-								placeholder={filteredArray[0]?.address}
+								placeholder={entity?.address}
 								control={control}
 								rules={{ required: 'Campo requerido' }}
-								defaultValue={filteredArray[0]?.address}
+								defaultValue={entity?.address}
 							></Input>
 						</div><div className="mt-7 flex items-center justify-center m-auto">
 
 							<Toggle
 								name="allowCreateAccount"
 								control={control}
-								defaultValue={filteredArray[0]?.allowCreateAccount}
+								defaultValue={entity?.allowCreateAccount}
 								title="Permitir solicitar tarjetas desde la APK"
 							/>
 						</div>
@@ -127,13 +126,13 @@ const EditEntityGeneralInfo = () => {
 				</div>
 				<div>
 					<Button
-						color="slate-500"
+						color="indigo-700"
 						name="Siguiente"
 						key={2}
 						full
 						outline
-						textColor="slate-600"
 						type="submit"
+						
 					/>
 				</div>
 
@@ -143,7 +142,7 @@ const EditEntityGeneralInfo = () => {
 					<AlertContainer
 						onAction={() => deleteEntityAction()}
 						onCancel={setDelAction}
-						title={`Eliminar ${filteredArray[0]?.name}`}
+						title={`Eliminar ${entity?.name}`}
 						text='¿Seguro que desea eliminar esta entidad del sistema?'
 						loading={isFetching}
 					/>

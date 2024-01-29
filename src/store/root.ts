@@ -16,13 +16,11 @@ import {
 	combineReducers,
 } from '@reduxjs/toolkit';
 import sessionSlice from './slices/sessionSlice';
-import nomenclatorSlice from './slices/nomenclatorSlice';
-import configurationsKeySlice from './slices/configurationsKeySlice';
 import initSlice from './slices/initSlice';
 import accountreducer from './slices/accountSlice';
 import CardReducer from './slices/cardsSlice';
 import EntityReducer from './slices/EntitySlice';
-import initReducer from './slices/roleSlice';
+import loggedUserSlice from './slices/loggedUserSlice'
 const persistConfig = {
 	key: 'root',
 	storage,
@@ -32,12 +30,10 @@ const persistConfig = {
 const rootReducer = combineReducers({
 	session: sessionSlice,
 	init: initSlice,
-	nomenclator: nomenclatorSlice,
-	configurationsKey: configurationsKeySlice,
 	account: accountreducer,
 	cards: CardReducer,
 	Entity: EntityReducer,
-	Roles: initReducer,
+	User:loggedUserSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -114,9 +114,9 @@ const useServerEntity = () => {
               obj.issueEntityId = entityID;
               addCategory(obj)
             } else {
-              if (typeof obj.cardImageId === 'object' && obj.cardImageId !== null && 'id' in obj.cardImageId) {
-                obj.cardImageId = obj.cardImageId.id;
-              }
+              //if (typeof obj.cardImageId === 'object' && obj.cardImageId !== null && 'id' in obj.cardImageId) {
+              //  obj.cardImageId = obj.cardImageId.id;
+              //}
               updateCategory(obj.id, obj)
             }
           } catch (error) {

@@ -17,7 +17,7 @@ import Checkbox from '../../../components/forms/CheckboxCat';
 
 const EditEntityCategories = () => {
 
-	const { stepUp, stepDown, getCategory, category, isLoadingCat, setCategory, setCatToDelete, selected, setSelected } = useContext(ProductContext);
+	const { entity, stepUp, stepDown, category, setCategory, setCatToDelete, selected, setSelected } = useContext(ProductContext);
 	const [addEntityCategory, setaddEntityCategory] = useState(false);
 	const [modifyEntityCategory, setmodifyEntityCategory] = useState(false);
 	const [modifyIndex, setmodifyIndex] = useState(0);
@@ -28,11 +28,12 @@ const EditEntityCategories = () => {
 	}
 
 	//Table ------------------------------------------------------------------------
+
 	const tableTitles =
 		['Nombre', 'Color', 'Puntos', 'Básica', ''];
 
 	const tableData: DataTableInterface[] = [];
-	console.log(category)
+
 	category?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
@@ -75,7 +76,6 @@ const EditEntityCategories = () => {
 					<GenericTable
 						tableData={tableData}
 						tableTitles={tableTitles}
-						loading={isLoadingCat}
 						actions={actions}
 					/>
 				</div>
@@ -89,12 +89,11 @@ const EditEntityCategories = () => {
 						textColor="slate-600"
 					/>
 					<Button
-						color="slate-500"
+						color="indigo-700"
 						action={stepUp}
 						name="Siguiente"
 						full
 						outline
-						textColor="slate-600"
 					/>
 
 				</div>

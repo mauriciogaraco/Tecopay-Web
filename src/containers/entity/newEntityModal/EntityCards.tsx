@@ -6,7 +6,7 @@ import GenericImageDrop from "../../../components/misc/Images/GenericImageDrop";
 
 const EntityCards = () => {
 	const { control, stepDown, data, setImgRelation } = useContext(ProductContext);
-
+	
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
 			<div className="max-h-96 min-h-96 h-96 overflow-y-auto">
@@ -19,7 +19,7 @@ const EntityCards = () => {
 								<GenericImageDrop
 									className="h-32 rounded-md border border-gray-400 m-auto overflow-hidden"
 									control={control}
-									name={`cardImageId${obj.id}`}
+									name={`${obj.id}-ImageId`}
 									key={obj.id}
 									dataUp={setImgRelation}
 									rules={{ required: 'Las imágenes de categorías son requeridas' }}
@@ -44,10 +44,9 @@ const EntityCards = () => {
 					textColor="slate-600"
 				/>
 				<Button
-					color="slate-500"
+					color="indigo-700"
 					full
 					outline
-					textColor="slate-600"
 					type="submit"
 					name="Crear entidad"
 				/>

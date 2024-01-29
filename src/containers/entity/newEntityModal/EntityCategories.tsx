@@ -92,11 +92,10 @@ const EntityCategories = () => {
 						textColor="slate-600"
 					/>
 					<Button
-						color="slate-500"
+						color="indigo-700"
 						name="Siguiente"
 						full
 						outline
-						textColor="slate-600"
 						action={stepUp}
 					/>
 

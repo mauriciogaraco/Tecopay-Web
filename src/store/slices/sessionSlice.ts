@@ -4,12 +4,14 @@ interface InitialState{
     key:{token:string, refresh_token:string}|null,
     businessId:number|null,
     staticBar:boolean
+    userDetails:null
 }
 
 const initialState:InitialState = {
     key:null,
     businessId:null,
-    staticBar:true
+    staticBar:true,
+    userDetails:null,
 }
 
 const sessionSlice = createSlice({
@@ -19,6 +21,7 @@ const sessionSlice = createSlice({
         setKeys:(state,action)=>({...state,key:action.payload}),
         setBusinessId:(state,action)=>({...state,businessId:action.payload}),
         changeStaticBar:(state)=>({...state,staticBar:!state.staticBar}),
+        setUserDetails:(state,action)=>({...state,userDetails:action.payload}),
     },
 }
 );

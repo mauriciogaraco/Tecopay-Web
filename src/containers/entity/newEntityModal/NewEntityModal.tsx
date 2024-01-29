@@ -6,11 +6,12 @@ import EntityCards from "./EntityCards";
 import EntityCategories from "./EntityCategories";
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import SpinnerLoading from '../../../components/misc/SpinnerLoading';
-import { useAppSelector } from "../../../store/hooks";
 import { toast } from "react-toastify";
 import { BasicNomenclator } from "../../../interfaces/ServerInterfaces";
 import { ContextData , CategoriesData } from "../entitiesInterfaces";
 import { findMessage , propertyFilter } from "../entityUtilityFunctions";
+import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { fetchEntities } from '../../../store/slices/EntitySlice';
 
 
 const contextData: ContextData = {};
@@ -31,6 +32,7 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 	} = CRUD;
 
 	const { businessId } = useAppSelector((state) => state.session);
+	const dispatch = useAppDispatch();
 
 	const [data, setData] = useState<CategoriesData[]>([]);
 	const [imgRelation, setImgRelation] = useState([]);
@@ -47,15 +49,18 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 			}
 		});
 	}
-
+	
 	const { control, handleSubmit, formState: { errors } } = useForm<Record<string, string | number>>();
 
 	const onSubmit: SubmitHandler<Record<string, string | number | null>> = (dataToSubmit) => {
 	
 		if (currentStep === 0) { stepUp(); return };
 		if (currentStep === 1) { return };
+
 		dataToSubmit.ownerId = 1;
-		dataToSubmit.businessId = 3;
+		const businessId = business.find((obj:any) => obj.name === dataToSubmit.businessId);
+		dataToSubmit.businessId = businessId.id;
+
 		unifyData(imgRelation);
 
 		if ( data.length === 0 || selected.length === 0 ) {
@@ -66,6 +71,7 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 			...obj,
 			basic: null,
 		  }));
+
 		const idObject = selected[0]?.id;
 		const objectMatch = dataCategories.find(objeto => objeto.id === idObject);
 		if (objectMatch) {
@@ -73,9 +79,12 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 		} else {
 			toast.error("Por favor defina una categoría básica");
 		}
-		addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), dataCategories, close);
-	};
 
+		addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), dataCategories, close).then(
+			()=> dispatch(fetchEntities())
+		);
+		
+	};
 
 	toast.error(findMessage(errors));
 

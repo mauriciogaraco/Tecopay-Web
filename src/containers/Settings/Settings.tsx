@@ -46,7 +46,7 @@ const Entity = () => {
 	const tableData: DataTableInterface[] = [];
 	// eslint-disable-next-line array-callback-return
 
-	const items = useAppSelector((state) => state.Entity.Entity);
+	const items = useAppSelector((state) => state.Entity);
 
 	// @ts-expect-error
 	items?.items.map((item: any) => {
