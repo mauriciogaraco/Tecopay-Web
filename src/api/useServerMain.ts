@@ -10,7 +10,7 @@ export interface ImageLoad {
 
 //Data
 //"https://apidevpay.tecopos.com"
-const baseUrl = `${process.env.REACT_APP_API_HOST_TICKET}`;
+const baseUrl = `${process.env.REACT_APP_API_HOST}`;
 
 export const useServer = () => {
 

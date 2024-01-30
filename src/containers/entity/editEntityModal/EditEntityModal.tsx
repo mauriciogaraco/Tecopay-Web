@@ -1,6 +1,5 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState, createContext, useEffect } from "react";
-import StepsComponent from "../../../components/misc/StepsComponent";
 import EditEntityGeneralInfo from "./EditEntityGeneralInfo";
 import EditEntityCards from "./EditEntityCards";
 import EditEntityCategories from "./EditEntityCategories";
@@ -11,6 +10,13 @@ import { ContextData, CategoriesData } from "../entitiesInterfaces";
 import { findMessage, propertyFilter } from "../entityUtilityFunctions";
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { fetchEntities } from '../../../store/slices/EntitySlice';
+import TabNav from "../../../components/navigation/TabNav";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+	faCreditCard,
+	faList,
+	faCircleInfo,
+} from "@fortawesome/free-solid-svg-icons";
 
 
 const contextData: ContextData = {};
@@ -64,6 +70,7 @@ const EditEntityModal = ({
 	const [currentStep, setCurrentStep] = useState(0);
 	const [catToDelete, setCatToDelete] = useState<number[]>([]);
 	const [selected, setSelected] = useState<BasicNomenclator[]>([]);
+	const [currentTab, setCurrentTab] = useState("info");
 
 	useEffect(() => {
 		entity && setCategory(entity.categories);
@@ -74,8 +81,6 @@ const EditEntityModal = ({
 	const { control, handleSubmit, formState: { errors } } = useForm<Record<string, string | number>>();
 
 	const onSubmit: SubmitHandler<any> = async (dataToSubmit) => {
-		if (currentStep === 0) { stepUp(); return };
-		if (currentStep === 1) { return };
 
 		dataToSubmit.ownerId = 1;
 
@@ -95,17 +100,7 @@ const EditEntityModal = ({
 				flag.cardImageId = obj[key]?.id;
 			}
 		});
-		
-		console.log(category)
-		console.log('dataToSubmit');
-		console.log(dataToSubmit)
-		console.log('dataCategories');
-		console.log(dataCategories)
-		console.log('catToDelete');
-		console.log(catToDelete)
-		console.log('imgRelation');
-		console.log(imgRelation);
-		
+
 		if (!dataCategories?.every((obj: any) => obj.cardImageId !== null && obj.cardImageId !== undefined)) {
 			toast.error('Las imágenes de categorías son requeridas');
 			return;
@@ -132,12 +127,6 @@ const EditEntityModal = ({
 	};
 	toast.error(findMessage(errors));
 
-	//Step Component Data-------------------------------------------------------------
-	const stepTitles = [
-		"Información general",
-		"Categorías",
-		"Tarjetas"
-	];
 
 	const stepUp = () => setCurrentStep(currentStep + 1);
 	const stepDown = () => {
@@ -146,36 +135,57 @@ const EditEntityModal = ({
 
 	//----------------------------------------------------------------------------------------
 
+	const tabs = [
+		{
+			icon: <FontAwesomeIcon icon={faCircleInfo} />,
+			name: "Información general",
+			href: "info",
+			current: currentTab === "details",
+		},
+		{
+			icon: <FontAwesomeIcon icon={faList} />,
+			name: "Categorías",
+			href: "categories",
+			current: currentTab === "compounds",
+		},
+		{
+			icon: <FontAwesomeIcon icon={faCreditCard} />,
+			name: "Tarjetas",
+			href: "cards",
+			current: currentTab === "attribute",
+		},
+	];
+
 	return (
 		<>
-			<StepsComponent current={currentStep} titles={stepTitles} />
-			<form onSubmit={handleSubmit(onSubmit)}>
-				<ProductContext.Provider value={
-					{
-						id,
-						entity,
-						control,
-						deleteEntity,
-						close,
-						business,
-						catToDelete,
-						isFetching,
-						selected,
-						category,
-						setCategory,
-						stepUp,
-						stepDown,
-						setImgRelation,
-						setData,
-						setCatToDelete,
-						setSelected,
+			<TabNav action={setCurrentTab} tabs={tabs} />
+			<ProductContext.Provider value={
+				{
+					id,
+					entity,
+					control,
+					deleteEntity,
+					close,
+					business,
+					catToDelete,
+					isFetching,
+					selected,
+					category,
+					setCategory,
+					stepUp,
+					stepDown,
+					setImgRelation,
+					setData,
+					setCatToDelete,
+					setSelected,
 
-					}}>
-					{currentStep === 0 && <EditEntityGeneralInfo />}
-					{currentStep === 1 && <EditEntityCategories />}
-					{currentStep === 2 && <EditEntityCards />}
-				</ProductContext.Provider>
-			</form>
+				}}>
+				<form onSubmit={handleSubmit(onSubmit)}>
+					{currentTab === "info" && <EditEntityGeneralInfo />}
+					{currentTab === "categories" && <EditEntityCategories />}
+					{currentTab === "cards" && <EditEntityCards />}
+				</form>
+			</ProductContext.Provider>
 		</>
 	);
 };

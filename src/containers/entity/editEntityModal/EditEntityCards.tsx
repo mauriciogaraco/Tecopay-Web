@@ -59,11 +59,13 @@ const EditEntityCards = () => {
 			return obj1;
 		}
 	});
+	console.log('cat_imgDetails');
+	console.log(cat_imgDetails);
 
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
 			<div className="max-h-96 min-h-96 h-96 overflow-y-auto">
-				<p className='mb-4 font-semibold text-lg text-center'>Diseño de tarjetas para categorías</p>
+				<p className='mb-4 font-semibold text-lg text-center'>Tarjetas</p>
 
 				{loading ? <div className='h-3/4 flex justify-center items-center'><SpinnerLoading /></div> :
 					<div className="grid grid-cols-2 gap-2 grid-flow-row auto-rows-max">
@@ -90,14 +92,7 @@ const EditEntityCards = () => {
 					</div>}
 			</div>
 			<div className="grid grid-cols-2 gap-3 py-2 mt-9 mx-2">
-				<Button
-					color="slate-500"
-					action={stepDown}
-					name="Atrás"
-					full
-					outline
-					textColor="slate-600"
-				/>
+				<div></div>
 				<Button
 					color="indigo-700"
 					full

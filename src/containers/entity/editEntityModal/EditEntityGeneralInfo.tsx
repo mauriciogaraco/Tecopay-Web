@@ -127,7 +127,7 @@ const EditEntityGeneralInfo = () => {
 				<div>
 					<Button
 						color="indigo-700"
-						name="Siguiente"
+						name="Actualizar entidad"
 						key={2}
 						full
 						outline

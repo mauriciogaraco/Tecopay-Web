@@ -2,16 +2,20 @@ import { Route, Routes } from 'react-router-dom';
 import NotFoundpage from '../pages/NotFoundPage';
 import 'react-toastify/dist/ReactToastify.css';
 import AppContainer from '../containers/AppContainer';
-import { Suspense, lazy, useEffect } from 'react';
+import { lazy, useEffect } from 'react';
 import { useAppDispatch } from '../store/hooks';
 import { fetchLoggedUser } from '../store/slices/loggedUserSlice';
-import SpinnerLoading from '../components/misc/SpinnerLoading';
+import { fetchEntities } from '../store/slices/EntitySlice';
 
 const AppRoute = () => {
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
 		dispatch(fetchLoggedUser());
+	}, [dispatch]);
+
+	useEffect(() => {
+		dispatch(fetchEntities());
 	}, [dispatch]);
 
 	const LazyDashboard = lazy(() => import('../pages/DashboardPage'));
@@ -25,24 +29,20 @@ const AppRoute = () => {
 	const LazyCurrencyExchangeRate = lazy(() => import('../containers/currencys/currencyExchangeRate/CurrencyExchangeRate'));
 
 	return (
-		<Suspense fallback={ 
-		<div className='w-screen h-screen flex justify-center items-center'><SpinnerLoading /></div>
-		 }>
-			<Routes>
-				<Route path='/' element={<AppContainer />}>
-					<Route index Component={LazyDashboard} />
-					<Route path='/accounts' Component={LazyAccounts} />
-					<Route path='/cards/all' Component={LazyCard} />
-					<Route path='/cards/requests' Component={LazyCardRequests} />
-					<Route path='/entities' Component={LazyEntity} />
-					<Route path='/accounts/details' Component={LazyAccountDetails} />
-					<Route path='/users' Component={LazyUsers} />
-					<Route path='/coins/list' Component={LazyCurrencyList} />
-					<Route path='/coins/exchangeRate' Component={LazyCurrencyExchangeRate} />
-				</Route>
-				<Route path='/*' element={<NotFoundpage />} />
-			</Routes>
-		</Suspense>
+		<Routes>
+			<Route path='/' element={<AppContainer />}>
+				<Route index Component={LazyDashboard} />
+				<Route path='/accounts' Component={LazyAccounts} />
+				<Route path='/cards/all' Component={LazyCard} />
+				<Route path='/cards/requests' Component={LazyCardRequests} />
+				<Route path='/entities' Component={LazyEntity} />
+				<Route path='/accounts/details' Component={LazyAccountDetails} />
+				<Route path='/users' Component={LazyUsers} />
+				<Route path='/coins/list' Component={LazyCurrencyList} />
+				<Route path='/coins/exchangeRate' Component={LazyCurrencyExchangeRate} />
+			</Route>
+			<Route path='/*' element={<NotFoundpage />} />
+		</Routes>
 	);
 };
 
