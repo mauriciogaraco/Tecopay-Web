@@ -48,9 +48,9 @@ const EntityCategories = () => {
 					setSelected={basicCategory}
 					displayCol={true}
 				/>,
-				'': <Button name='Editar' action={() => rowAction(item.id)} color="slate-500"
+				'': <div className="flex justify-end mr-3"><Button name='Editar' action={() => rowAction(item.id)} color="slate-500"
 					outline
-					textColor="slate-600" />
+					textColor="slate-600" /></div>
 			},
 		});
 	});

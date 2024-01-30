@@ -88,10 +88,13 @@ const Accounts = () => {
 
 		let final_data = [...allAccounts]
 
-		if (filter?.search) {
-			final_data = findAddress( final_data, filter?.search)
+		if (filter?.search && (typeof filter?.search === 'string')) {
+			const searchStringLowercase = filter?.search.toLowerCase().replace(/\s/g, '');
+			final_data = final_data.filter((object: any) => {
+				const objectNameLowercase = object.address.toLowerCase().replace(/\s/g, '');
+				return objectNameLowercase.includes(searchStringLowercase);
+			});
 		}
-		console.log(final_data)
 
 		if (filter?.entities) {
 			final_data = final_data.filter(objeto => objeto.issueEntity?.id === filter?.entities)
@@ -114,17 +117,6 @@ const Accounts = () => {
 		console.log('matchedObject ' + matchedObject)
 		return matchedObject ? matchedObject.name : null;
 	};
-
-	function findAddress(arrayDeObjetos: any[], direccionBuscada: string) {
-		//setSearchLoading(true);
-		for (let i = 0; i < arrayDeObjetos.length; i++) {
-			if (arrayDeObjetos[i].address === direccionBuscada.replace(/\s/g, '')) {
-				return [arrayDeObjetos[i]];
-			}
-		}
-		//setSearchLoading(false);
-		return [];
-	}
 
 	//filter_________________________________________________________________________________________________
 

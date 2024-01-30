@@ -9,7 +9,7 @@ import AlertContainer from '../../../components/misc/AlertContainer';
 import Modal from '../../../components/modals/GenericModal';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
+import { useAppDispatch } from '../../../store/hooks';
 import { fetchEntities } from '../../../store/slices/EntitySlice';
 
 const EditEntityGeneralInfo = () => {
@@ -38,7 +38,7 @@ const EditEntityGeneralInfo = () => {
 						<GenericImageDrop
 							className="h-40 w-40 rounded-full border border-gray-400 m-auto overflow-hidden"
 							control={control}
-							name='imageId'
+							name='profileImageId'
 							text='Logo de la Entidad'
 							defaultValue={entity?.profileImage?.id ? entity?.profileImage?.id : undefined}
 							previewDefault={entity?.profileImage?.url ? `https://apidevpay.tecopos.com${entity?.profileImage?.url}` : undefined}
@@ -132,7 +132,7 @@ const EditEntityGeneralInfo = () => {
 						full
 						outline
 						type="submit"
-						
+
 					/>
 				</div>
 

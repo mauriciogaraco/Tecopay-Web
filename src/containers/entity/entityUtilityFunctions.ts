@@ -30,6 +30,9 @@ export function propertyFilter(objeto: FilterInterface): FilterInterface {
 		'ownerId',
 		'phone',
 		'responsable',
+		'profileImageId',
+		'imageId',
+
 	];
 	const resultado: Partial<FilterInterface> = {};
 	Object.keys(objeto).forEach((clave) => {

@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { ProductContext } from "./EditEntityModal";
 import Input from '../../../components/forms/Input';
 import Button from '../../../components/misc/Button';
@@ -8,7 +8,7 @@ import GenericTable, {
 import {
 	PlusIcon,
 } from '@heroicons/react/24/outline';
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Modal from '../../../components/modals/GenericModal';
 import { Wheel } from '@uiw/react-color';
 import { TrashIcon } from '@heroicons/react/24/outline';
@@ -17,13 +17,13 @@ import Checkbox from '../../../components/forms/CheckboxCat';
 
 const EditEntityCategories = () => {
 
-	const { entity, stepUp, stepDown, category, setCategory, setCatToDelete, selected, setSelected } = useContext(ProductContext);
+	const { category, setCategory, setCatToDelete, selected, setSelected } = useContext(ProductContext);
 	const [addEntityCategory, setaddEntityCategory] = useState(false);
 	const [modifyEntityCategory, setmodifyEntityCategory] = useState(false);
 	const [modifyIndex, setmodifyIndex] = useState(0);
 
 
-	function basicCategory (params: any) {
+	function basicCategory(params: any) {
 		setSelected && setSelected(params);
 	}
 
@@ -41,15 +41,15 @@ const EditEntityCategories = () => {
 				'Nombre': item?.name,
 				'Color': <div style={{ backgroundColor: item.color, width: '20px', height: '20px', margin: 'auto' }}></div>,
 				'Puntos': item.points,
-				'Básica': <Checkbox 
-				data={[{ id: item.id, name: '' }]} 
-				selected={selected} 
-				setSelected={basicCategory} 
-				displayCol={true} 
+				'Básica': <Checkbox
+					data={[{ id: item.id, name: '' }]}
+					selected={selected}
+					setSelected={basicCategory}
+					displayCol={true}
 				/>,
-				'': <Button name='Editar' action={() => rowAction(item.id)} color="slate-500"
-					outline
-					textColor="slate-600" />
+				'': <div className="flex justify-end mr-3"><Button name='Editar' action={() => rowAction(item.id)} color="slate-500"
+				outline
+				textColor="slate-600" type={'button'} /></div> 
 			},
 		});
 	});
@@ -65,7 +65,6 @@ const EditEntityCategories = () => {
 			action: () => setaddEntityCategory(true),
 		},
 	];
-
 
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
@@ -123,9 +122,10 @@ export default EditEntityCategories;
 
 const AddModalContainer = ({ action, categories, close }: ExportModalContainer) => {
 	const [hex, setHex] = useState('#fff');
-	const { control: controlForm, handleSubmit: handleSubmitAdd } = useForm<Record<string, string | number>>();
+	const { control: controlForm, handleSubmit: handleSubmitAdd, watch } = useForm<Record<string, string | number>>();
 
-	const submit: SubmitHandler<Record<string, string | number>> = (data: any) => {
+	const submit = () => {
+		let data: Record<string, string | number | boolean> = watch();
 		data.color = hex;
 		data.id = getNextAvailableId(categories);
 		data.newCat = true;
@@ -162,7 +162,7 @@ const AddModalContainer = ({ action, categories, close }: ExportModalContainer) 
 				</div>
 
 				<div className="flex justify-end py-2">
-					<Button color="slate-600" name="Aceptar" type="submit" />
+					<Button color="slate-600" name="Aceptar" type={'button'} action={() => submit()} />
 				</div>
 			</div>
 		</form>
@@ -171,7 +171,7 @@ const AddModalContainer = ({ action, categories, close }: ExportModalContainer) 
 
 const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCat }: ModifyModalContainer) => {
 	const [hex, setHex] = useState('#fff');
-	const { control: controlForm, handleSubmit: handleSubmitAdd } = useForm<Record<string, string | number>>();
+	const { control: controlForm, handleSubmit: handleSubmitAdd, watch } = useForm<Record<string, string | number>>();
 
 	function deleteCategory(indexModify: number) {
 		let deleteObject = categories.find(obj => obj.id === indexModify)
@@ -187,17 +187,17 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 	}
 
 	const renderInfo = categories.find(objeto => objeto.id === indexModify);
-	const submitCategories: SubmitHandler<Record<string, string | number>> = (data: any) => {
 
+	const submitCategories = () => {
+		let data = watch();
 		if (indexModify !== undefined) {
 			let finalCategories = [...categories];
-			data.color = hex != '#fff' ? hex : renderInfo?.color;
+			data.color = hex != '#fff' ? hex : renderInfo?.color ? renderInfo?.color : '#fff';
 			data.id = indexModify;
 			finalCategories = finalCategories.map(obj => (obj.id === indexModify ? { ...obj, ...data } : obj));
-			//finalCategories[indexModify] = data
 			action && action(finalCategories);
-			close && close();
 		}
+		close && close();
 	};
 
 	return (
@@ -245,7 +245,7 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 						/>
 					</div>
 					<div>
-						<Button color="slate-600" name="Aceptar" type="submit" />
+						<Button color="slate-600" name="Aceptar" type={'button'} action={() => submitCategories()} />
 					</div>
 				</div>
 			</div>
@@ -253,7 +253,7 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 	);
 };
 
-function getNextAvailableId(objects: {id: number}[]): number {
+function getNextAvailableId(objects: { id: number }[]): number {
 	const existingIds = objects.map(obj => obj.id);
 	const maxId = Math.max(...existingIds);
 

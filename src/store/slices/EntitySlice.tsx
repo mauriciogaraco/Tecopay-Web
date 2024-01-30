@@ -13,21 +13,30 @@ type Entity = {
   profileImageId: number;
   owner: Owner;
   business: Business;
-  category?: number;
+  category: Category[];
   profileImage: ProfileImage;
-  categories: categories[];
 }
 
-export type categories = {
-  id: number;
+export type Category = {
   name: string;
   color: string;
   cardImageId: number;
+  cardImage: CardImage;
+  IssueEntityCategory: IssueEntityCategory;
+}
+
+export type IssueEntityCategory = {
   issueEntityId: number;
+  categoryId: number;
   createdAt: Date;
   updatedAt: Date;
 }
 
+export type CardImage = {
+  id: number;
+  url: string;
+  hash: string;
+}
 
 type Business = {
   externalId: number;
@@ -44,7 +53,6 @@ type ProfileImage = {
   url: string;
   hash: string;
 }
-
 
 interface InitialState {
   loading: boolean;
@@ -64,29 +72,29 @@ export const fetchEntities = createAsyncThunk(
         return [];
       }
 
-      // Extract the unique 'id' values
-      const uniqueIds = Array.from(new Set(entities.map((entity: Entity) => entity.id)));
+      //  // Extract the unique 'id' values
+      //  const uniqueIds = Array.from(new Set(entities.map((entity: Entity) => entity.id)));
 
-      // Make individual requests for each 'id' to the categories endpoint
-      const entityCategoriesPromises = uniqueIds.map(async (id) => {
-        const detailsResponse = await query.get(`/categories/${id}`);
-        return detailsResponse.data; // Assuming detailsResponse.data is an array
-      });
+      //  // Make individual requests for each 'id' to the categories endpoint
+      //  const entityCategoriesPromises = uniqueIds.map(async (id) => {
+      //    const detailsResponse = await query.get(`/categories/${id}`);
+      //    return detailsResponse.data; // Assuming detailsResponse.data is an array
+      //  });
 
-      // Wait for all requests to complete
-      const entityCategories = await Promise.all(entityCategoriesPromises);
+      //  // Wait for all requests to complete
+      //  const entityCategories = await Promise.all(entityCategoriesPromises);
 
-      // Combine the original entities with the details based on 'id'
-      const combinedData = entities.map((entity: Entity) => {
-        // Find the array of details that matches the entity's id
-        const detailsArray = entityCategories.find((details) => details[0]?.issueEntityId === entity.id);
+      //  // Combine the original entities with the details based on 'id'
+      //  const combinedData = entities.map((entity: Entity) => {
+      //    // Find the array of details that matches the entity's id
+      //    const detailsArray = entityCategories.find((details) => details[0]?.issueEntityId === entity.id);
 
-        const details = detailsArray ? detailsArray : [];
+      //    const details = detailsArray ? detailsArray : [];
 
-        return { ...entity, categories: details };
-      });
+      //    return { ...entity, categories: details };
+      //  });
 
-      return combinedData;
+      return entities;
     } catch (error) {
       // Handle errors here
       console.error('Error fetching data:', error);

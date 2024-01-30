@@ -8,8 +8,8 @@ import { deleteUndefinedAttr } from '../../../utils/helpers';
 import SpinnerLoading from '../../../components/misc/SpinnerLoading';
 import { toast } from "react-toastify";
 import { BasicNomenclator } from "../../../interfaces/ServerInterfaces";
-import { ContextData , CategoriesData } from "../entitiesInterfaces";
-import { findMessage , propertyFilter } from "../entityUtilityFunctions";
+import { ContextData, CategoriesData } from "../entitiesInterfaces";
+import { findMessage, propertyFilter } from "../entityUtilityFunctions";
 import { useAppDispatch, useAppSelector } from '../../../store/hooks';
 import { fetchEntities } from '../../../store/slices/EntitySlice';
 
@@ -38,6 +38,7 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 	const [imgRelation, setImgRelation] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [selected, setSelected] = useState<BasicNomenclator[]>([]);
+	const [profileImageId, setProfileImageId] = useState<any>([]);
 
 	//This function sets the value of the 'cardImageId' property of the categories (associated image)
 	function unifyData(imgRelation: any,) {
@@ -49,28 +50,29 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 			}
 		});
 	}
-	
+
 	const { control, handleSubmit, formState: { errors } } = useForm<Record<string, string | number>>();
 
 	const onSubmit: SubmitHandler<Record<string, string | number | null>> = (dataToSubmit) => {
-	
+
 		if (currentStep === 0) { stepUp(); return };
 		if (currentStep === 1) { return };
 
 		dataToSubmit.ownerId = 1;
-		const businessId = business.find((obj:any) => obj.name === dataToSubmit.businessId);
-		dataToSubmit.businessId = businessId.id;
+		const businessId = business?.find((obj: any) => obj.name === dataToSubmit.businessId);
+		dataToSubmit.businessId = businessId?.id;
+		dataToSubmit.profileImageId = profileImageId[0]?.profileImageId?.id;
 
 		unifyData(imgRelation);
 
-		if ( data.length === 0 || selected.length === 0 ) {
+		if (data.length === 0 || selected.length === 0) {
 			toast.error("Por favor defina una categoría básica");
 			return;
 		}
-		const dataCategories: { id: number, name: string, basic?: boolean | null }[] =  data.map(obj => ({
+		const dataCategories: { id: number, name: string, basic?: boolean | null }[] = data.map(obj => ({
 			...obj,
 			basic: null,
-		  }));
+		}));
 
 		const idObject = selected[0]?.id;
 		const objectMatch = dataCategories.find(objeto => objeto.id === idObject);
@@ -83,7 +85,7 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 		addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), dataCategories, close).then(
 			()=> dispatch(fetchEntities())
 		);
-		
+
 	};
 
 	toast.error(findMessage(errors));
@@ -105,7 +107,7 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 			<StepsComponent current={currentStep} titles={stepTitles} />
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<ProductContext.Provider
-					value={{ control, stepUp, stepDown, data, setData, business, setImgRelation, imgRelation, selected, setSelected }}>
+					value={{ control, stepUp, stepDown, data, setData, business, setImgRelation, imgRelation, selected, setSelected, setProfileImageId }}>
 					{isLoading && <SpinnerLoading />}
 					{currentStep === 0 && !isLoading && <EntityGeneralInfo />}
 					{currentStep === 1 && !isLoading && <EntityCategories />}

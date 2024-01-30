@@ -9,7 +9,7 @@ import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 
 
 const EntityGeneralInfo = () => {
-	const { control, business } = useContext(ProductContext);
+	const { control, business, setProfileImageId } = useContext(ProductContext);
 
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
@@ -23,6 +23,8 @@ const EntityGeneralInfo = () => {
 								control={control}
 								name='profileImageId'
 								text='Logo de la Entidad'
+								dataUp={setProfileImageId}
+								dataIndex={'profileImageId'}
 							/>
 						</div>
 						<div className="grid grid-cols-2 gap-5 grid-flow-row auto-rows-max mx-2 mt-4">

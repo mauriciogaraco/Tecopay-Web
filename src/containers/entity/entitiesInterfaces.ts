@@ -29,6 +29,7 @@ export interface ContextData {
 	selected?: any;
 	setSelected?: Function;
 	imgRelation?: any;
+	setProfileImageId?: Function;
 }
 
 export type BusinessCategory = {

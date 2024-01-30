@@ -28,17 +28,28 @@ interface propsDestructured {
 	CRUD: any;
 }
 
-interface categories {
-	id: number;
+export type Category = {
 	name: string;
 	color: string;
-	imageId?: number;
-	cardImageId?: number;
+	cardImageId: number;
+	cardImage: CardImage;
+	IssueEntityCategory: IssueEntityCategory;
+	basic?:boolean;
+	id?:number;
+  }
+  
+  export type IssueEntityCategory = {
 	issueEntityId: number;
+	categoryId: number;
 	createdAt: Date;
 	updatedAt: Date;
-	basic?: boolean;
-}
+  }
+  
+  export type CardImage = {
+	id: number;
+	url: string;
+	hash: string;
+  }
 
 export interface ImageRelation {
 	id: number;
@@ -61,10 +72,9 @@ const EditEntityModal = ({
 		isFetching,
 	} = CRUD;
 
-	const { entities } = useAppSelector((state) => state.Entity)
-	const entity = entities.find(obj => obj.id === id)
-	console.log(id);
-	const [category, setCategory] = useState<categories[]>([]);
+	const { entities } = useAppSelector((state) => state.Entity);
+	const entity = entities.find(obj => obj.id === id);
+	const [category, setCategory] = useState<Category[]>([]);
 	const [data, setData] = useState<CategoriesData[]>([]);
 	const [imgRelation, setImgRelation] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
@@ -73,12 +83,12 @@ const EditEntityModal = ({
 	const [currentTab, setCurrentTab] = useState("info");
 
 	useEffect(() => {
-		entity && setCategory(entity.categories);
+		entity && setCategory(entity.category);
 	}, [entities]);
 
 	//Form Handle -----------------------------------------------------------------------------
 
-	const { control, handleSubmit, formState: { errors } } = useForm<Record<string, string | number>>();
+	const { control, handleSubmit, formState: { errors }, watch } = useForm<Record<string, string | number>>();
 
 	const onSubmit: SubmitHandler<any> = async (dataToSubmit) => {
 
@@ -87,7 +97,7 @@ const EditEntityModal = ({
 		const businessId = business.find((obj: any) => obj.name === dataToSubmit.businessId);
 		dataToSubmit.businessId = businessId.id;
 
-		let dataCategories: categories[] = category?.map((obj: any) => ({
+		let dataCategories: Category[] = category?.map((obj: any) => ({
 			...obj,
 			basic: null,
 		}));
@@ -96,7 +106,6 @@ const EditEntityModal = ({
 			const key = Object.keys(obj)[0];
 			const flag = dataCategories?.find((elemento: any) => elemento.name === key);
 			if (flag) {
-				flag.imageId = obj[key]?.id;
 				flag.cardImageId = obj[key]?.id;
 			}
 		});
@@ -120,6 +129,8 @@ const EditEntityModal = ({
 		} else {
 			toast.error("Por favor defina una categoría básica");
 		}
+	
+		dataToSubmit.allowCreateAccount = watch().allowCreateAccount;
 
 		updateEntity(id, deleteUndefinedAttr(propertyFilter(dataToSubmit)), dataCategories, catToDelete, close).then(
 			() => dispatch(fetchEntities())

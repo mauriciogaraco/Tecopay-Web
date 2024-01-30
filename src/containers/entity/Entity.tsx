@@ -30,13 +30,13 @@ const Entity = () => {
 
 	const dispatch = useAppDispatch();
 
-	const CRUD:any = useServerEntity();
+	const CRUD: any = useServerEntity();
 	const {
 		getCategory,
 		category,
 		isLoadingCat,
 	} = useServerCategories();
-	
+
 	CRUD.getCategory = getCategory;
 	CRUD.category = category;
 	CRUD.id = editEntityModal.id;
@@ -46,7 +46,7 @@ const Entity = () => {
 		dispatch(fetchEntities());
 	}, [dispatch]);
 
-	const {entities, loading } = useAppSelector((state)=> state.Entity)
+	const { entities, loading } = useAppSelector((state) => state.Entity)
 
 	useEffect(() => {
 		CRUD.getAllBussinnes();
@@ -72,13 +72,31 @@ const Entity = () => {
 		];
 
 	const tableData: DataTableInterface[] = [];
-	
-	entities?.map((item: any) => {
+
+	const [finalData, setFinalData] = useState([...entities]);
+
+	useEffect(() => {
+		setFinalData([...entities]);
+	}, [entities]);
+
+	function filterProcessor(value: { search: string | undefined }) {
+		let final_data = [...entities]
+		if (value?.search && (typeof value?.search === 'string')) {
+			const searchStringLowercase = value?.search.toLowerCase();
+			final_data = final_data.filter((object: any) => {
+				const objectNameLowercase = object.name.toLowerCase();
+				return objectNameLowercase.includes(searchStringLowercase);
+			});
+		}
+		setFinalData(final_data);
+	}
+
+	finalData?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
 				'Nombre': item?.name,
-				'Responsable':'-',
+				'Responsable': '-',
 				'Negocio': item?.business?.name,
 				'Teléfono': item.phone,
 				'Estado': (
@@ -116,6 +134,10 @@ const Entity = () => {
 				loading={loading}
 				actions={actions}
 				rowAction={rowAction}
+				searching={{
+					action: (value: string) => filterProcessor({ search: value }),
+					placeholder: 'Buscar entidad por nombe',
+				}}
 				paginateComponent={
 					<Paginate
 						action={(page: number) => setFilter({ ...filter, page })}
