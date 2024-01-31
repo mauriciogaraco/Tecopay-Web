@@ -69,15 +69,15 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 			toast.error("Por favor defina una categoría básica");
 			return;
 		}
-		const dataCategories: { id: number, name: string, basic?: boolean | null }[] = data.map(obj => ({
+		const dataCategories: { id: number, name: string, isBasic?: boolean | null }[] = data.map(obj => ({
 			...obj,
-			basic: null,
+			isBasic: null,
 		}));
 
 		const idObject = selected[0]?.id;
 		const objectMatch = dataCategories.find(objeto => objeto.id === idObject);
 		if (objectMatch) {
-			objectMatch.basic = true;
+			objectMatch.isBasic = true;
 		} else {
 			toast.error("Por favor defina una categoría básica");
 		}

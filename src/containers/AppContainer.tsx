@@ -31,7 +31,7 @@ const AppContainer = () => {
 			>
 				<main className='sm:px-2 md:px-4 lg:px-8 py-5 h-full overflow-auto scrollbar-thin scrollbar-thumb-gray-300'>
 					<Suspense fallback={
-						<div className='w-screen h-screen flex justify-center items-center'><SpinnerLoading /></div>
+						<div className='w-full h-full flex justify-center items-center'><SpinnerLoading /></div>
 					}>
 						<Outlet />
 					</Suspense>

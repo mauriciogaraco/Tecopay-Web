@@ -1,31 +1,25 @@
-import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/outline';
-
-import { useEffect, useState } from 'react';
-
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import GenericTable, {
 	DataTableInterface,
 } from '../../../../components/misc/GenericTable';
 import Paginate from '../../../../components/misc/Paginate';
-import { useSelector } from 'react-redux';
-import { useAppSelector } from '../../../../store/hooks';
-import useServerCards from '../../../../api/userServerCards';
-import StateSpanForTable from '../../../../components/misc/StateSpanForTable';
-import BlockedStateForTable from '../../../../components/misc/BlockedStateForTable';
 import { formatCalendar, formatCardNumber } from '../../../../utils/helpers';
-import { json } from 'stream/consumers';
+import useServerCards from '../../../../api/userServerCards';
+import { useAppSelector } from '../../../../store/hooks';
 
-const AssociatedCards = (allCards: any, paginate: any) => {
+const AssociatedCards = () => {
+
+	const id = useAppSelector((state) => state.Account?.id);
+	const { getAllCards, paginate, allCards, isLoading } = useServerCards();
+
+	useEffect(() => {
+		getAllCards({ accountId: id });
+	}, [id]);
+
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
-	const [tableData, setTableData] = useState<DataTableInterface[]>([]);
 
-	const [addAssociatedCard, setAddAssociatedCard] = useState(false);
-	const [loadedPaginate, setLoadedPaginate] = useState(null);
-	// const [exportModal, setExportModal] = useState(false);
-	console.log(allCards)
-	// Data for table ------------------------------------------------------------------------
 	const tableTitles = [
 		'No. Tarjeta',
 		'Propietario',
@@ -33,94 +27,38 @@ const AssociatedCards = (allCards: any, paginate: any) => {
 		'Fecha de Expiración',
 	];
 
-	const cardMapping = async () => {
-		const loadedAllCards = await allCards;
-
-		setLoadedPaginate(loadedAllCards.paginate);
-		const items = loadedAllCards.allCards;
-
-		items.map((item: any) => {
-			setTableData((prevTableData) => [
-				...prevTableData,
-				{
-					rowId: item.id,
-					payload: {
-						'No. Tarjeta': formatCardNumber(item?.address),
-						'Propietario': item?.holderName ?? '-',
-						'Categoría': item?.category?.name ?? '-',
-						'Fecha de Expiración': formatCalendar(item?.expiratedAt),
-						'': (
-							<span className='flex whitespace-nowrap gap-4'>
-								<BlockedStateForTable currentState={item?.isBlocked} />
-							</span>
-						),
-					},
-				},
-			]);
-		});
-	};
-
-	useEffect(() => {
-		cardMapping();
-	}, []);
-
-	// const searching = {
-	// 	action: (search: string) => {
-	// 		setFilter({ ...filter, search });
-	// 	},
-	// 	placeholder: 'Buscar ticket',
-	// };
-	const close = () => {
-		setEditTicketModal({ state: false, id: null });
-	};
-	const actions = [
-		{
-			icon: <PlusIcon className='h-5' />,
-			title: 'Agregar tarjeta',
-			action: () => {
-				setAddAssociatedCard(true);
+	const tableData: DataTableInterface[] = [];
+	allCards?.items?.map((item: any) => {
+		tableData.push({
+			rowId: item.id,
+			payload: {
+				'No. Tarjeta': formatCardNumber(item?.address),
+				'Propietario': item?.holderName ?? '-',
+				'Categoría': item?.category?.name ?? '-',
+				'Fecha de Expiración': formatCalendar(item?.expiratedAt),
 			},
-		},
-	];
+		});
+	});
 
-	const rowAction = (id: number) => {
-		setEditTicketModal({ state: true, id });
-	};
-	const [nuevoTicketModal, setNuevoTicketModal] = useState(false);
-	const [contactModal, setContactModal] = useState(false);
-	const [editTicketModal, setEditTicketModal] = useState<{
-		state: boolean;
-		id: number | null;
-	}>({ state: false, id: null });
-
-	const closeAddAccount = () => {
-		setAddAssociatedCard(false);
-	};
-
-	const id = useAppSelector((state) => state.account.id);
-
-	return tableData ? (
-		<div>
+	return (
+		<>
 			<GenericTable
 				tableData={tableData}
 				tableTitles={tableTitles}
-				// searching={searching}
-				//actions={actions}
-				//rowAction={rowAction}
-				// filterComponent={{ availableFilters, filterAction }}
 				paginateComponent={
 					<Paginate
 						action={(page: number) => {
 							setFilter({ ...filter, page });
 						}}
-						data={loadedPaginate}
+						data={paginate}
 					/>
 				}
+				loading={isLoading}
 			/>
-		</div>
-	) : (
-		<div>loading</div>
-	);
+		</>
+	)
+
+
 };
 
 export default AssociatedCards;

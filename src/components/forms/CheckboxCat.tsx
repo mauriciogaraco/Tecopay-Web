@@ -9,7 +9,6 @@ interface CheckProps {
 
 export default function Checkbox({data,selected,setSelected, displayCol}:CheckProps) {
 
-
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const currentValue = Number(e.target.value);
     if (e.target.checked) {
@@ -19,7 +18,6 @@ export default function Checkbox({data,selected,setSelected, displayCol}:CheckPr
   };
 
   return (
-
     <fieldset>
       <div className={`${displayCol ? "flex justify-center" : "grid grid-cols-4 gap-5"}`}>
         {data.map((item, idx) => (

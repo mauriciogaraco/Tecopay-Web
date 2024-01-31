@@ -22,7 +22,7 @@ const useServerCards = () => {
   const [selectedDataToParent, setSelectedDataToParent] =
     useState<SelectInterface | null>(null);
 
-  const items = useAppSelector((state) => state.account.items)
+  const items = useAppSelector((state) => state.Account.accounts.items)
 
 
   //Postman -> 'card / findAllCards'
@@ -35,15 +35,13 @@ const useServerCards = () => {
         totalPages: resp.data.totalPages,
         currentPage: resp.data.currentPage,
       });
-      setAllCards(resp.data.items)
+      setAllCards(resp.data)
     } catch (error) {
       manageErrors(error);
     } finally {
       setIsLoading(false);
     }
   };
-
-
 
 
   const addCard = async (
@@ -56,9 +54,7 @@ const useServerCards = () => {
       .post("/card", data)
       .then((resp) => {
 
-
         setAllCards([...items, resp.data.data])
-
 
         toast.success("Ticket agregado satisfactoriamente");
       }).then(() => close())

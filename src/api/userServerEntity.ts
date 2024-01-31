@@ -114,9 +114,6 @@ const useServerEntity = () => {
               obj.issueEntityId = entityID;
               addCategory(obj)
             } else {
-              //if (typeof obj.cardImageId === 'object' && obj.cardImageId !== null && 'id' in obj.cardImageId) {
-              //  obj.cardImageId = obj.cardImageId.id;
-              //}
               updateCategory(obj.id, obj)
             }
           } catch (error) {
@@ -137,8 +134,6 @@ const useServerEntity = () => {
       );
       toast.success("Entidad actualizada exitosamente");
       callback && callback();
-      //return(resultArray);
-
     } catch (error) {
       manageErrors(error);
     } finally {

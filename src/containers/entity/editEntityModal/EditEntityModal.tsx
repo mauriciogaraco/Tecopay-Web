@@ -34,7 +34,7 @@ export type Category = {
 	cardImageId: number;
 	cardImage: CardImage;
 	IssueEntityCategory: IssueEntityCategory;
-	basic?:boolean;
+	isBasic?:boolean;
 	id?:number;
   }
   
@@ -86,20 +86,28 @@ const EditEntityModal = ({
 		entity && setCategory(entity.category);
 	}, [entities]);
 
+
+	let lookingForBasicCat = category.find(obj => obj.isBasic === true);
+	useEffect(() => {
+		if (lookingForBasicCat) {
+			setSelected([{id: lookingForBasicCat.id ?? 0, name:''}])
+		}
+	}, [lookingForBasicCat]);
+
 	//Form Handle -----------------------------------------------------------------------------
 
 	const { control, handleSubmit, formState: { errors }, watch } = useForm<Record<string, string | number>>();
 
 	const onSubmit: SubmitHandler<any> = async (dataToSubmit) => {
 
-		dataToSubmit.ownerId = 1;
+		//dataToSubmit.ownerId = 1;
 
-		const businessId = business.find((obj: any) => obj.name === dataToSubmit.businessId);
-		dataToSubmit.businessId = businessId.id;
+		//const businessId = business.find((obj: any) => obj.name === dataToSubmit.businessId);
+		//dataToSubmit.businessId = businessId.id;
 
 		let dataCategories: Category[] = category?.map((obj: any) => ({
 			...obj,
-			basic: null,
+			isBasic: null,
 		}));
 
 		imgRelation.forEach((obj: any) => {
@@ -125,12 +133,14 @@ const EditEntityModal = ({
 		const objectMatch = dataCategories.find(objeto => objeto.id === idObjeto2);
 
 		if (objectMatch) {
-			objectMatch.basic = true;
+			objectMatch.isBasic = true;
 		} else {
 			toast.error("Por favor defina una categoría básica");
 		}
 	
 		dataToSubmit.allowCreateAccount = watch().allowCreateAccount;
+		
+		console.log(watch())
 
 		updateEntity(id, deleteUndefinedAttr(propertyFilter(dataToSubmit)), dataCategories, catToDelete, close).then(
 			() => dispatch(fetchEntities())

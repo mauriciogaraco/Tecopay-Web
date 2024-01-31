@@ -17,20 +17,20 @@ import {
 } from '@reduxjs/toolkit';
 import sessionSlice from './slices/sessionSlice';
 import initSlice from './slices/initSlice';
-import accountreducer from './slices/accountSlice';
+import accountReducer from './slices/accountSlice';
 import CardReducer from './slices/cardsSlice';
 import EntityReducer from './slices/EntitySlice';
 import loggedUserSlice from './slices/loggedUserSlice'
 const persistConfig = {
 	key: 'root',
 	storage,
-	whitelist: ['session', 'account'],
+	whitelist: ['session', 'Account'],
 };
 
 const rootReducer = combineReducers({
 	session: sessionSlice,
 	init: initSlice,
-	account: accountreducer,
+	Account: accountReducer,
 	cards: CardReducer,
 	Entity: EntityReducer,
 	User:loggedUserSlice,

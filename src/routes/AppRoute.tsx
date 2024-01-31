@@ -12,9 +12,6 @@ const AppRoute = () => {
 
 	useEffect(() => {
 		dispatch(fetchLoggedUser());
-	}, [dispatch]);
-
-	useEffect(() => {
 		dispatch(fetchEntities());
 	}, [dispatch]);
 

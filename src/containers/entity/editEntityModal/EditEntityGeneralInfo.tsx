@@ -55,6 +55,7 @@ const EditEntityGeneralInfo = () => {
 								control={control}
 								rules={{ required: 'Campo requerido' }}
 								defaultValue={entity?.business?.name}
+								disabled={true}
 							/>
 						</div><div className="mt-2">
 							<Input
@@ -69,10 +70,11 @@ const EditEntityGeneralInfo = () => {
 							<AsyncComboBox
 								//rules={{ required: 'Campo requerido' }}
 								name='ownerId'
-								normalizeData={{ id: 'id', name: 'name' }}
+								normalizeData={{ id: 'id', name: 'email' }}
 								control={control}
 								label='Responsable'
-								dataQuery={{ url: '/user/findAll' }}
+								dataQuery={{ url: '/user' }}
+								defaultItem = { {id: 1, name: entity?.owner?.email} }
 							></AsyncComboBox>
 						</div><div className="mt-2">
 							<Input

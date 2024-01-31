@@ -46,12 +46,12 @@ const EntityGeneralInfo = () => {
 								/>
 							</div><div className="mt-2">
 								<AsyncComboBox
-									//rules={{ required: 'Campo requerido' }}
+									rules={{ required: 'Campo requerido' }}
 									name='ownerId'
-									normalizeData={{ id: 'id', name: 'name' }}
+									normalizeData={{ id: 'id', name: 'email' }}
 									control={control}
 									label='Responsable'
-									dataQuery={{ url: '/user/findAll' }}
+									dataQuery={{ url: '/user' }}
 								></AsyncComboBox>
 							</div><div className="mt-2">
 								<Input

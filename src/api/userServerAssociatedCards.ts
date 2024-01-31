@@ -8,7 +8,7 @@ import {
 import query from "./APIServices";
 import useServer from "./useServer";
 import { Flip, toast } from "react-toastify";
-import { saveAccount } from "../store/slices/accountSlice";
+//mport { saveAccount } from "../store/slices/accountSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import { generateUrlParams } from "../utils/helpers";
@@ -29,7 +29,7 @@ const useServerUser = () => {
   );
   const [waiting, setWaiting] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const items = useAppSelector((state)=> state.account.items)
+  const items = useAppSelector((state)=> state.Account.accounts.items)
 
 
   const getAllUsers = async (filter: BasicType) => {
@@ -39,7 +39,7 @@ const useServerUser = () => {
       .then((resp) => {
         const data = resp.data;
         const data1 = data.data
-        dispatch(saveAccount(data1))
+        //dispatch(saveAccount(data1))
         setAllTickets(data1);
 
       })
@@ -57,7 +57,7 @@ const useServerUser = () => {
       .then((resp) => {
         
 
-        dispatch(saveAccount([...items, resp.data.data]))
+        //dispatch(saveAccount([...items, resp.data.data]))
         // setAllTickets();
         
         toast.success("Ticket agregado satisfactoriamente");
@@ -80,7 +80,7 @@ const useServerUser = () => {
         const idx = newUsers.findIndex((user:any) => user.id === id);
         newUsers.splice(idx, 1, data);
 
-        dispatch(saveAccount(newUsers))
+        //dispatch(saveAccount(newUsers))
         callback?.();
       })
       .catch((e) => { manageErrors(e); });

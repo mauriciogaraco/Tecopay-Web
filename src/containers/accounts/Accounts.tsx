@@ -1,46 +1,41 @@
-import { PlusIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { UserCircleIcon } from '@heroicons/react/24/outline';
 import GenericTable, {
 	DataTableInterface,
 	FilterOpts,
 } from '../../components/misc/GenericTable';
-import useServerAccounts from '../../api/userServerAccounts';
 import Paginate from '../../components/misc/Paginate';
-import Modal from '../../components/modals/GenericModal';
 import Breadcrumb, {
 	type PathInterface,
 } from '../../components/navigation/Breadcrumb';
 import { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { saveAccountId } from '../../store/slices/accountSlice';
 import { useNavigate } from 'react-router-dom';
-import NewAccountModal from './NewAccount/NewAccountModal';
 import { formatCardNumber } from '../../utils/helpers';
 import { formatDate } from '../../utils/helpersAdmin';
-import { BasicType } from '../../interfaces/InterfacesLocal';
 import useServerEntity from '../../api/userServerEntity';
+import { saveAccountId } from '../../store/slices/accountSlice';
+import { fetchAccounts } from '../../store/slices/accountSlice';
 
 const Accounts = () => {
-	const {
-		paginate,
-		isLoading,
-		allAccounts,
-		getAllAccounts,
-		addAccount,
-	} = useServerAccounts();
 
-	const [addAccountModal, setAddAccountModal] = useState(false);
-	const [searchLoading, setSearchLoading] = useState(false);
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
-	>({});
-	const { getAllBussinnes, business } = useServerEntity();
-	const navigate = useNavigate();
+	>({ page: 1 });
+
 	const dispatch = useAppDispatch();
-	const { entities } = useAppSelector((state) => state.Entity)
 
 	useEffect(() => {
-		getAllAccounts(filter);
-	}, []);
+		dispatch(fetchAccounts(filter));
+	}, [dispatch, filter]);
+
+	const { accounts, loading: isLoading } = useAppSelector((state) => state.Account);
+	let allAccounts = accounts?.items;
+
+
+	const { getAllBussinnes, business } = useServerEntity();
+	const navigate = useNavigate();
+
+	const { entities } = useAppSelector((state) => state.Entity)
 
 	useEffect(() => {
 		getAllBussinnes();
@@ -69,7 +64,7 @@ const Accounts = () => {
 
 	type filterAccounts = {
 		business?: number;
-		entities?: number[];
+		entities?: number;
 		owner?: number;
 		dateFrom?: Date;
 		dateTo?: Date;
@@ -83,8 +78,6 @@ const Accounts = () => {
 	}, [allAccounts]);
 
 	function filterProcessor(filter: filterAccounts) {
-		console.log(filter)
-		console.log(allAccounts)
 
 		let final_data = [...allAccounts]
 
@@ -114,7 +107,6 @@ const Accounts = () => {
 	const findNameById = (id: number | undefined) => {
 		if (!id) return null;
 		const matchedObject = business?.find((obj: { id: number, name: string }) => obj.id === id);
-		console.log('matchedObject ' + matchedObject)
 		return matchedObject ? matchedObject.name : null;
 	};
 
@@ -136,25 +128,9 @@ const Accounts = () => {
 		});
 	});
 
-
-	//const actions = [
-	//	{
-	//		icon: <PlusIcon className='h-5' />,
-	//		title: 'Agregar cuenta',
-	//		action: () => {
-	//			setAddAccountModal(true);
-	//		},
-	//	},
-	//];
-
 	const rowAction = (id: number) => {
 		dispatch(saveAccountId(id));
 		navigate('details');
-	};
-
-
-	const closeAddAccount = () => {
-		setAddAccountModal(false);
 	};
 
 	//---------------------------------------------------------------------------------------
@@ -163,7 +139,6 @@ const Accounts = () => {
 
 
 	const availableFilters: FilterOpts[] = [
-		//Filter by productCategories index 0
 		{
 			format: "datepicker-range",
 			name: "Rango de fecha",
@@ -233,11 +208,10 @@ const Accounts = () => {
 
 	const filterAction = (data: filterAccounts) => {
 		//data ? setFilter({ ...filter, ...data }) : setFilter({ page: 1 });
-		data && filterProcessor(data);
+		data ? filterProcessor(data) : setFinalData([...allAccounts]);
 	};
 
 	//---------------------------------------------------------------------------------------
-
 
 	return (
 		<div>
@@ -249,8 +223,7 @@ const Accounts = () => {
 			<GenericTable
 				tableData={tableData}
 				tableTitles={tableTitles}
-				loading={isLoading || searchLoading}
-				//actions={actions}
+				loading={isLoading}
 				rowAction={rowAction}
 				searching={{
 					action: (value: string) => filterAction({ ...filter, search: value }),
@@ -262,20 +235,10 @@ const Accounts = () => {
 						action={(page: number) => {
 							setFilter({ ...filter, page });
 						}}
-						data={paginate}
+						data={accounts}
 					/>
 				}
 			/>
-
-			{addAccountModal && (
-				<Modal state={addAccountModal} close={setAddAccountModal}>
-					<NewAccountModal
-						close={closeAddAccount}
-						isLoading={isLoading}
-						addAccount={addAccount}
-					/>
-				</Modal>
-			)}
 		</div>
 	);
 };

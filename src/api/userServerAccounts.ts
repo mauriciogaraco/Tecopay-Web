@@ -119,6 +119,7 @@ const useServerAccounts = () => {
     try {
       const response = await query.get(`/account/${id}/operations`);
       const account = response.data;
+      console.log(account)
       setOperations(account);
       return account;
     } catch (error) {
