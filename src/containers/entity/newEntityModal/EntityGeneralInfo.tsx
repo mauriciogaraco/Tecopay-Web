@@ -51,12 +51,12 @@ const EntityGeneralInfo = () => {
 									normalizeData={{ id: 'id', name: 'email' }}
 									control={control}
 									label='Responsable'
-									dataQuery={{ url: '/user' }}
+									dataQuery={{ url:'/user'}}
 								></AsyncComboBox>
 							</div><div className="mt-2">
 								<Input
 									name='phone'
-									label='Teléfono '
+									label='Teléfono'
 									placeholder='Teléfono'
 									control={control}
 									rules={{

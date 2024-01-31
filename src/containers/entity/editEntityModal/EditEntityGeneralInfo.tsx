@@ -79,7 +79,7 @@ const EditEntityGeneralInfo = () => {
 						</div><div className="mt-2">
 							<Input
 								name='phone'
-								label='Telefono'
+								label='Teléfono'
 								placeholder={entity?.phone}
 								control={control}
 								rules={{
@@ -93,7 +93,7 @@ const EditEntityGeneralInfo = () => {
 						</div><div className="mt-2">
 							<Input
 								name='address'
-								label='Direccion'
+								label='Dirección'
 								placeholder={entity?.address}
 								control={control}
 								rules={{ required: 'Campo requerido' }}

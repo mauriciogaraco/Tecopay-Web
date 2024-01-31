@@ -19,7 +19,6 @@ import Breadcrumb, {
 import { BasicType, SelectInterface } from '../../interfaces/InterfacesLocal';
 
 import { useEffect, useState } from 'react';
-import NuevoTicketModal from '../accounts/NewAccount/NewAccountModal';
 
 import { useAppSelector } from '../../store/hooks';
 import useServerCards from '../../api/userServerCards';
@@ -129,18 +128,6 @@ const Card = () => {
 				}
 			/>
 
-			{/*addTicketmodal && (
-				<Modal state={addTicketmodal} close={setAddTicketmodal}>
-					<NuevoTicketModal
-						isLoading={isLoading}
-						setContactModal={setContactModal}
-						close={closeAddAccount}
-						contactModal={contactModal}
-						setNuevoTicketModal={setNuevoTicketModal}
-						nuevoTicketModal={nuevoTicketModal}
-					/>
-				</Modal>
-			)*/}
 			{editTicketModal.state && (
 				<Modal state={editTicketModal.state} close={close} size='m'>
 					<EditCardContainer
