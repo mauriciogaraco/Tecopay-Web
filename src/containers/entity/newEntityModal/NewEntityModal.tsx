@@ -58,9 +58,9 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 		if (currentStep === 0) { stepUp(); return };
 		if (currentStep === 1) { return };
 
-		dataToSubmit.ownerId = 1;
-		const businessId = business?.find((obj: any) => obj.name === dataToSubmit.businessId);
-		dataToSubmit.businessId = businessId?.id;
+		//dataToSubmit.ownerId = 1;
+		//const businessId = business?.find((obj: any) => obj.name === dataToSubmit.businessId);
+		//dataToSubmit.businessId = businessId?.id;
 		dataToSubmit.profileImageId = profileImageId[0]?.profileImageId?.id;
 
 		unifyData(imgRelation);
@@ -71,7 +71,7 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 		}
 		const dataCategories: { id: number, name: string, isBasic?: boolean | null }[] = data.map(obj => ({
 			...obj,
-			isBasic: null,
+			isBasic: false,
 		}));
 
 		const idObject = selected[0]?.id;
@@ -81,7 +81,7 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 		} else {
 			toast.error("Por favor defina una categoría básica");
 		}
-
+		
 		addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), dataCategories, close).then(
 			()=> dispatch(fetchEntities())
 		);

@@ -35,7 +35,8 @@ const Accounts = () => {
 	const { getAllBussinnes, business } = useServerEntity();
 	const navigate = useNavigate();
 
-	const { entities } = useAppSelector((state) => state.Entity)
+	const { entities:entidades } = useAppSelector((state) => state.Entity)
+	let entities = entidades.items;
 
 	useEffect(() => {
 		getAllBussinnes();
@@ -53,6 +54,7 @@ const Accounts = () => {
 
 	const tableTitles = [
 		'Fecha de Activación',
+		'Total de Puntos',
 		'Número de Cuenta',
 		'Propietario',
 		'Entidad',
@@ -80,7 +82,7 @@ const Accounts = () => {
 	function filterProcessor(filter: filterAccounts) {
 
 		let final_data = [...allAccounts]
-
+	
 		if (filter?.search && (typeof filter?.search === 'string')) {
 			const searchStringLowercase = filter?.search.toLowerCase().replace(/\s/g, '');
 			final_data = final_data.filter((object: any) => {
@@ -88,7 +90,7 @@ const Accounts = () => {
 				return objectNameLowercase.includes(searchStringLowercase);
 			});
 		}
-
+	
 		if (filter?.entities) {
 			final_data = final_data.filter(objeto => objeto.issueEntity?.id === filter?.entities)
 		}
@@ -119,6 +121,7 @@ const Accounts = () => {
 			payload: {
 				'Fecha de Activación': formatDate(item?.createdAt) ?? '-',
 				'No.': item.id,
+				'Total de Puntos':item?.amount,
 				'Número de Cuenta': `${formatCardNumber(item?.address)}`,
 				'Nombre': item?.name,
 				'Propietario': item?.owner?.fullName ? item?.owner?.fullName : '-',

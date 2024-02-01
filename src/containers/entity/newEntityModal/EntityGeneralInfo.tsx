@@ -29,20 +29,27 @@ const EntityGeneralInfo = () => {
 						</div>
 						<div className="grid grid-cols-2 gap-5 grid-flow-row auto-rows-max mx-2 mt-4">
 							<div className="mt-2 z-50">
-								<Select
-									label='Negocio'
-									data={business ? business : []}
-									name='businessId'
-									control={control}
+								<AsyncComboBox
 									rules={{ required: 'Campo requerido' }}
-								/>
+									name='businessId'
+									normalizeData={{ id: 'id', name: 'name' }}
+									control={control}
+									label='Negocio'
+									dataQuery={{ url:'/business'}}
+								></AsyncComboBox>
 							</div><div className="mt-2">
 								<Input
 									name='name'
 									label='Nombre de la entidad'
 									placeholder='Nombre de la Entidad'
 									control={control}
-									rules={{ required: 'Campo requerido' }}
+									rules={{
+										required: 'Campo requerido',
+										maxLength: {
+											value: 50,
+											message: 'El nombre de entidad debe tener como máximo 50 carácteres'
+										}
+									}}
 								/>
 							</div><div className="mt-2">
 								<AsyncComboBox
@@ -60,6 +67,11 @@ const EntityGeneralInfo = () => {
 									placeholder='Teléfono'
 									control={control}
 									rules={{
+										required: 'Campo requerido',
+										maxLength: {
+											value: 15,
+											message: 'Inserte número de teléfono válido'
+										},
 										validate: (value) => {
 											const isValidPhoneNumber = /^\+?[0-9]{8,}$/.test(value);
 											return isValidPhoneNumber || 'Inserte número de teléfono válido';
@@ -72,7 +84,13 @@ const EntityGeneralInfo = () => {
 									label='Dirección'
 									placeholder='Dirección de la Entidad'
 									control={control}
-									rules={{ required: 'Campo requerido' }}
+									rules={{
+										required: 'Campo requerido',
+										maxLength: {
+											value: 150,
+											message: 'La dirección debe tener como máximo 150 carácteres'
+										},
+									}}
 								/>
 							</div><div className="mt-7 flex items-center justify-center m-auto">
 

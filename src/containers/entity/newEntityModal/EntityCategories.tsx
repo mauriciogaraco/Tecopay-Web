@@ -15,6 +15,7 @@ import { TrashIcon } from '@heroicons/react/24/outline';
 import Checkbox from '../../../components/forms/CheckboxCat';
 import { ExportModalContainer, ModifyModal } from "../entitiesInterfaces";
 import { reFormat } from "../entityUtilityFunctions";
+import { toast } from "react-toastify";
 
 
 const EntityCategories = () => {
@@ -68,6 +69,14 @@ const EntityCategories = () => {
 		},
 	];
 
+	function stepUpVerify() {
+		if (selected.length === 0 || (data && data.length === 0)) {
+			toast.error("Debe crear una categoría básica");
+			return;
+		}
+		stepUp && stepUp();
+	}
+
 
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
@@ -96,13 +105,13 @@ const EntityCategories = () => {
 						name="Siguiente"
 						full
 						outline
-						action={stepUp}
+						action={stepUpVerify}
 					/>
 
 				</div>
 			</div>
 			{addEntityCategory && (
-				<Modal state={addEntityCategory} close={setaddEntityCategory}>
+				<Modal state={addEntityCategory} close={setaddEntityCategory} size={'b'} >
 					<AddModalContainer
 						action={setData}
 						categories={data ? data : []}
@@ -112,7 +121,7 @@ const EntityCategories = () => {
 			)}
 
 			{modifyEntityCategory && (
-				<Modal state={modifyEntityCategory} close={setmodifyEntityCategory}>
+				<Modal state={modifyEntityCategory} close={setmodifyEntityCategory} size={'b'} >
 					<ModifyModalContainer
 						action={setData}
 						categories={data ? data : []}
@@ -145,18 +154,24 @@ const AddModalContainer = ({ action, categories, close }: ExportModalContainer) 
 	};
 	return (
 		<form onSubmit={handleSubmitAdd(submit)}>
-			<div className="flex flex-col ">
-				<div className="flex justify-center items-center">
-					<div className="w-1/2 flex flex-col justify-evenly">
-						<div className="mt-2">
+			<div className="flex flex-col">
+				<div className="flex justify-center items-center flex-col xl:flex-row">
+					<div className="w-3/4 xl:w-1/2 flex flex-col justify-evenly items-start">
+						<div className="mt-2 w-full">
 							<Input
 								name="name"
 								control={controlForm}
 								label="Nombre de la categoría"
-								rules={{ required: "Requerido *" }}
+								rules={{
+									required: 'Campo requerido',
+									maxLength: {
+										value: 20,
+										message: 'El nombre de categoría debe tener como máximo 20 carácteres'
+									}
+								}}
 							/>
 						</div>
-						<div className="mt-2">
+						<div className="mt-6 w-full">
 							<Input
 								name="points"
 								control={controlForm}
@@ -167,7 +182,7 @@ const AddModalContainer = ({ action, categories, close }: ExportModalContainer) 
 						</div>
 						<h1 className="mt-6">Nota: Debe utilizar selector de colores para definir color de categoría</h1>
 					</div>
-					<div className="flex w-1/2 items-center justify-stretch">
+					<div className="flex w-3/4 xl:w-1/2 items-center justify-stretch mt-5 xl:mt-1">
 						<ColorSelect ExternsetHex={setHex} />
 					</div>
 				</div>
@@ -200,18 +215,24 @@ const ModifyModalContainer = ({ action, categories, close, indexModify }: Modify
 	return (
 		<form onSubmit={handleSubmitAdd(submitCategories)}>
 			<div className="flex flex-col">
-				<div className="flex justify-center items-center">
-					<div className="w-1/2 flex flex-col justify-evenly items-start">
-						<div className="mt-2">
+				<div className="flex justify-center items-center flex-col xl:flex-row">
+					<div className="w-3/4 xl:w-1/2 flex flex-col justify-evenly items-start">
+						<div className="mt-2 w-full">
 							<Input
 								name="name"
 								control={controlForm}
 								label="Nombre de la categoría"
-								rules={{ required: "Requerido *" }}
+								rules={{
+									required: 'Campo requerido',
+									maxLength: {
+										value: 20,
+										message: 'El nombre de categoría debe tener como máximo 20 carácteres'
+									}
+								}}
 								defaultValue={renderInfo?.name}
 							/>
 						</div>
-						<div className="mt-2">
+						<div className="mt-6 w-full">
 							<Input
 								name="points"
 								control={controlForm}
@@ -223,7 +244,7 @@ const ModifyModalContainer = ({ action, categories, close, indexModify }: Modify
 						</div>
 						<h1 className="mt-6">Nota: Debe utilizar selector de colores para definir color de categoría</h1>
 					</div>
-					<div className="flex w-1/2 items-center justify-stretch">
+					<div className="flex w-3/4 xl:w-1/2 items-center justify-stretch mt-5 xl:mt-1">
 						<ColorSelect ExternsetHex={setHex} color={renderInfo?.color} />
 					</div>
 				</div>

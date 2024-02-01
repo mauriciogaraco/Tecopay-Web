@@ -7,7 +7,7 @@ type Size = 'm' | 'l';
 interface ModalProps {
 	state: boolean;
 	close: Function;
-	size?: Size; //s, m , l => default s
+	size?: 'm' | 'b'; //s, m , l => default s
 }
 
 export default function Modal({
@@ -50,8 +50,8 @@ export default function Modal({
 								className={`relative transform overflow-y-visible rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 ${
 									size === 'm'
 										? 'sm:w-1/2'
-										: size === 'l'
-										? 'sm:w-4/5'
+										: size === 'b'
+										? 'sm:w-2/5'
 										: 'sm:w-1/3'
 								} sm:h-1/2 sm:max-w-7xl sm:p-6`}
 							>

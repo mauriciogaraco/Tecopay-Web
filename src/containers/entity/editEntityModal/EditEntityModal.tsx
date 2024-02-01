@@ -34,22 +34,22 @@ export type Category = {
 	cardImageId: number;
 	cardImage: CardImage;
 	IssueEntityCategory: IssueEntityCategory;
-	isBasic?:boolean;
-	id?:number;
-  }
-  
-  export type IssueEntityCategory = {
+	isBasic: boolean;
+	id?: number;
+}
+
+export type IssueEntityCategory = {
 	issueEntityId: number;
 	categoryId: number;
 	createdAt: Date;
 	updatedAt: Date;
-  }
-  
-  export type CardImage = {
+}
+
+export type CardImage = {
 	id: number;
 	url: string;
 	hash: string;
-  }
+}
 
 export interface ImageRelation {
 	id: number;
@@ -73,7 +73,7 @@ const EditEntityModal = ({
 	} = CRUD;
 
 	const { entities } = useAppSelector((state) => state.Entity);
-	const entity = entities.find(obj => obj.id === id);
+	const entity = entities.items.find(obj => obj.id === id);
 	const [category, setCategory] = useState<Category[]>([]);
 	const [data, setData] = useState<CategoriesData[]>([]);
 	const [imgRelation, setImgRelation] = useState([]);
@@ -83,14 +83,14 @@ const EditEntityModal = ({
 	const [currentTab, setCurrentTab] = useState("info");
 
 	useEffect(() => {
-		entity && setCategory(entity.category);
-	}, [entities]);
+		entity?.category && setCategory(entity.category);
+	}, [entity]);
 
 
 	let lookingForBasicCat = category.find(obj => obj.isBasic === true);
 	useEffect(() => {
 		if (lookingForBasicCat) {
-			setSelected([{id: lookingForBasicCat.id ?? 0, name:''}])
+			setSelected([{ id: lookingForBasicCat.id ?? 0, name: '' }])
 		}
 	}, [lookingForBasicCat]);
 
@@ -100,14 +100,9 @@ const EditEntityModal = ({
 
 	const onSubmit: SubmitHandler<any> = async (dataToSubmit) => {
 
-		//dataToSubmit.ownerId = 1;
-
-		//const businessId = business.find((obj: any) => obj.name === dataToSubmit.businessId);
-		//dataToSubmit.businessId = businessId.id;
-
 		let dataCategories: Category[] = category?.map((obj: any) => ({
 			...obj,
-			isBasic: null,
+			isBasic: false,
 		}));
 
 		imgRelation.forEach((obj: any) => {
@@ -137,10 +132,8 @@ const EditEntityModal = ({
 		} else {
 			toast.error("Por favor defina una categoría básica");
 		}
-	
+
 		dataToSubmit.allowCreateAccount = watch().allowCreateAccount;
-		
-		console.log(watch())
 
 		updateEntity(id, deleteUndefinedAttr(propertyFilter(dataToSubmit)), dataCategories, catToDelete, close).then(
 			() => dispatch(fetchEntities())

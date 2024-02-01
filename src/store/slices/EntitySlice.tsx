@@ -3,7 +3,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import query from '../../api/APIServices';
 
 
-type Entity = {
+export type Entity = {
+  totalItems: number;
+  currentPage: number;
+  totalPages: number;
+  items: Item[];
+}
+
+export type Item = {
   id: number;
   name: string;
   address: string;
@@ -14,14 +21,20 @@ type Entity = {
   owner: Owner;
   business: Business;
   category: Category[];
-  profileImage: ProfileImage;
+  profileImage: Image;
+}
+
+export type Business = {
+  name: string;
 }
 
 export type Category = {
+  id: number;
   name: string;
   color: string;
+  isBasic: boolean;
   cardImageId: number;
-  cardImage: CardImage;
+  cardImage: Image;
   IssueEntityCategory: IssueEntityCategory;
 }
 
@@ -32,31 +45,22 @@ export type IssueEntityCategory = {
   updatedAt: Date;
 }
 
-export type CardImage = {
+export type Image = {
   id: number;
   url: string;
   hash: string;
 }
 
-type Business = {
-  externalId: number;
-  name: string;
-}
-
-type Owner = {
+export type Owner = {
+  id: number;
   fullName: string;
   email: string;
 }
 
-type ProfileImage = {
-  id: number;
-  url: string;
-  hash: string;
-}
 
 interface InitialState {
   loading: boolean;
-  entities: Entity[];
+  entities: Entity;
 }
 
 
@@ -66,10 +70,10 @@ export const fetchEntities = createAsyncThunk(
     try {
       // Fetch data from the entity endpoint
       const entityResponse = await query.get('/entity');
-      const entities = entityResponse.data?.items;
+      const entities = entityResponse.data;
 
       if (!entities) {
-        return [];
+        return {};
       }
 
       //  // Extract the unique 'id' values
@@ -106,7 +110,12 @@ export const fetchEntities = createAsyncThunk(
 
 const initialState: InitialState = {
   loading: false,
-  entities: [],
+  entities: {
+    totalItems: 0,
+    currentPage: 0,
+    totalPages: 0,
+    items: [],
+  },
 };
 
 const entitySlice = createSlice({

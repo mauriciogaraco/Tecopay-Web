@@ -43,7 +43,7 @@ const AccountDetail = () => {
 		isFetching,
 		editAccount,
 		deleteAccount,
-		Charge:chargeFunction,
+		Charge: chargeFunction,
 	} = useServerAccounts();
 
 	const [rechargeModal, setRechargeModal] = useState(false);
@@ -228,7 +228,6 @@ const EditAccountContainer = ({
 
 	const navigate = useNavigate();
 
-	//const id = useAppSelector((state) => state.account.id);
 	const id = 2;
 	const { control, handleSubmit } = useForm<BasicType>(
 		{
@@ -236,34 +235,9 @@ const EditAccountContainer = ({
 		},
 	);
 
-	const {
-		getCategory,
-		category,
-	} = useServerCategories();
-
-	const {
-		registerAccountCategory,
-	} = userServerAccounts();
-
-	useEffect(() => {
-		if (account?.issueEntity?.id) {
-			getCategory(account?.issueEntity?.id);
-		}
-	}, [account?.issueEntity?.id]);
-
 	const onSubmit: SubmitHandler<any> = (data) => {
-		let registerCategory = {
-			"categoryName": data.categoryName,
-			"accountAddress": account.address
-		}
-
-		registerAccountCategory(registerCategory);
-
-		if (!data.allowedUsersId) data.allowedUsersId = [];
 		editAccount(account?.id, deleteUndefinedAttr(data), closeModal)
-
 	};
-
 	return (
 		<>
 			<form onSubmit={handleSubmit(onSubmit)}>
@@ -272,44 +246,21 @@ const EditAccountContainer = ({
 					<div className='flex flex-col gap-5 mt-5'>
 						<Input
 							name='name'
-							defaultValue={account?.name}
-							label='Nombre'
+							defaultValue={account?.address}
+							label='Número de cuenta'
 							control={control}
-							rules={{
-								required: 'Campo requerido',
-							}}
+							disabled={true}
 						/>
 
-						{Array.isArray(category) && category.length > 0 && (
-							<Select
-								label='Categoría'
-								data={category ? category : []}
-								name='categoryName'
-								control={control}
-								rules={{ required: 'Campo requerido' }}
-								defaultValue={account?.category?.name}
-							/>
-						)}
-
-						<AsyncMultiSelect
-							name='allowedUsersId'
-							normalizeData={{ id: 'id', name: 'email' }}
-							defaultItem={{
-								id: account?.id,
-								name: account?.allowedUsers,
-							}}
+						<Input
+							name='propietario'
+							defaultValue={account?.owner?.fullName ?? '-'}
+							label='Propietario'
 							control={control}
-							label='Usuarios permitidos'
-							dataQuery={{ url: '/user' }}
+							disabled={true}
 						/>
 
 						<div className='flex justify-around gap-5'>
-							<Toggle
-								name='isPrivate'
-								defaultValue={account?.isPrivate}
-								title='Cuenta privada'
-								control={control}
-							></Toggle>
 
 							<Toggle
 								name='isBlocked'
@@ -317,28 +268,15 @@ const EditAccountContainer = ({
 								title='Cuenta bloqueada'
 								control={control}
 							></Toggle>
+
 							<Toggle
 								name='isActive'
 								title='Cuenta activa'
 								defaultValue={account?.isActive}
 								control={control}
 							></Toggle>
-						</div>
-						<TextArea
-							defaultValue={account?.description}
-							name='description'
-							control={control}
-							label='Descripción'
-						></TextArea>
 
-						<Input
-							name='securityPin'
-							label='PIN de Seguridad'
-							control={control}
-							rules={{
-								required: 'Campo requerido',
-							}}
-						/>
+						</div>
 
 						<div className='flex justify-between mt-5'>
 							<Button

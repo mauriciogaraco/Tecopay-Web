@@ -63,18 +63,24 @@ const EditEntityGeneralInfo = () => {
 								label='Nombre de la entidad'
 								placeholder={entity?.name}
 								control={control}
-								rules={{ required: 'Campo requerido' }}
 								defaultValue={entity?.name}
+								rules={{
+									required: 'Campo requerido',
+									maxLength: {
+										value: 50,
+										message: 'El nombre de entidad debe tener como máximo 50 carácteres'
+									}
+								}}
 							></Input>
 						</div><div className="mt-2">
 							<AsyncComboBox
-								//rules={{ required: 'Campo requerido' }}
+								rules={{ required: 'Campo requerido' }}
 								name='ownerId'
 								normalizeData={{ id: 'id', name: 'email' }}
 								control={control}
 								label='Responsable'
 								dataQuery={{ url: '/user' }}
-								defaultItem = { {id: 1, name: entity?.owner?.email} }
+								defaultItem={{ id: 1, name: entity?.owner?.email }}
 							></AsyncComboBox>
 						</div><div className="mt-2">
 							<Input
@@ -83,6 +89,11 @@ const EditEntityGeneralInfo = () => {
 								placeholder={entity?.phone}
 								control={control}
 								rules={{
+									required: 'Campo requerido',
+									maxLength: {
+										value: 15,
+										message: 'Inserte número de teléfono válido'
+									},
 									validate: (value) => {
 										const isValidPhoneNumber = /^\+?[0-9]{8,}$/.test(value);
 										return isValidPhoneNumber || 'Inserte número de teléfono válido';
@@ -96,7 +107,13 @@ const EditEntityGeneralInfo = () => {
 								label='Dirección'
 								placeholder={entity?.address}
 								control={control}
-								rules={{ required: 'Campo requerido' }}
+								rules={{
+									required: 'Campo requerido',
+									maxLength: {
+										value: 150,
+										message: 'La dirección debe tener como máximo 150 carácteres'
+									},
+								}}
 								defaultValue={entity?.address}
 							></Input>
 						</div><div className="mt-7 flex items-center justify-center m-auto">

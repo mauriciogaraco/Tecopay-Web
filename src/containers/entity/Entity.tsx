@@ -46,7 +46,8 @@ const Entity = () => {
 		dispatch(fetchEntities());
 	}, [dispatch]);
 
-	const { entities, loading } = useAppSelector((state) => state.Entity)
+	const { entities: entidades, loading } = useAppSelector((state) => state.Entity)
+	let entities = entidades.items;
 
 	useEffect(() => {
 		CRUD.getAllBussinnes();
@@ -96,7 +97,7 @@ const Entity = () => {
 			rowId: item.id,
 			payload: {
 				'Nombre': item?.name,
-				'Responsable': '-',
+				'Responsable': item?.owner?.email ? item?.owner?.email : '-',
 				'Negocio': item?.business?.name,
 				'Teléfono': item.phone,
 				'Estado': (
@@ -141,7 +142,7 @@ const Entity = () => {
 				paginateComponent={
 					<Paginate
 						action={(page: number) => setFilter({ ...filter, page })}
-						data={CRUD.paginate}
+						data={entidades}
 					/>
 				}
 			/>

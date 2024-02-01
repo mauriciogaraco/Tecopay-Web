@@ -7,6 +7,8 @@ import useServer from "./useServer";
 import { toast } from "react-toastify";
 import { generateUrlParams } from "../utils/helpers";
 import type { BasicType } from "../interfaces/LocalInterfaces";
+import { fetchAccounts } from '../store/slices/accountSlice';
+import { useAppDispatch } from '../store/hooks';
 
 const useServerAccounts = () => {
   const { manageErrors } = useServer();
@@ -17,8 +19,9 @@ const useServerAccounts = () => {
   const [account, setAccount] = useState<any | null>(null);
   const [records, setRecords] = useState<any | null>(null);
   const [operations, setOperations] = useState<any | null>(null);
+ 
 
-
+  const dispatch = useAppDispatch();
 
   // 'account / all'
   const getAllAccounts = async (filter: BasicType) => {
@@ -171,12 +174,8 @@ const useServerAccounts = () => {
   const Charge = async (data: any, id: number, callback?: Function) => {
     setIsFetching(true);
     try {
-      let resp = await query.post(`/account/charge`, data)
-      if (resp.data.account.address == account.address) {
-        const changed = { ...account, amount: resp.data.account.amount }
-        setAccount(changed)
-      }
-      await getAccountOperations(id);
+      await query.post(`/accountopp/charge`, data)
+      dispatch(fetchAccounts({}));
       callback && callback();
       toast.success("Recarga exitosa");
     } catch (error) {

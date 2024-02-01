@@ -18,7 +18,7 @@ const EditEntityCards = () => {
 								<div className="p-2"><h1 className="font-bold uppercase text-center">{obj.name}</h1></div>
 								<div className="w-4/5">
 									<GenericImageDrop
-										className="h-32 rounded-md border border-gray-400 m-auto overflow-hidden"
+										className="h-44 rounded-md border border-gray-400 m-auto overflow-hidden"
 										control={control}
 										name={`name-${obj.cardImageId}`}
 										key={obj?.cardImageId}

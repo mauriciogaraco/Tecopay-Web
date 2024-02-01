@@ -68,13 +68,13 @@ const useServerEntity = () => {
       );
       //extra code
       setAllEntity([addingEntity.data.entity, ...allEntity]);
-      close && close();
       toast.success("Entidad agregada satisfactoriamente");
       setIsLoading(false)
     } catch (error) {
       manageErrors(error);
     } finally {
       setIsFetching(false);
+      close && close();
     }
   };
 

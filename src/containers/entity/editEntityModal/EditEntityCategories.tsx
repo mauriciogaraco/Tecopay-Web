@@ -13,6 +13,7 @@ import Modal from '../../../components/modals/GenericModal';
 import { Wheel } from '@uiw/react-color';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import Checkbox from '../../../components/forms/CheckboxCat';
+import { toast } from "react-toastify";
 
 
 const EditEntityCategories = () => {
@@ -48,8 +49,8 @@ const EditEntityCategories = () => {
 					displayCol={true}
 				/>,
 				'': <div className="flex justify-end mr-3"><Button name='Editar' action={() => rowAction(item.id)} color="slate-500"
-				outline
-				textColor="slate-600" type={'button'} /></div> 
+					outline
+					textColor="slate-600" type={'button'} /></div>
 			},
 		});
 	});
@@ -91,7 +92,7 @@ const EditEntityCategories = () => {
 				</div>
 			</div>
 			{addEntityCategory && (
-				<Modal state={addEntityCategory} close={setaddEntityCategory}>
+				<Modal state={addEntityCategory} close={setaddEntityCategory} size={'b'} >
 					<AddModalContainer
 						action={setCategory}
 						categories={category ? category : []}
@@ -101,7 +102,7 @@ const EditEntityCategories = () => {
 			)}
 
 			{modifyEntityCategory && (
-				<Modal state={modifyEntityCategory} close={setmodifyEntityCategory}>
+				<Modal state={modifyEntityCategory} close={setmodifyEntityCategory} size={'b'} >
 					<ModifyModalContainer
 						action={setCategory}
 						categories={category ? category : []}
@@ -122,10 +123,18 @@ export default EditEntityCategories;
 
 const AddModalContainer = ({ action, categories, close }: ExportModalContainer) => {
 	const [hex, setHex] = useState('#fff');
-	const { control: controlForm, handleSubmit: handleSubmitAdd, watch } = useForm<Record<string, string | number>>();
+	const { control: controlForm, handleSubmit: handleSubmitAdd, watch, formState: {errors} } = useForm<Record<string, string | number>>();
 
 	const submit = () => {
 		let data: Record<string, string | number | boolean> = watch();
+		if (!data?.name) {
+			toast.error("Nombre de categoría requerido");
+			return;
+		}
+		if (data?.name?.toString().length > 20) {
+			toast.error("El nombre de categoría debe tener como máximo 20 carácteres");
+			return;
+		}
 		data.color = hex;
 		data.id = getNextAvailableId(categories);
 		data.newCat = true;
@@ -135,17 +144,23 @@ const AddModalContainer = ({ action, categories, close }: ExportModalContainer) 
 	return (
 		<form onSubmit={handleSubmitAdd(submit)}>
 			<div className="flex flex-col ">
-				<div className="flex justify-center items-center">
-					<div className="w-1/2 flex flex-col justify-evenly">
-						<div className="mt-2">
+				<div className="flex justify-center items-center flex-col xl:flex-row">
+				<div className="w-3/4 xl:w-1/2 flex flex-col justify-evenly items-start">
+						<div className="mt-2 w-full">
 							<Input
 								name="name"
 								control={controlForm}
-								label="Nombre de la categoria"
-								rules={{ required: "Requerido *" }}
+								label="Nombre de la categoría"
+								rules={{
+									required: 'Campo requerido',
+									maxLength: {
+										value: 20,
+										message: 'El nombre de categoría debe tener como máximo 20 carácteres'
+									}
+								}}
 							/>
 						</div>
-						<div className="mt-2">
+						<div className="mt-6 w-full">
 							<Input
 								name="points"
 								control={controlForm}
@@ -156,7 +171,7 @@ const AddModalContainer = ({ action, categories, close }: ExportModalContainer) 
 						</div>
 						<h1 className="mt-6">Nota: Debe utilizar selector de colores para definir color de categoria</h1>
 					</div>
-					<div className="flex w-1/2 items-center justify-stretch">
+					<div className="flex w-3/4 xl:w-1/2 items-center justify-stretch mt-5 xl:mt-1">
 						<ColorSelect ExternsetHex={setHex} />
 					</div>
 				</div>
@@ -190,6 +205,14 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 
 	const submitCategories = () => {
 		let data = watch();
+		if (!data?.name) {
+			toast.error("Nombre de categoría requerido");
+			return;
+		}
+		if (data?.name?.toString().length > 20) {
+			toast.error("El nombre de categoría debe tener como máximo 20 carácteres");
+			return;
+		}
 		if (indexModify !== undefined) {
 			let finalCategories = [...categories];
 			data.color = hex != '#fff' ? hex : renderInfo?.color ? renderInfo?.color : '#fff';
@@ -203,18 +226,24 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 	return (
 		<form onSubmit={handleSubmitAdd(submitCategories)}>
 			<div className="flex flex-col">
-				<div className="flex justify-center items-center">
-					<div className="w-1/2 flex flex-col justify-evenly items-start">
-						<div className="mt-2">
+				<div className="flex justify-center items-center flex-col xl:flex-row">
+					<div className="w-3/4 xl:w-1/2 flex flex-col justify-evenly items-start">
+						<div className="mt-2 w-full">
 							<Input
 								name="name"
 								control={controlForm}
-								label="Nombre de la categoria"
-								rules={{ required: "Requerido *" }}
+								label="Nombre de la categoría"
+								rules={{
+									required: 'Campo requerido',
+									maxLength: {
+										value: 20,
+										message: 'El nombre de categoría debe tener como máximo 20 carácteres'
+									}
+								}}
 								defaultValue={renderInfo?.name}
 							/>
 						</div>
-						<div className="mt-2">
+						<div className="mt-6 w-full">
 							<Input
 								name="points"
 								control={controlForm}
@@ -226,7 +255,7 @@ const ModifyModalContainer = ({ action, categories, close, indexModify, deleteCa
 						</div>
 						<h1 className="mt-6">Nota: Debe utilizar selector de colores para definir color de categoria</h1>
 					</div>
-					<div className="flex w-1/2 items-center justify-stretch">
+					<div className="flex w-3/4 xl:w-1/2 items-center justify-stretch mt-5 xl:mt-1">
 						<ColorSelect ExternsetHex={setHex} color={renderInfo?.color} />
 					</div>
 				</div>
