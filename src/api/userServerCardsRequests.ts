@@ -167,7 +167,7 @@ const useServerCardsRequests = () => {
 					newCardsRequests.splice(idx, 1, resp.data);
 
 					setAllCardsRequests(newCardsRequests);
-
+					callback && callback();
 					toast.success('Estado Actualizado con éxito');
 				})
 				.catch((error) => {

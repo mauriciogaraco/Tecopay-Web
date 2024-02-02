@@ -3,7 +3,7 @@ import { useState, createContext } from "react";
 import Select from '../../../components/forms/Select';
 import TextArea from '../../../components/forms/TextArea';
 import Button from '../../../components/misc/Button';
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { TrashIcon, CheckIcon, NoSymbolIcon,  } from '@heroicons/react/24/outline';
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import Input from '../../../components/forms/Input';
 import { translateOrderState } from '../../../utils/translate';
@@ -30,27 +30,16 @@ export const ProductContext = createContext(contextData);
 
 const ModalCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 
+	console.log(id);
+
 	const cardRequest: any = CRUD.allCardsRequests.find((item: any) => item.id === id);
 	const [delAction, setDelAction] = useState(false);
-	const [selectedToParent, setSelectedToParent] = useState();
-	const isDisabled = selectedToParent === 'Denegada';
 
-	const { control, handleSubmit, formState: { errors }, reset } = useForm<Record<string, string | number>>();
+	const { control, handleSubmit } = useForm<Record<string, string | number>>();
 
 	let dataCardStatus: any;
-	let dataToSend: any;
 
 	const onSubmit: SubmitHandler<Record<string, string | number | null>> = (dataToSubmit) => {
-
-		if (dataToSubmit.status === 'Aceptada') {
-			dataToSend = { status: 'ACCEPTED' };
-		} else if (dataToSubmit.status === 'Impresa') {
-			dataToSend = { status: 'PRINTED' };
-		} else {
-			dataToSend = { status: 'DENIED' };
-		}
-		console.log(dataToSend)
-		CRUD.updateCardStatus(id, deleteUndefinedAttr(dataToSend), () => { });
 
 		if (dataToSubmit.priority === 'Expresa') {
 			dataCardStatus = { ...dataToSubmit, priority: 'EXPRESS' };
@@ -58,12 +47,19 @@ const ModalCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 		if (dataToSubmit.priority === 'Normal') {
 			dataCardStatus = { ...dataToSubmit, priority: 'NORMAL' };
 		}
-		console.log(dataCardStatus)
+
 		CRUD.editCardRequest(id, deleteUndefinedAttr(dataCardStatus ?? []), () => { });
 
 		close();
 	};
-	console.log(cardRequest)
+	function denied() {
+		CRUD.updateCardStatus(id, { status: 'DENIED' }, close);
+	}
+
+	function accepted() {
+		CRUD.updateCardStatus(id, { status: 'ACCEPTED' }, close);
+	}
+
 	const priorityData = [
 		{ id: 1, name: 'Normal', code: "NORMAL" },
 		{ id: 2, name: 'Expresa', code: "EXPRESS" },
@@ -73,7 +69,7 @@ const ModalCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 		return (
 			<>
 				<GenericList
-					header={{ title: `Detalles de solicitud impresa ${cardRequest?.queryNumber}` }}
+					header={{ title: `Detalles de solicitud denegada ${cardRequest?.queryNumber}` }}
 					body={{
 						'Nombre del propietario': cardRequest?.holderName ?? '-',
 
@@ -86,8 +82,6 @@ const ModalCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 						'Categoría': cardRequest?.category?.name ?? '-',
 
 						'Observaciones': cardRequest?.observations,
-
-						'Código de barras': cardRequest?.card[0]?.barCode!,
 					}}
 				></GenericList>
 
@@ -96,21 +90,43 @@ const ModalCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 	} else {
 		return (
 			<>
-				<p className='mb-4 font-semibold text-lg text-center'>
-					Editar solicitud {cardRequest?.queryNumber}
-				</p>
-				{cardRequest?.quantity === 1 && (
-					<p className='mb-4 font-semibold text-lg text-center'>
-						Tipo de solicitud: Simple
-					</p>
-				)}
-				{cardRequest?.quantity > 1 && (
-					<>
-						<p className='mb-4 font-semibold text-lg text-center'>
-							Tipo de solicitud: Por bulto ( cantidad: <span>{cardRequest?.quantity}</span> )
+				<div className="flex">
+					<div>
+						<p className='mb-4 font-semibold text-lg'>
+							Solicitud {cardRequest?.queryNumber}
 						</p>
-					</>
-				)}
+						{cardRequest?.quantity === 1 && (
+							<p className='mb-4 font-semibold text-lg'>
+								Simple ( cantidad: 1 )
+							</p>
+						)}
+						{cardRequest?.quantity > 1 && (
+							<>
+								<p className='mb-4 font-semibold text-lg'>
+									Por bulto ( cantidad: <span>{cardRequest?.quantity}</span> )
+								</p>
+							</>
+						)}
+					</div>
+					<div className="flex justify-end items-center grow">
+						<div className="mx-10 flex gap-5">
+							<Button
+								icon={<NoSymbolIcon className='h-5 text-red-600' />}
+								color={'red-200'}
+								action={() => denied()}
+							/>
+							{cardRequest?.status === "REQUESTED" && (
+								<Button
+									icon={<CheckIcon className='h-5 text-green-600' />}
+									color={'green-200'}
+									action={() => accepted()}
+								/>
+							)}
+
+						</div>
+
+					</div>
+				</div>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className="flex flex-col gap-4">
 						{cardRequest?.quantity === 1 && (
@@ -132,40 +148,6 @@ const ModalCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 								></Select>
 							</div>
 							<div className="w-1/2">
-								{cardRequest?.status == "ACCEPTED" &&
-									(<Select
-										defaultValue={translateOrderState(cardRequest?.status) ?? ''}
-										control={control}
-										setSelectedToParent={setSelectedToParent}
-										name='status'
-										label='Estado'
-										disabled={isDisabled}
-										data={[
-											{ id: 1, name: translateOrderState('PRINTED') },
-											{ id: 3, name: translateOrderState('DENIED') },
-										]}
-									/>)
-								}
-								{cardRequest?.status == "REQUESTED" &&
-									(<Select
-										defaultValue={translateOrderState(cardRequest?.status) ?? ''}
-										control={control}
-										setSelectedToParent={setSelectedToParent}
-										name='status'
-										label='Estado'
-										disabled={isDisabled}
-										data={[
-											{ id: 2, name: translateOrderState('ACCEPTED') },
-											{ id: 3, name: translateOrderState('DENIED') },
-										]}
-									/>)
-								}
-
-							</div>
-						</div>
-
-						<div className="flex gap-4">
-							<div className="w-1/2">
 								<AsyncComboBox
 									name='categoryId'
 									normalizeData={{ id: 'id', name: 'name' }}
@@ -173,10 +155,6 @@ const ModalCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 									label='Categoría'
 									dataQuery={{ url: `/categories/${cardRequest?.issueEntity?.id}` }}
 								></AsyncComboBox>
-
-							</div>
-							<div className="w-1/2">
-
 							</div>
 						</div>
 
@@ -218,8 +196,8 @@ const ModalCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 						<AlertContainer
 							onAction={() => CRUD.deleteCardRequest(id, close)}
 							onCancel={setDelAction}
-							title={`Eliminar tarjeta ${cardRequest?.queryNumber}`}
-							text='¿Seguro que desea eliminar esta tarjeta del sistema?'
+							title={`Eliminar solicitud ${cardRequest?.queryNumber}`}
+							text='¿Seguro que desea eliminar esta solicitud del sistema?'
 							loading={CRUD.isFetching}
 						/>
 					</Modal>

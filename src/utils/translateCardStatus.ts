@@ -4,7 +4,7 @@ export const translateCardRequestType = (origin:string) =>{
         return "Normal";
       
       case "EXPRESS": 
-        return "Exprés";
+        return "Express";
       
         default:
           return "";

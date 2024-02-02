@@ -65,9 +65,11 @@ const CardRequests = () => {
 		'Tipo',
 		'Estado',
 	];
+	
+	let allCardsRequestsFiltered = CRUD?.allCardsRequests?.filter((objeto:any) => objeto.status === "REQUESTED" || objeto.status === "DENIED");
 
 	const tableData: DataTableInterface[] = [];
-	CRUD?.allCardsRequests?.map((item: any) => {
+	allCardsRequestsFiltered?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
@@ -155,7 +157,7 @@ const CardRequests = () => {
 
 			{/*Modal to Edit Card Request*/}
 			{editCardRequestModal && (
-				<Modal state={editCardRequestModal?.state} close={setEditCardRequestModal} size='m'>
+				<Modal state={editCardRequestModal?.state} close={setEditCardRequestModal} size='b'>
 					<div className="min-h-96">
 						<ModalCardRequest close={() => setEditCardRequestModal({ state: false, id: 0 })} CRUD={CRUD}
 							id={editCardRequestModal?.id} />

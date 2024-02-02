@@ -19,7 +19,7 @@ const AppRoute = () => {
 
 	const LazyDashboard = lazy(() => import('../pages/DashboardPage'));
 	const LazyAccounts = lazy(() => import('../containers/accounts/Accounts'));
-	const LazyCard = lazy(() => import('../containers/card/Card'));
+	const LazyCard = lazy(() => import('../containers/card/AcceptedCardRequest'));
 	const LazyCardRequests = lazy(() => import('../containers/card/CardRequests'));
 	const LazyEntity = lazy(() => import('../containers/entity/Entity'));
 	const LazyAccountDetails = lazy(() => import('../containers/accounts/Details/AccountDetails'));
