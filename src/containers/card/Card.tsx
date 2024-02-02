@@ -55,29 +55,28 @@ const Card = () => {
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [
 		'No. Tarjeta',
-
-		'Propietario',
-		'Moneda',
-		'Cuenta',
+		'No. Cuenta',
+		'Titular',
+		'Categoría',
+		'Entidad',
 		'Estado',
-		'',
 	];
 	const tableData: DataTableInterface[] = [];
 	// eslint-disable-next-line array-callback-return
-
+	console.log(allCards);
 	//const items = useAppSelector((state) => state.cards.Cards);
 
 	// @ts-ignore
-	allCards?.map((item: any) => {
+	allCards?.items?.map((item: any) => {
 		tableData.push({
 			rowId: item?.id,
 			payload: {
 				'No. Tarjeta': formatCardNumber(item?.address),
-				Propietario: item?.holderName ?? '-',
-				Moneda: item?.account.currency,
-				Cuenta: formatCardNumber(item?.account.address),
-				Estado: <StatusForCardRequest currentState={item.request.status} />,
-				'': item.isDelivered ? <TruckIcon className='w-5' /> : '',
+				'No. Cuenta': formatCardNumber(item?.account?.address),
+				'Titular': item?.holderName ?? '-',
+				'Categoría': item?.category?.name ?? '-',
+				'Entidad': item?.account.currency,
+				'Estado': <StatusForCardRequest currentState={item.request.status} />,
 			},
 		});
 	});

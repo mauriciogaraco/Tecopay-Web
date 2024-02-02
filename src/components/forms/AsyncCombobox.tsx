@@ -102,7 +102,28 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 		await apiQuery
 			.get(`${dataQuery.url}${generateUrlParams(params)}`)
 			.then((resp) => {
-				const items: SelectInterface[] = resp.data.items.map(
+				let items:any;
+				if (Array.isArray(resp.data)) {
+					console.log('array');
+					items = resp.data.map(
+						(elem: Record<string, string | number | boolean | null>) => {
+							if (typeof normalizeData.name === 'string') {
+								return {
+									id: elem[normalizeData.id],
+									name: elem[normalizeData.name],
+								};
+							} else {
+								const key = normalizeData.name.find((key) => !!elem[key]);
+								return {
+									id: elem[normalizeData.id],
+									name: key ? elem[key] : '-',
+								};
+							}
+						},
+					);
+				} else {
+					console.log('object');
+					items = resp.data.items.map(
 					(elem: Record<string, string | number | boolean | null>) => {
 						if (typeof normalizeData.name === 'string') {
 							return {
@@ -118,6 +139,8 @@ export default function AsyncComboBox(props: UseControllerProps & InputProps) {
 						}
 					},
 				);
+				}
+				
 
 				setData(nullOpt ? [nullOpt, ...items] : items);
 				callback && callback(resp.data.items);

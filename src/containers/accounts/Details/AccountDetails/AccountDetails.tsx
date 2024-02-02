@@ -15,26 +15,13 @@ import Input from '../../../../components/forms/Input';
 import Button from '../../../../components/misc/Button';
 import { deleteUndefinedAttr } from '../../../../utils/helpers';
 import { useNavigate } from 'react-router-dom';
-import AsyncMultiSelect from '../../../../components/forms/AsyncMultiselect';
-import TextArea from '../../../../components/forms/TextArea';
 import {
 	type BasicType,
 } from '../../../../interfaces/InterfacesLocal';
 import { TrashIcon } from '@heroicons/react/24/outline';
 import AlertContainer from '../../../../components/misc/AlertContainer';
 import Toggle from '../../../../components/forms/Toggle';
-import useServerCategories from '../../../../api/userServerCategories';
-import userServerAccounts from '../../../../api/userServerAccounts';
-import Select from "../../../../components/forms/Select";
 import useServerAccounts from '../../../../api/userServerAccounts';
-
-interface PropsInterface {
-	isLoading: Boolean;
-	charge: Function;
-	isFetching: boolean;
-	deleteAccount: any;
-	editAccount: any;
-}
 
 const AccountDetail = () => {
 

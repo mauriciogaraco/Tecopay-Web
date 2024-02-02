@@ -11,7 +11,6 @@ import Breadcrumb, {
 } from '../../components/navigation/Breadcrumb';
 import { useEffect, useState } from 'react';
 import useServerEntity from '../../api/userServerEntity';
-import useServerCategories from '../../api/userServerCategories';
 import { HomeModernIcon } from '@heroicons/react/24/outline';
 import EditEntityModal from './editEntityModal/EditEntityModal';
 import StatusBadge from '../../components/misc/badges/StatusBadge';
@@ -30,17 +29,12 @@ const Entity = () => {
 
 	const dispatch = useAppDispatch();
 
-	const CRUD: any = useServerEntity();
-	const {
-		getCategory,
-		category,
-		isLoadingCat,
-	} = useServerCategories();
 
-	CRUD.getCategory = getCategory;
-	CRUD.category = category;
+	const CRUD_origin = useServerEntity();
+
+	type CRUD = { id?: number } & typeof CRUD_origin;
+	let CRUD:CRUD = CRUD_origin;
 	CRUD.id = editEntityModal.id;
-	CRUD.isLoadingCat = isLoadingCat;
 
 	useEffect(() => {
 		dispatch(fetchEntities());

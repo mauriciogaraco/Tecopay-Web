@@ -72,7 +72,7 @@ const EditCardContainer = ({
 							<DetailCardComponent
 								deliverCard={deliverCard}
 								id={id}
-								allCards={allCards}
+								allCards={allCards.items}
 							/>
 						</div>
 					</div>
@@ -83,7 +83,7 @@ const EditCardContainer = ({
 						deleteCard={deleteCard}
 						closeModal={closeModal}
 						isFetching={isFetching}
-						allCards={allCards}
+						allCards={allCards.items}
 						setSelectedDataToParent={setSelectedDataToParent}
 					/>
 				)}

@@ -1,13 +1,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import query from '../../api/APIServices';
 
-export const fetchLoggedUser = createAsyncThunk(
-	'init/loggedUserStatus',
-	async (thunkAPI) => {
-		const response = await query.getAuth('/user');
-		return response.data;
-	},
-);
+type Role = {
+	id: number;
+	fullName: string;
+	email: string;
+	issueEntityId: number;
+	account: string;
+	roles: RoleData[];
+}
+
+type RoleData = {
+	id: number;
+	name: string;
+	code: string;
+}
 
 type Device = {
 	id: number;
@@ -43,11 +50,29 @@ type LoggedUser = {
 
 interface InitialState {
 	loading: boolean;
+	loadingRole: boolean;
+	role: Role;
 	user: LoggedUser;
 }
 
+export const fetchLoggedUser = createAsyncThunk(
+	'init/loggedUserStatus',
+	async (thunkAPI) => {
+		const response = await query.getAuth('/user');
+		return response.data;
+	},
+);
+export const fetchLoggedUserRole = createAsyncThunk(
+	'init/loggedUserRole',
+	async (thunkAPI) => {
+		const response = await query.get('/user/myuser');
+		return response.data;
+	},
+);
+
 const initialState: InitialState = {
 	loading: false,
+	loadingRole: false,
 	user: {
 		id: 0,
 		username: '',
@@ -61,6 +86,14 @@ const initialState: InitialState = {
 		sex: '',
 		birthdate: null,
 	},
+	role: {
+		id: 0,
+		fullName: '',
+		email: '',
+		issueEntityId: 0,
+		account: '',
+		roles: [],
+	}
 };
 
 const loggedUserSlice = createSlice({
@@ -80,8 +113,21 @@ const loggedUserSlice = createSlice({
 			})
 			.addCase(fetchLoggedUser.rejected, (state) => {
 				state.loading = false;
+			})
+			.addCase(fetchLoggedUserRole.pending, (state) => {
+				state.loadingRole = true;
+			})
+			.addCase(fetchLoggedUserRole.fulfilled, (state, action) => {
+				state.role = action.payload;
+				state.loadingRole = false;
+			})
+			.addCase(fetchLoggedUserRole.rejected, (state) => {
+				state.loadingRole = false;
 			});
+
 	},
+
+
 });
 
 export default loggedUserSlice.reducer;

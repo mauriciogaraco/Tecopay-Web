@@ -4,14 +4,16 @@ import 'react-toastify/dist/ReactToastify.css';
 import AppContainer from '../containers/AppContainer';
 import { lazy, useEffect } from 'react';
 import { useAppDispatch } from '../store/hooks';
-import { fetchLoggedUser } from '../store/slices/loggedUserSlice';
+import { fetchLoggedUser, fetchLoggedUserRole } from '../store/slices/loggedUserSlice';
 import { fetchEntities } from '../store/slices/EntitySlice';
 
 const AppRoute = () => {
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		dispatch(fetchLoggedUser());
+		dispatch(fetchLoggedUser()).then(
+			()=>{dispatch(fetchLoggedUserRole())}
+		);
 		dispatch(fetchEntities());
 	}, [dispatch]);
 

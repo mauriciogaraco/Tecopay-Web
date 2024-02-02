@@ -9,7 +9,6 @@ import { toast } from 'react-toastify';
 import { generateUrlParams } from '../utils/helpers';
 import { type BasicType } from '../interfaces/LocalInterfaces';
 import { SelectInterface } from '../interfaces/InterfacesLocal';
-import useServerEntity from './userServerEntity';
 
 export type CardsRequests = {
 	id: number;
@@ -46,7 +45,6 @@ const useServerCardsRequests = () => {
 
 	const [selectedDataToParent, setSelectedDataToParent] =
 		useState<SelectInterface | null>(null);
-	const { getEntity } = useServerEntity();
 
 	//Postman -> 'cardRequest / findAllRequest'	
 	const getAllCardsRequests = async (filter: BasicType) => {
@@ -58,30 +56,7 @@ const useServerCardsRequests = () => {
 				totalPages: resp.data.totalPages,
 				currentPage: resp.data.currentPage,
 			});
-			//This code will add to each object an issueEntityIdName property with the name of the associated Entity
-			const results = await Promise.all(
-				resp?.data?.items?.map(async (obj: CardsRequests) => {
-					try {
-						if (obj?.issueEntityId) {
-							let entityName = await getEntity(obj?.issueEntityId);
-							return { issueEntityId: entityName?.data?.entity?.id, name: entityName?.data?.entity?.name };
-						}
-						return { issueEntityId: null, name: null };
-					} catch (error) {
-						manageErrors(error);
-						return null;
-					}
-				})
-			);
-			let returnResult = [...resp?.data?.items];
-			returnResult.forEach((objeto1: any) => {
-				const matchingObjeto2 = results.find((objeto2: any) => objeto2.issueEntityId === objeto1.issueEntityId);
-
-				if (matchingObjeto2 && matchingObjeto2.name !== null && matchingObjeto2.name !== undefined) {
-					objeto1.issueEntityIdName = matchingObjeto2.name;
-				}
-			});
-			setAllCardsRequests(returnResult);
+			setAllCardsRequests(resp.data.items);
 		}
 		catch (error) {
 			manageErrors(error);
