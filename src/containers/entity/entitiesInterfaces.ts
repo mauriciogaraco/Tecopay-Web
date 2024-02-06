@@ -1,13 +1,20 @@
 import { Control } from "react-hook-form";
 
-
+type Category = {
+	name: string;
+	color: `#${string}`;
+	isBasic: boolean;
+	cardImageId: number;
+	id?: number;
+	points?: number;
+}
 
 
 export interface ContextData {
 	control?: Control;
 	stepUp?: Function;
 	stepDown?: Function;
-	data?: CategoriesData[];
+	data?: Category[];
 	setData?: Function;
 	business?: Bussiness[];
 	entityInfo?: any;
@@ -48,16 +55,6 @@ export type Bussiness = {
 	logo: Logo | null;
 }
 
-export interface CategoriesData {
-	name: string;
-	color: `#${string}`;
-	points?: number;
-	id: number;
-	issueEntityId: number;
-	cardImageId?: number;
-	basic?: boolean;
-}
-
 export type Logo = {
 	id: number;
 	src: string;
@@ -72,29 +69,27 @@ export interface FilterInterface {
 	name?: string;
 	ownerId?: number;
 	phone?: string;
-	responsable?: string;
 	[key: string]: any;
 }
 
 
-export interface CategoriesData {
-	name: string;
-	color: `#${string}`;
-	points?: number;
-	id: number;
-	issueEntityId: number;
-	cardImageId?: number;
-}
+//export interface CategoriesData {
+//	name: string;
+//	color: `#${string}`;
+//	points?: number;
+//	id: number;
+//	cardImageId?: number;
+//}
 
 export interface ExportModalContainer {
 	action: Function | undefined,
-	categories: CategoriesData[],
+	categories: Category[],
 	close: Function | undefined
 }
 
 export interface ModifyModal{
 	action?: Function,
-	categories: CategoriesData[],
+	categories: Category[],
 	close?: Function,
 	indexModify: number
 	deleteCat?: Function,

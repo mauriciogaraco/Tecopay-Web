@@ -9,7 +9,7 @@ import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 
 
 const EntityGeneralInfo = () => {
-	const { control, business, setProfileImageId } = useContext(ProductContext);
+	const { control, setProfileImageId } = useContext(ProductContext);
 
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
@@ -35,7 +35,7 @@ const EntityGeneralInfo = () => {
 									normalizeData={{ id: 'id', name: 'name' }}
 									control={control}
 									label='Negocio'
-									dataQuery={{ url:'/business'}}
+									dataQuery={{ url: '/business' }}
 								></AsyncComboBox>
 							</div><div className="mt-2">
 								<Input
@@ -55,10 +55,10 @@ const EntityGeneralInfo = () => {
 								<AsyncComboBox
 									rules={{ required: 'Campo requerido' }}
 									name='ownerId'
-									normalizeData={{ id: 'id', name: 'email' }}
+									normalizeData={{ id: 'id', name: 'username' }}
 									control={control}
 									label='Responsable'
-									dataQuery={{ url:'/user'}}
+									dataQuery={{ url: '/user' }}
 								></AsyncComboBox>
 							</div><div className="mt-2">
 								<Input

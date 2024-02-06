@@ -8,10 +8,31 @@ import { deleteUndefinedAttr } from '../../../utils/helpers';
 import SpinnerLoading from '../../../components/misc/SpinnerLoading';
 import { toast } from "react-toastify";
 import { BasicNomenclator } from "../../../interfaces/ServerInterfaces";
-import { ContextData, CategoriesData } from "../entitiesInterfaces";
+import { ContextData } from "../entitiesInterfaces";
 import { findMessage, propertyFilter } from "../entityUtilityFunctions";
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { fetchEntities } from '../../../store/slices/EntitySlice';
+import { useAppDispatch } from '../../../store/hooks';
+
+type dataToSubmit = {
+	name: string;
+	address: string;
+	phone: string;
+	color: string;
+	ownerId: number;
+	businessId: number;
+	allowCreateAccount: boolean;
+	profileImageId: number;
+	categories: Category[];
+}
+
+type Category = {
+	name: string;
+	color: `#${string}`;
+	isBasic: boolean;
+	cardImageId: number;
+	id?: number;
+	points?: number;
+}
+
 
 
 const contextData: ContextData = {};
@@ -31,12 +52,9 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 		addEntity,
 	} = CRUD;
 
-	const { businessId } = useAppSelector((state) => state.session);
-	const dispatch = useAppDispatch();
-
-	const [data, setData] = useState<CategoriesData[]>([]);
+	const [data, setData] = useState<Category[]>([]);
 	const [imgRelation, setImgRelation] = useState([]);
-	const [currentStep, setCurrentStep] = useState(0);
+	const [currentStep, setCurrentStep] = useState<number>(0);
 	const [selected, setSelected] = useState<BasicNomenclator[]>([]);
 	const [profileImageId, setProfileImageId] = useState<any>([]);
 
@@ -51,16 +69,33 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 		});
 	}
 
-	const { control, handleSubmit, formState: { errors } } = useForm<Record<string, string | number>>();
+	function cleanCategories(arrayOfObjects:Category[]) {
+		return arrayOfObjects.map(obj => {
+		  const cleanedObject = {
+			name: obj.name,
+			color: obj.color,
+			isBasic: obj.isBasic,
+			cardImageId: obj.cardImageId
+		  };
+		  return cleanedObject;
+		});
+	  }
 
-	const onSubmit: SubmitHandler<Record<string, string | number | null>> = (dataToSubmit) => {
+	const { control, handleSubmit, formState: { errors } } = useForm<Record<string, string | number | Category[]>>();
 
-		if (currentStep === 0) { stepUp(); return };
+	const onSubmit: SubmitHandler<Record<string, string | number | Category[]>> = (dataToSubmit) => {
+	
+		if (currentStep === 0) {
+			if (dataToSubmit?.profileImageId) {
+				stepUp();
+				return;
+			} else {
+				toast.error("Por favor defina un logotipo para la Entidad");
+				return;
+			}
+		}
 		if (currentStep === 1) { return };
 
-		//dataToSubmit.ownerId = 1;
-		//const businessId = business?.find((obj: any) => obj.name === dataToSubmit.businessId);
-		//dataToSubmit.businessId = businessId?.id;
 		dataToSubmit.profileImageId = profileImageId[0]?.profileImageId?.id;
 
 		unifyData(imgRelation);
@@ -69,7 +104,7 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 			toast.error("Por favor defina una categoría básica");
 			return;
 		}
-		const dataCategories: { id: number, name: string, isBasic?: boolean | null }[] = data.map(obj => ({
+		const dataCategories: Category[] = data.map(obj => ({
 			...obj,
 			isBasic: false,
 		}));
@@ -81,15 +116,14 @@ const NewEntityModal = ({ close, CRUD }: propsDestructured) => {
 		} else {
 			toast.error("Por favor defina una categoría básica");
 		}
-		
-		addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), dataCategories, close).then(
-			()=> dispatch(fetchEntities())
-		);
 
+		dataToSubmit.categories = cleanCategories(dataCategories);
+
+		addEntity(deleteUndefinedAttr(propertyFilter(dataToSubmit)), close);
+		
 	};
 
 	toast.error(findMessage(errors));
-
 
 	const stepTitles = [
 		"Información general",

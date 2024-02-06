@@ -6,7 +6,7 @@ import GenericImageDrop from "../../../components/misc/Images/GenericImageDrop";
 
 const EditEntityCards = () => {
 	const { control, setImgRelation, category } = useContext(ProductContext);
-	console.log(category)
+
 	return (
 		<div className="h-auto border border-slate-300 rounded p-2">
 			<div className="max-h-96 min-h-96 h-96 overflow-y-auto">

@@ -17,12 +17,14 @@ const useServerCategories = () => {
 
   //Postman -> 'categories / register'
   const addCategory = async (
+    issueEntityId: number,
     data: any
   ) => {
     setIsFetching(true);
     setIsLoadingCat(true)
     try {
-      await query.post("/categories", data)
+      let resp = await  query.post(`/entity/${issueEntityId}/categories`, data);
+      return resp.data;
     } catch (error) {
       manageErrors(error);
     } finally {
@@ -64,13 +66,15 @@ const useServerCategories = () => {
 
   //Postman -> 'categories / update'
   const updateCategory = async (
+    issueEntityId: number,
     categoryID: number,
     dataCategory: any,
   ) => {
     setIsFetching(true);
     try {
-      let resp = await query.patch(`/categories/${categoryID}`, dataCategory)
+      let resp = await query.patch(`/entity/${issueEntityId}/categories/${categoryID}`, dataCategory);
       setCategory(resp.data);
+      return resp.data;
     } catch (error) {
       manageErrors(error);
     } finally {
@@ -80,10 +84,11 @@ const useServerCategories = () => {
 
   //Postman -> 'categories / delete'
   const deleteCategory = async (
+    issueEntityId: number,
     categoryID: number
   ) => {
     try {
-      await query.deleteAPI(`/categories/${categoryID}`, {});
+      await query.deleteAPI(`/entity/${issueEntityId}/categories/${categoryID}`, {});
     } catch (error) {
       manageErrors(error);
     }

@@ -15,8 +15,6 @@ import { HomeModernIcon } from '@heroicons/react/24/outline';
 import EditEntityModal from './editEntityModal/EditEntityModal';
 import StatusBadge from '../../components/misc/badges/StatusBadge';
 import NewEntityModal from './newEntityModal/NewEntityModal';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { fetchEntities } from '../../store/slices/EntitySlice';
 
 const Entity = () => {
 
@@ -27,9 +25,6 @@ const Entity = () => {
 		id: number;
 	}>({ state: false, id: 0 });
 
-	const dispatch = useAppDispatch();
-
-
 	const CRUD_origin = useServerEntity();
 
 	type CRUD = { id?: number } & typeof CRUD_origin;
@@ -37,11 +32,8 @@ const Entity = () => {
 	CRUD.id = editEntityModal.id;
 
 	useEffect(() => {
-		dispatch(fetchEntities());
-	}, [dispatch]);
-
-	const { entities: entidades, loading } = useAppSelector((state) => state.Entity)
-	let entities = entidades.items;
+		CRUD.getAllEntity(filter);
+	}, [filter]);
 
 	useEffect(() => {
 		CRUD.getAllBussinnes();
@@ -68,14 +60,14 @@ const Entity = () => {
 
 	const tableData: DataTableInterface[] = [];
 
-	const [finalData, setFinalData] = useState([...entities]);
+	const [finalData, setFinalData] = useState([...CRUD.allEntity]);
 
 	useEffect(() => {
-		setFinalData([...entities]);
-	}, [entities]);
+		setFinalData([...CRUD.allEntity]);
+	}, [CRUD.allEntity]);
 
 	function filterProcessor(value: { search: string | undefined }) {
-		let final_data = [...entities]
+		let final_data = [...CRUD.allEntity]
 		if (value?.search && (typeof value?.search === 'string')) {
 			const searchStringLowercase = value?.search.toLowerCase();
 			final_data = final_data.filter((object: any) => {
@@ -91,7 +83,7 @@ const Entity = () => {
 			rowId: item.id,
 			payload: {
 				'Nombre': item?.name,
-				'Responsable': item?.owner?.email ? item?.owner?.email : '-',
+				'Responsable': item?.owner?.username ? item?.owner?.username : '-',
 				'Negocio': item?.business?.name,
 				'Teléfono': item.phone,
 				'Estado': (
@@ -126,7 +118,7 @@ const Entity = () => {
 			<GenericTable
 				tableData={tableData}
 				tableTitles={tableTitles}
-				loading={loading}
+				loading={CRUD.isFetching}
 				actions={actions}
 				rowAction={rowAction}
 				searching={{
@@ -136,7 +128,7 @@ const Entity = () => {
 				paginateComponent={
 					<Paginate
 						action={(page: number) => setFilter({ ...filter, page })}
-						data={entidades}
+						data={CRUD.paginate}
 					/>
 				}
 			/>

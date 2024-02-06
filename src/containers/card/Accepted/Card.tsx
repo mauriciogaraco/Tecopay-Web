@@ -23,10 +23,6 @@ const Card = () => {
 
 	const CRUD = useServerCards();
 
-	useEffect(() => {
-		CRUD.getAllCards({ status: "ACCEPTED" });
-	}, []);
-
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
@@ -34,6 +30,12 @@ const Card = () => {
 		state: boolean;
 		id: number;
 	}>({ state: false, id: 0 });
+
+	useEffect(() => {
+		CRUD.getAllCards({ status: "ACCEPTED", ...filter });
+	}, [filter]);
+
+	
 
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [
@@ -134,7 +136,7 @@ const EditCardContainer = ({
 					'No. Tarjeta': formatCardNumber(desiredObject?.address) ?? '-',
 					'Titular': desiredObject?.holderName ?? '-',
 					'Entidad': desiredObject?.issueEntity ?? '-',
-					'Categoría': desiredObject?.category.name ?? '-',
+					'Categoría': desiredObject?.category?.name ?? '-',
 					'Fecha de emisión': 'No existe',
 					'Fecha de expiración':
 						formatCalendar(desiredObject?.expiratedAt) ?? '-',

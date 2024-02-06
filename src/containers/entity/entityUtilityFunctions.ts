@@ -29,9 +29,8 @@ export function propertyFilter(objeto: FilterInterface): FilterInterface {
 		'name',
 		'ownerId',
 		'phone',
-		'responsable',
 		'profileImageId',
-		'imageId',
+		'categories',
 
 	];
 	const resultado: Partial<FilterInterface> = {};

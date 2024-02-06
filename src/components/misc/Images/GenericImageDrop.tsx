@@ -123,9 +123,9 @@ const GenericImageDrop = ({
       >
         <div className="flex flex-col text-sm text-gray-600 text-center items-center p-5">
           <div className="relative cursor-pointer rounded font-medium text-gray-50">
-            <p onTouchStartCapture={open}>{text ? text : 'Click para cargar archivo'}</p>
+            <p onTouchStartCapture={open}>{text ? text : 'Arrastre archivo'}</p>
           </div>
-          <p className="text-gray-100">{text ? '' : 'o arrastre uno'}</p>
+         {/*<p className="text-gray-100">{text ? '' : 'o arrastre uno'}</p>*/}
           {/* <p className="text-xs text-gray-500">PNG, JPG, GIF hasta 200kB</p>*/}
         </div>
       </div>

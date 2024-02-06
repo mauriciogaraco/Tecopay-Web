@@ -6,10 +6,8 @@ import EditEntityCategories from "./EditEntityCategories";
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import { toast } from "react-toastify";
 import { BasicNomenclator } from "../../../interfaces/ServerInterfaces";
-import { ContextData, CategoriesData } from "../entitiesInterfaces";
+import { ContextData } from "../entitiesInterfaces";
 import { findMessage, propertyFilter } from "../entityUtilityFunctions";
-import { useAppDispatch, useAppSelector } from '../../../store/hooks';
-import { fetchEntities } from '../../../store/slices/EntitySlice';
 import TabNav from "../../../components/navigation/TabNav";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,6 +15,7 @@ import {
 	faList,
 	faCircleInfo,
 } from "@fortawesome/free-solid-svg-icons";
+import userServerCategories from "../../../api/userServerCategories"
 
 
 const contextData: ContextData = {};
@@ -36,6 +35,7 @@ export type Category = {
 	IssueEntityCategory: IssueEntityCategory;
 	isBasic: boolean;
 	id?: number;
+	newCat?: boolean;
 }
 
 export type IssueEntityCategory = {
@@ -57,12 +57,19 @@ export interface ImageRelation {
 	hash: string;
 }
 
+type CategoryData = {
+	name: string;
+	color: `#${string}`;
+	isBasic: boolean;
+	cardImageId: number;
+	id?: number;
+	points?: number;
+}
+
 const EditEntityModal = ({
 	close,
 	CRUD
 }: propsDestructured) => {
-
-	const dispatch = useAppDispatch();
 
 	const {
 		business,
@@ -70,20 +77,22 @@ const EditEntityModal = ({
 		id,
 		deleteEntity,
 		isFetching,
+		allEntity,
 	} = CRUD;
 
-	const { entities } = useAppSelector((state) => state.Entity);
-	const entity = entities.items.find(obj => obj.id === id);
+	const entity = allEntity.find((obj: any) => obj.id === id);
 	const [category, setCategory] = useState<Category[]>([]);
-	const [data, setData] = useState<CategoriesData[]>([]);
+	const [data, setData] = useState<CategoryData[]>([]);
 	const [imgRelation, setImgRelation] = useState([]);
 	const [currentStep, setCurrentStep] = useState(0);
 	const [catToDelete, setCatToDelete] = useState<number[]>([]);
 	const [selected, setSelected] = useState<BasicNomenclator[]>([]);
 	const [currentTab, setCurrentTab] = useState("info");
 
+	const { addCategory, updateCategory } = userServerCategories();
+
 	useEffect(() => {
-		entity?.category && setCategory(entity.category);
+		entity?.categories && setCategory(entity.categories);
 	}, [entity]);
 
 
@@ -97,7 +106,7 @@ const EditEntityModal = ({
 	//Form Handle -----------------------------------------------------------------------------
 
 	const { control, handleSubmit, formState: { errors }, watch } = useForm<Record<string, string | number>>();
-
+	console.log(id);
 	const onSubmit: SubmitHandler<any> = async (dataToSubmit) => {
 
 		let dataCategories: Category[] = category?.map((obj: any) => ({
@@ -105,18 +114,24 @@ const EditEntityModal = ({
 			isBasic: false,
 		}));
 
+		const modifiedCategories = dataCategories.map(category => {
+			if (!category.newCat) {
+				return {
+					...category,
+					cardImageId: category?.cardImage?.id,
+				};
+			} else {
+				return category;
+			}
+		});
+
 		imgRelation.forEach((obj: any) => {
 			const key = Object.keys(obj)[0];
-			const flag = dataCategories?.find((elemento: any) => elemento.name === key);
+			const flag = modifiedCategories?.find((elemento: any) => elemento.name === key);
 			if (flag) {
 				flag.cardImageId = obj[key]?.id;
 			}
 		});
-
-		if (!dataCategories?.every((obj: any) => obj.cardImageId !== null && obj.cardImageId !== undefined)) {
-			toast.error('Las imágenes de categorías son requeridas');
-			return;
-		}
 
 		if (category?.length === 0 || selected.length === 0) {
 			toast.error("Por favor defina una categoría básica");
@@ -125,19 +140,30 @@ const EditEntityModal = ({
 
 		const idObjeto2 = selected[0]?.id;
 
-		const objectMatch = dataCategories.find(objeto => objeto.id === idObjeto2);
+		const objectMatch = modifiedCategories.find(objeto => objeto.id === idObjeto2);
 
 		if (objectMatch) {
 			objectMatch.isBasic = true;
 		} else {
 			toast.error("Por favor defina una categoría básica");
+			return;
+		}
+
+		if (!modifiedCategories?.every((obj: any) => obj.cardImageId !== null && obj.cardImageId !== undefined)) {
+			toast.error('Las imágenes de categorías son requeridas');
+			return;
 		}
 
 		dataToSubmit.allowCreateAccount = watch().allowCreateAccount;
 
-		updateEntity(id, deleteUndefinedAttr(propertyFilter(dataToSubmit)), dataCategories, catToDelete, close).then(
-			() => dispatch(fetchEntities())
-		);
+		const BasicCat = modifiedCategories.filter((obj: any) => obj.isBasic === true);
+
+		if (BasicCat[0]?.newCat === true) {
+			await addCategory(id, BasicCat[0]);
+		} else {
+			await updateCategory(id, BasicCat[0].id as number, BasicCat[0]);
+		}
+		updateEntity(id, deleteUndefinedAttr(propertyFilter(dataToSubmit)), modifiedCategories, catToDelete, close);
 	};
 	toast.error(findMessage(errors));
 
@@ -192,7 +218,6 @@ const EditEntityModal = ({
 					setData,
 					setCatToDelete,
 					setSelected,
-
 				}}>
 				<form onSubmit={handleSubmit(onSubmit)}>
 					{currentTab === "info" && <EditEntityGeneralInfo />}

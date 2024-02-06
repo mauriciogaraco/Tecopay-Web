@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   type PaginateInterface,
 } from "../interfaces/ServerInterfaces";
@@ -21,7 +21,7 @@ const useServerEntity = () => {
   const [business, setBusiness] = useState<any>([]);
 
 
-  //registrar categorias com parte del proceso de crear nueva entidad
+  //registrar categorias como parte del proceso de crear nueva entidad
   const { category, addCategory, updateCategory, getCategory, deleteCategory } = userServerCategories();
 
 
@@ -46,28 +46,13 @@ const useServerEntity = () => {
   //Postman -> 'entity / register'
   const addEntity = async (
     data: any,
-    categories: any,
     close: Function
   ) => {
     setIsLoading(true)
     try {
-      let addingEntity = await query.post("/entity", data)
-      let issueEntityId = addingEntity.data.entity.id;
-      const categoriesReady = categories.map((objeto: categoriesData) => ({
-        ...objeto, issueEntityId,
-      }));
-      await Promise.all(
-        categoriesReady.map(async (obj: any) => {
-          try {
-            addCategory(obj);
-          } catch (error) {
-            manageErrors(error);
-            return null;
-          }
-        })
-      );
+      let addingEntity = await query.post("/entity", data);
       //extra code
-      setAllEntity([addingEntity.data.entity, ...allEntity]);
+      setAllEntity([addingEntity.data, ...allEntity]);
       toast.success("Entidad agregada satisfactoriamente");
       setIsLoading(false)
     } catch (error) {
@@ -105,16 +90,28 @@ const useServerEntity = () => {
     setIsFetching(true);
     try {
       let update = await query.patch(`/entity/${entityID}`, dataEntity)
-      const newArray = allEntity.map((obj: any) => (obj.id === entityID ? update.data : obj));
-      setAllEntity(newArray);
+      //Update the object with the specific id of entity
+      let updatedEntities = allEntity.map((obj: any) => (obj.id === entityID ? update.data : obj));
+
+      //deleting categories
+      await Promise.all(
+        catToDelete.map(async (id: number) => {
+          try {
+            await deleteCategory(entityID, id);
+            updatedEntities = updLocal(updatedEntities, 'del', { category: {}, id: entityID }, id);
+          } catch (error) {
+            manageErrors(error);
+            return null;
+          }
+        })
+      );
+      //updating categories
       await Promise.all(
         dataCategory.map(async (obj: any) => {
           try {
-            if (obj.newCat) {
-              obj.issueEntityId = entityID;
-              addCategory(obj)
-            } else {
-              updateCategory(obj.id, obj)
+            if (!obj.newCat && !obj.isBasic) {
+              const resp = await updateCategory(entityID, obj.id, obj);
+              updatedEntities = updLocal(updatedEntities, 'upd', { category: resp, id: entityID });
             }
           } catch (error) {
             manageErrors(error);
@@ -122,16 +119,21 @@ const useServerEntity = () => {
           }
         })
       );
+      //adding categories
       await Promise.all(
-        catToDelete.map(async (id: number) => {
+        dataCategory.map(async (obj: any) => {
           try {
-            deleteCategory(id);
+            if (obj.newCat && !obj.isBasic) {
+              const resp = await addCategory(entityID, obj);
+              updatedEntities = updLocal(updatedEntities, 'add', { category: resp, id: entityID });
+            }
           } catch (error) {
             manageErrors(error);
             return null;
           }
         })
       );
+      setAllEntity(updatedEntities);
       toast.success("Entidad actualizada exitosamente");
       callback && callback();
     } catch (error) {
@@ -171,6 +173,89 @@ const useServerEntity = () => {
     }
   };
 
+
+  //Utility Functions________________________________________________________________________________
+  const managePaginate = (opp: "add" | "del") => {
+    if (paginate !== null) {
+      if (opp === "add") {
+        if (paginate.totalItems && paginate.totalPages && paginate.totalItems / paginate.totalPages < 35) {
+          setPaginate({ ...paginate, totalItems: paginate.totalItems + 1 });
+          return false;
+        } else if (paginate.totalItems && paginate.totalPages) {
+          setPaginate({
+            ...paginate,
+            totalItems: paginate.totalItems + 1,
+            totalPages: Math.ceil(paginate.totalItems / 35),
+          });
+          return true;
+        }
+      } else {
+        if (paginate.totalItems && paginate.totalPages && paginate.totalItems / paginate.totalPages <= 35) {
+          setPaginate({ ...paginate, totalItems: paginate.totalItems - 1 });
+          return false;
+        } else if (paginate.totalItems && paginate.totalPages) {
+          setPaginate({
+            ...paginate,
+            totalPages: Math.ceil(paginate.totalItems / 35),
+            totalItems: paginate.totalItems - 1,
+          });
+          return true;
+        }
+      }
+    }
+  };
+
+  const updLocal = (
+    local_allEntity: any,
+    opp: "del" | "add" | "upd",
+    { category, id }: { category?: any; id?: number | null },
+    catID?: number,
+  ) => {
+    let cat_upt;
+    if (opp === "add") {
+      cat_upt = local_allEntity.map((obj: any) => {
+        if (obj.id === id) {
+          return {
+            ...obj,
+            categories: [...obj.categories, category],
+          };
+        } else {
+          return obj;
+        }
+      });
+    } else if (opp === "upd") {
+      cat_upt = local_allEntity.map((obj: any) => {
+        if (obj.id === id) {
+          const index = obj?.categories?.findIndex((cat: any) => cat.id === category.id);
+          let updCat = [...obj.categories];
+          updCat[index] = category;
+          return {
+            ...obj,
+            categories: updCat,
+          };
+        } else {
+          return obj;
+        }
+      });
+    } else if (opp === "del") {
+      cat_upt = local_allEntity.map((obj: any) => {
+        if (obj.id === id) {
+          const index = obj?.categories?.findIndex((cat: any) => cat.id === catID);
+          let updCat = [...obj.categories];
+          updCat.splice(index, 1);
+          return {
+            ...obj,
+            categories: updCat,
+          };
+        } else {
+          return obj;
+        }
+      });
+
+    }
+    return cat_upt;
+  };
+  //_________________________________________________________________________________Utility Functions
 
   return {
     paginate,

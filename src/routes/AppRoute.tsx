@@ -5,7 +5,6 @@ import AppContainer from '../containers/AppContainer';
 import { lazy, useEffect } from 'react';
 import { useAppDispatch } from '../store/hooks';
 import { fetchLoggedUser, fetchLoggedUserRole } from '../store/slices/loggedUserSlice';
-import { fetchEntities } from '../store/slices/EntitySlice';
 
 const AppRoute = () => {
 	const dispatch = useAppDispatch();
@@ -14,7 +13,6 @@ const AppRoute = () => {
 		dispatch(fetchLoggedUser()).then(
 			()=>{dispatch(fetchLoggedUserRole())}
 		);
-		dispatch(fetchEntities());
 	}, [dispatch]);
 
 	const LazyDashboard = lazy(() => import('../pages/DashboardPage'));
@@ -24,8 +22,6 @@ const AppRoute = () => {
 	const LazyEntity = lazy(() => import('../containers/entity/Entity'));
 	const LazyAccountDetails = lazy(() => import('../containers/accounts/Details/AccountDetails'));
 	const LazyUsers = lazy(() => import('../containers/users/Users'));
-	const LazyCurrencyList = lazy(() => import('../containers/currencys/currencyList/CurrencyList'));
-	const LazyCurrencyExchangeRate = lazy(() => import('../containers/currencys/currencyExchangeRate/CurrencyExchangeRate'));
 
 	return (
 		<Routes>
@@ -37,8 +33,6 @@ const AppRoute = () => {
 				<Route path='/entities' Component={LazyEntity} />
 				<Route path='/accounts/details' Component={LazyAccountDetails} />
 				<Route path='/users' Component={LazyUsers} />
-				<Route path='/coins/list' Component={LazyCurrencyList} />
-				<Route path='/coins/exchangeRate' Component={LazyCurrencyExchangeRate} />
 			</Route>
 			<Route path='/*' element={<NotFoundpage />} />
 		</Routes>

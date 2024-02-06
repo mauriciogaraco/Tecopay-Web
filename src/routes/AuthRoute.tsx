@@ -3,10 +3,10 @@ import Login from "../pages/LoginPage";
 import NotFoundPage from "../pages/NotFoundPage";
 
 const AuthRoute = () => {
+
   return (
     <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/*" element={<NotFoundPage />} />
+      <Route path="/*" element={<Login />} />
     </Routes>
   );
 };

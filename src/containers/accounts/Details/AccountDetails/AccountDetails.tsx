@@ -75,9 +75,9 @@ const AccountDetail = () => {
 
 						'Propietario': account?.owner?.fullName ?? '-',
 
-						'Entidad': account?.issueEntity.name ?? '-',
+						'Entidad': account?.issueEntity?.name ?? '-',
 
-						'Negocio': account?.issueEntity.business.name ?? '-',
+						'Negocio': account?.issueEntity?.business?.name ?? '-',
 
 						'Total de Puntos': account?.amount ?? '-',
 

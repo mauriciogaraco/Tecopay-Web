@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState } from "react";
 import { ProductContext } from "./EditEntityModal";
 import Input from '../../../components/forms/Input';
 import Button from '../../../components/misc/Button';
@@ -74,13 +74,13 @@ const EditEntityGeneralInfo = () => {
 							></Input>
 						</div><div className="mt-2">
 							<AsyncComboBox
-								rules={{ required: 'Campo requerido' }}
+								//rules={{ required: 'Campo requerido' }}
 								name='ownerId'
 								normalizeData={{ id: 'id', name: 'email' }}
 								control={control}
 								label='Responsable'
 								dataQuery={{ url: '/user' }}
-								defaultItem={{ id: 1, name: entity?.owner?.email }}
+								defaultItem={{ id:  entity?.owner?.id, name: entity?.owner?.username }}
 							></AsyncComboBox>
 						</div><div className="mt-2">
 							<Input

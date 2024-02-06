@@ -3,7 +3,7 @@ import { useState, createContext } from "react";
 import Select from '../../../components/forms/Select';
 import TextArea from '../../../components/forms/TextArea';
 import Button from '../../../components/misc/Button';
-import { TrashIcon, CheckIcon, NoSymbolIcon,  } from '@heroicons/react/24/outline';
+import { TrashIcon, CheckIcon, NoSymbolIcon, } from '@heroicons/react/24/outline';
 import { deleteUndefinedAttr } from '../../../utils/helpers';
 import Input from '../../../components/forms/Input';
 import { translateOrderState } from '../../../utils/translate';
@@ -64,12 +64,15 @@ const ModalCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 		{ id: 1, name: 'Normal', code: "NORMAL" },
 		{ id: 2, name: 'Expresa', code: "EXPRESS" },
 	]
-
+	console.log('cardRequest');
+	console.log(cardRequest);
 	if (cardRequest?.status === 'PRINTED' || cardRequest?.status === "DENIED") {
 		return (
 			<>
+				<p className='mb-4 font-semibold text-lg'>
+					Detalles de solicitud <span className="text-red-600">denegada</span>  {cardRequest?.queryNumber}
+				</p>
 				<GenericList
-					header={{ title: `Detalles de solicitud denegada ${cardRequest?.queryNumber}` }}
 					body={{
 						'Nombre del propietario': cardRequest?.holderName ?? '-',
 
@@ -154,6 +157,7 @@ const ModalCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 									control={control}
 									label='Categoría'
 									dataQuery={{ url: `/categories/${cardRequest?.issueEntity?.id}` }}
+									defaultItem={{ id:  cardRequest?.category?.id, name: cardRequest?.category?.name }}
 								></AsyncComboBox>
 							</div>
 						</div>

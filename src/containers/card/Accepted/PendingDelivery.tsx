@@ -15,10 +15,6 @@ const PendingDelivery = () => {
 
 	const CRUD = useServerCards();
 
-	useEffect(() => {
-		CRUD.getAllCards({ status: "PRINTED" });
-	}, []);
-
 	const [filter, setFilter] = useState<
 		Record<string, string | number | boolean | null>
 	>({});
@@ -26,6 +22,10 @@ const PendingDelivery = () => {
 		state: boolean;
 		id: number;
 	}>({ state: false, id: 0 });
+
+	useEffect(() => {
+		CRUD.getAllCards({ status: "PRINTED", ...filter });
+	}, [filter]);
 
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [

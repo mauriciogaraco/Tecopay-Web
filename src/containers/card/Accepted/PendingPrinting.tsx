@@ -21,10 +21,6 @@ const PendingPrinting = () => {
 
     const CRUD = useServerCards();
 
-    useEffect(() => {
-        CRUD.getAllCards({ status: "ACCEPTED" });
-    }, []);
-
     const [filter, setFilter] = useState<
         Record<string, string | number | boolean | null>
     >({});
@@ -32,6 +28,10 @@ const PendingPrinting = () => {
         state: boolean;
         id: number;
     }>({ state: false, id: 0 });
+
+    useEffect(() => {
+        CRUD.getAllCards({ status: "ACCEPTED", ...filter });
+    }, [filter]);
 
     //Data for table ------------------------------------------------------------------------
     const tableTitles = [
@@ -46,7 +46,7 @@ const PendingPrinting = () => {
 
     let allCardsRequestsFiltered = CRUD.allCards?.items?.filter((objeto: any) => objeto?.request?.status === "ACCEPTED");
 
-
+    console.log(filter)
     allCardsRequestsFiltered?.map((item: any) => {
         tableData.push({
             rowId: item?.id,
@@ -66,8 +66,6 @@ const PendingPrinting = () => {
     const rowAction = (id: number) => {
         setRequestToPrint({ state: true, id });
     };
-
-    //-----------------------------------------------------------------------------------
 
     return (
         <div>
@@ -100,7 +98,7 @@ const PendingPrinting = () => {
 
 export default PendingPrinting;
 
-
+  //-----------------------------------------------------------------------------------------------
 
 interface UserWizzardInterface {
     id: number;
@@ -133,11 +131,10 @@ const EditCardContainer = ({
                     'No. Tarjeta': formatCardNumber(desiredObject?.address) ?? '-',
                     'Titular': desiredObject?.holderName ?? '-',
                     'Entidad': desiredObject?.issueEntity ?? '-',
-                    'Categoría': desiredObject?.category.name ?? '-',
+                    'Categoría': desiredObject?.category?.name ?? '-',
                     'Fecha de emisión': 'No existe',
-                    'Fecha de expiración':
-                        formatCalendar(desiredObject?.expiratedAt) ?? '-',
-                    'Cuenta': desiredObject.account.address ?? '-',
+                    'Fecha de expiración': formatCalendar(desiredObject?.expiratedAt) ?? '-',
+                    'Cuenta': desiredObject?.account?.address ?? '-',
                     'Monto mínimo sin confirmar':
                         desiredObject?.minAmountWithoutConfirmation ?? '-',
                     Descripción: desiredObject?.description ?? '-',
