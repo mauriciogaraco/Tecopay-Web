@@ -32,7 +32,7 @@ const Card = () => {
 	}>({ state: false, id: 0 });
 
 	useEffect(() => {
-		CRUD.getAllCards({ status: "ACCEPTED", ...filter });
+		CRUD.getAllCards({ ...filter });
 	}, [filter]);
 
 	
@@ -48,10 +48,7 @@ const Card = () => {
 	];
 	const tableData: DataTableInterface[] = [];
 
-	let allCardsRequestsFiltered = CRUD.allCards?.items?.filter((objeto: any) => objeto?.request?.status === "ACCEPTED");
-
-
-	allCardsRequestsFiltered?.map((item: any) => {
+	CRUD?.allCards?.items.map((item: any) => {
 		tableData.push({
 			rowId: item?.id,
 			payload: {
@@ -93,7 +90,7 @@ const Card = () => {
 				<Modal state={requestToPrint.state} close={close} size='b'>
 					<EditCardContainer
 						id={requestToPrint.id}
-						allCards={allCardsRequestsFiltered}
+						allCards={CRUD?.allCards?.items}
 						close={close}
 					/>
 				</Modal>

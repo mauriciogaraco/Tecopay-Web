@@ -116,11 +116,11 @@ const EditCardContainer = ({
     console.log(desiredObject);
 
     function goPrint() {
-        updateCardStatus(id, { status: 'PRINTED' }, close);
+        updateCardStatus(desiredObject?.request?.id, { status: 'PRINTED' }, close);
     }
 
     function denied() {
-        updateCardStatus(id, { status: 'DENIED' }, close);
+        updateCardStatus(desiredObject?.request?.id, { status: 'DENIED' }, close);
     }
 
     return (

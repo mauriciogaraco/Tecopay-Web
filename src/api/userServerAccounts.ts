@@ -123,7 +123,7 @@ const useServerAccounts = () => {
       const response = await query.get(`/account/${id}/operations`);
       const account = response.data;
       console.log(account)
-      setOperations(account);
+      setOperations(account.items);
       return account;
     } catch (error) {
       manageErrors(error);

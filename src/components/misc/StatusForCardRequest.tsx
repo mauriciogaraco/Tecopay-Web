@@ -8,9 +8,6 @@ const StatusForCardRequest = ({ currentState }: StateSpanProp) => {
 	let color, text;
 	switch (currentState) {
 		case 'ACCEPTED':
-			color = 'yellow';
-			text = translateOrderState(currentState);
-			break;
 		case 'CREATED':
 		case 'DELIVERED':
 		case 'PRINTED':

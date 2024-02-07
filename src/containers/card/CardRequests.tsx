@@ -300,7 +300,7 @@ const SimpleCardRequestModal = ({
 									normalizeData={{ id: 'id', name: 'name' }}
 									control={control}
 									label='Categoría'
-									dataQuery={{ url: `/categories/${entity?.id}` }}
+									dataQuery={{ url: `/entity/${entity?.id}/categories` }}
 								></AsyncComboBox>
 							)}
 
@@ -475,7 +475,7 @@ const BulkCardRequestModal = ({
 									normalizeData={{ id: 'id', name: 'name' }}
 									control={control}
 									label='Categoría'
-									dataQuery={{ url: `/categories/${entity?.id}` }}
+									dataQuery={{ url: `/entity/${entity?.id}/categories` }}
 								></AsyncComboBox>
 							)}
 

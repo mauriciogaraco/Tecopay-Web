@@ -156,7 +156,7 @@ const ModalCardRequest = ({ CRUD, id, close }: propsDestructured) => {
 									normalizeData={{ id: 'id', name: 'name' }}
 									control={control}
 									label='Categoría'
-									dataQuery={{ url: `/categories/${cardRequest?.issueEntity?.id}` }}
+									dataQuery={{ url: `/entity/${cardRequest?.issueEntity?.id}/categories` }}
 									defaultItem={{ id:  cardRequest?.category?.id, name: cardRequest?.category?.name }}
 								></AsyncComboBox>
 							</div>

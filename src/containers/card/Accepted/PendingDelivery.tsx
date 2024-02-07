@@ -83,6 +83,7 @@ const PendingDelivery = () => {
 					<EditCardContainer
 						id={requestToDeliver.id}
 						close={close}
+						CRUD={CRUD}
 					/>
 				</Modal>
 			)}
@@ -96,16 +97,17 @@ export default PendingDelivery;
 interface UserWizzardInterface {
 	id: number;
 	close: Function;
+	CRUD:any
 }
 
 const EditCardContainer = ({
-	id, close
+	id, close, CRUD
 }: UserWizzardInterface) => {
 	const { control, handleSubmit } = useForm<Record<string, string | number>>();
 
 
 	const onSubmit: SubmitHandler<Record<string, string | number | null>> = (dataToSubmit) => {
-		console.log(dataToSubmit)
+		CRUD.deliverCard(id,dataToSubmit,close);
 		close();
 	};
 

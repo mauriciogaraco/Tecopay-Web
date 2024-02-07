@@ -35,9 +35,6 @@ const Accounts = () => {
 	const { getAllBussinnes, business } = useServerEntity();
 	const navigate = useNavigate();
 
-	const { entities:entidades } = useAppSelector((state) => state.Entity)
-	let entities = entidades.items;
-
 	useEffect(() => {
 		getAllBussinnes();
 	}, []);
@@ -160,10 +157,14 @@ const Accounts = () => {
 			],
 		},
 		{
-			format: 'select',
-			filterCode: 'business',
-			name: 'Negocio',
-			data: business,
+			format: "select",
+			filterCode: "business",
+			name: "Negocio",
+			asyncData: {
+				url: "/business",
+				idCode: "id",
+				dataCode: ["name"],
+			},
 		},
 		{
 			format: 'select',
@@ -172,10 +173,14 @@ const Accounts = () => {
 			data: measureSelectorData,
 		},
 		{
-			format: 'select',
-			filterCode: 'entities',
-			name: 'Entidad',
-			data: entities,
+			format: "select",
+			filterCode: "entities",
+			name: "Entidad",
+			asyncData: {
+				url: "/entity",
+				idCode: "id",
+				dataCode: ["name"],
+			},
 		},
 	];
 

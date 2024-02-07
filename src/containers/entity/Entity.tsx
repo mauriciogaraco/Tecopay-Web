@@ -107,7 +107,7 @@ const Entity = () => {
 	const rowAction = (id: number) => {
 		setEditEntityModal({ state: true, id });
 	};
-
+	console.log(CRUD.paginate)
 	return (
 		<div>
 			<Breadcrumb

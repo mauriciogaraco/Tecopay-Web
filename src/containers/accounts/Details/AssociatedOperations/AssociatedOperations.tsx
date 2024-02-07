@@ -25,7 +25,7 @@ const AssociatedOperations = ( ) => {
 		paginate,
 		getAccountOperations,
 	} = useServerAccounts();
-
+	
 	useEffect(() => {
 		getAccountOperations(id);
 	}, []);
