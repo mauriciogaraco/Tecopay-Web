@@ -158,7 +158,6 @@ const Charge = ({
 					name='address'
 					label='Cuenta a recargar'
 					placeholder='xxxx xxxx xxxx'
-					rules={{ required: 'Campo requerido' }}
 					control={control}
 					disabled={true}
 				></Input>

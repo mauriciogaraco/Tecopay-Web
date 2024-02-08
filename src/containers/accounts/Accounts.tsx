@@ -19,7 +19,7 @@ import { fetchAccounts } from '../../store/slices/accountSlice';
 const Accounts = () => {
 
 	const [filter, setFilter] = useState<
-		Record<string, string | number | boolean | null>
+		Record<string, string | number | boolean | null  >
 	>({ page: 1 });
 
 	const dispatch = useAppDispatch();
@@ -27,7 +27,7 @@ const Accounts = () => {
 	useEffect(() => {
 		dispatch(fetchAccounts(filter));
 	}, [dispatch, filter]);
-
+	console.log(filter);
 	const { accounts, loading: isLoading } = useAppSelector((state) => state.Account);
 	let allAccounts = accounts?.items;
 
@@ -65,8 +65,8 @@ const Accounts = () => {
 		business?: number;
 		entities?: number;
 		owner?: number;
-		dateFrom?: Date;
-		dateTo?: Date;
+		dateFrom?: string;
+		dateTo?: string;
 		search?: string;
 	}
 
@@ -146,19 +146,19 @@ const Accounts = () => {
 			datepickerRange: [
 				{
 					isUnitlToday: true,
-					filterCode: "dateFrom",
+					filterCode: "createdFrom",
 					name: "Desde",
 				},
 				{
 					isUnitlToday: true,
-					filterCode: "dateTo",
+					filterCode: "createdTo",
 					name: "Hasta",
 				},
 			],
 		},
 		{
 			format: "select",
-			filterCode: "business",
+			filterCode: "businessId",
 			name: "Negocio",
 			asyncData: {
 				url: "/business",
@@ -167,14 +167,8 @@ const Accounts = () => {
 			},
 		},
 		{
-			format: 'select',
-			filterCode: 'owner',
-			name: 'Propietario',
-			data: measureSelectorData,
-		},
-		{
 			format: "select",
-			filterCode: "entities",
+			filterCode: "issueEntityId",
 			name: "Entidad",
 			asyncData: {
 				url: "/entity",
@@ -182,41 +176,22 @@ const Accounts = () => {
 				dataCode: ["name"],
 			},
 		},
-	];
-
-	/*
-	{
+		{
 			format: "select",
-			filterCode: "movedById",
-			name: "Usuario",
+			filterCode: "ownerId",
+			name: "Propietario",
 			asyncData: {
-				url: "/security/users",
+				url: "/user",
 				idCode: "id",
-				dataCode: ["displayName", "email", "username"],
+				dataCode: ["fullName"],
 			},
 		},
-		{
-			format: 'input',
-			filterCode: 'disponibilityFrom',
-			name: 'Cantidad disponible hasta',
-		},
-		{
-			format: 'boolean',
-			filterCode: 'showForSale',
-			name: 'Listos para vender',
-		},
-		{
-			format: "multiselect",
-			filterCode: "entities",
-			name: "Entidad",
-			data: entities,
-		},
-	
-	*/
+
+	];
 
 	const filterAction = (data: filterAccounts) => {
-		//data ? setFilter({ ...filter, ...data }) : setFilter({ page: 1 });
-		data ? filterProcessor(data) : setFinalData([...allAccounts]);
+		data ? setFilter({ ...data }) : setFilter({ page: 1 });
+		//data ? filterProcessor(data) : setFinalData([...allAccounts]);
 	};
 
 	//---------------------------------------------------------------------------------------

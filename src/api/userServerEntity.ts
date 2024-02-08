@@ -160,11 +160,11 @@ const useServerEntity = () => {
     setIsLoading(true);
     try {
       let resp = await query.get(`/business`)
-      setPaginate({
-        totalItems: resp.data.totalItems,
-        totalPages: resp.data.totalPages,
-        currentPage: resp.data.currentPage,
-      });
+      //setPaginate({
+      //  totalItems: resp.data.totalItems,
+      //  totalPages: resp.data.totalPages,
+      //  currentPage: resp.data.currentPage,
+      //});
       setBusiness(resp.data.items)
     } catch (error) {
       manageErrors(error);

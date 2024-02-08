@@ -82,12 +82,12 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 	//NavItems
 
 	const navigation: NavItem[] = [
-		{
-			name: 'Dashboard',
-			href: '/',
-			icon: HomeIcon,
-			current: mainCurrent === '',
-		},
+		//{
+		//	name: 'Dashboard',
+		//	href: '/',
+		//	icon: HomeIcon,
+		//	current: mainCurrent === '',
+		//},
 		{
 			name: 'Entidades',
 			href: 'entities',
@@ -120,12 +120,12 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 				
 			],
 		},
-		{
-			name: 'Usuarios',
-			href: 'users',
-			icon: UsersIcon,
-			current: mainCurrent === 'users',
-		},
+		//{
+		//	name: 'Usuarios',
+		//	href: 'users',
+		//	icon: UsersIcon,
+		//	current: mainCurrent === 'users',
+		//},
 		//{
 		//	name: 'Monedas',
 		//	href: 'coins',

@@ -65,11 +65,12 @@ const CardRequests = () => {
 		'Tipo',
 		'Estado',
 	];
-	
-	//let allCardsRequestsFiltered = CRUD?.allCardsRequests?.filter((objeto:any) => objeto.status === "REQUESTED" || objeto.status === "DENIED");
 
 	const tableData: DataTableInterface[] = [];
-	CRUD?.allCardsRequests?.map((item: any) => {
+	
+	let requests = CRUD?.allCardsRequests?.filter((objeto:any) => objeto.status !== "PRINTED");
+
+	requests?.map((item: any) => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
