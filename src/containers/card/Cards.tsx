@@ -1,19 +1,16 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Breadcrumb, {
     PathInterface,
 } from '../../components/navigation/Breadcrumb';
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import SideNav from '../../components/navigation/SideNav';
-import Card from './Accepted/Card';
-import PendingPrinting from './Accepted/PendingPrinting';
-import PendingDelivery from './Accepted/PendingDelivery';
+import AlreadyDeliveredCards from './CardTabs/AlreadyDeliveredCards';
+import PendingDeliveryCards from './CardTabs/PendingDeliveryCards';
 import useServerCards from '../../api/userServerCards';
 
-const AcceptedCardRequest = () => {
+const Cards = () => {
 
-    const navigate = useNavigate();
-    const [current, setCurrent] = useState<string>('all');
+    const [current, setCurrent] = useState<string>('not-delivered');
     const changeTab = (to: string) => setCurrent(to);
 
     const CRUD = useServerCards();
@@ -26,20 +23,16 @@ const AcceptedCardRequest = () => {
 
     const stockTabs = [
         {
-            name: 'Todas',
-            href: 'all',
-            current: current === 'all',
+            name: 'Por entregar',
+            href: 'not-delivered',
+            current: current === 'not-delivered',
         },
         {
-            name: 'Por imprimir',
-            href: 'print',
-            current: current === 'print',
+            name: 'Entregadas',
+            href: 'delivered',
+            current: current === 'delivered',
         },
-        {
-            name: 'Pendientes a entregar',
-            href: 'deliver',
-            current: current === 'deliver',
-        },
+        
     ];
 
     //Breadcrumb --------------------------------------------------------------------------
@@ -47,11 +40,6 @@ const AcceptedCardRequest = () => {
     const paths: PathInterface[] = [
         {
             name: 'Tarjetas',
-            action: () => navigate('/accounts'),
-        },
-
-        {
-            name: 'Aceptadas',
         },
     ];
     //--------------------------------------------------------------------------------------
@@ -72,14 +60,11 @@ const AcceptedCardRequest = () => {
                 />
 
                 <div className='sm:col-span-8 pl-3 pt-1'>
-                    {current === 'all' && (
-                        <Card />
+                    {current === 'delivered' && (
+                        <AlreadyDeliveredCards />
                     )}
-                    {current === 'print' && (
-                        <PendingPrinting />
-                    )}
-                    {current === 'deliver' && (
-                        <PendingDelivery />
+                    {current === 'not-delivered' && (
+                        <PendingDeliveryCards />
                     )}
                 </div>
             </div>
@@ -87,4 +72,4 @@ const AcceptedCardRequest = () => {
     );
 };
 
-export default AcceptedCardRequest;
+export default Cards;

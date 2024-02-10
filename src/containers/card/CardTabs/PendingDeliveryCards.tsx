@@ -10,6 +10,10 @@ import useServerCards from '../../../api/userServerCards';
 import Button from '../../../components/misc/Button';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 import { useForm, SubmitHandler } from "react-hook-form";
+import Toggle from "../../../components/forms/Toggle";
+import Input from '../../../components/forms/Input';
+import useServerAccounts from '../../../api/userServerAccounts';
+import { deleteUndefinedAttr } from '../../../utils/helpers';
 
 const PendingDelivery = () => {
 
@@ -24,7 +28,7 @@ const PendingDelivery = () => {
 	}>({ state: false, id: 0 });
 
 	useEffect(() => {
-		CRUD.getAllCards({ status: "PRINTED", ...filter });
+		CRUD.getAllCards({ isDelivered: false, ...filter });
 	}, [filter]);
 
 	//Data for table ------------------------------------------------------------------------
@@ -48,7 +52,7 @@ const PendingDelivery = () => {
 				'No. Cuenta': formatCardNumber(item?.account?.address),
 				'Titular': item?.holderName ?? '-',
 				'Categoría': item?.category?.name ?? '-',
-				'Entidad': item?.account.currency,
+				'Entidad': item?.account?.issueEntity?.name ?? '-',
 				'Estado': <StatusForCardRequest currentState={item.request.status} />,
 			},
 		});
@@ -97,34 +101,73 @@ export default PendingDelivery;
 interface UserWizzardInterface {
 	id: number;
 	close: Function;
-	CRUD:any
+	CRUD: any
 }
 
 const EditCardContainer = ({
 	id, close, CRUD
 }: UserWizzardInterface) => {
-	const { control, handleSubmit } = useForm<Record<string, string | number>>();
+	const { control, handleSubmit, watch } = useForm<Record<string, string | number>>();
 
+	const {
+		isLoading,
+		isFetching,
+		Charge
+	} = useServerAccounts();
 
 	const onSubmit: SubmitHandler<Record<string, string | number | null>> = (dataToSubmit) => {
-		CRUD.deliverCard(id,dataToSubmit,close);
+		CRUD.deliverCard(id, dataToSubmit, close);
+
+		//Charge(deleteUndefinedAttr(dataTosend), id, closeModal)
 		close();
 	};
 
+	let {recharge} = watch();
+
+	console.log(watch())
+
 	return (
 		<>
+			<p className='mb-4 font-semibold text-lg'>
+				Entregar tarjeta
+			</p>
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className="flex flex-col gap-4">
 					<AsyncComboBox
 						rules={{ required: 'Campo requerido' }}
 						name='ownerId'
-						normalizeData={{ id: 'id', name: 'email' }}
+						normalizeData={{ id: 'id', name: 'fullName' }}
 						control={control}
-						label='Asignar a Titular'
+						label='Nombre'
 						dataQuery={{ url: '/user' }}
 					></AsyncComboBox>
+					<Toggle
+						name="recharge"
+						control={control}
+						defaultValue={false}
+						title="Recargar cuenta"
+					/>
+					{recharge && (
+						<Input
+							name='amount'
+							label='Cantidad'
+							type='number'
+							placeholder='0.00'
+							rules={{
+								required: 'Campo requerido',
+								validate: (value) => {
+									if (parseInt(value) === 0) {
+										return 'El valor no puede ser cero';
+									}
+									return true;
+								},
+							}}
+							control={control}
+						></Input>
+					)}
+					
 					<Button
-						name='Asignar'
+						name='Entregar'
 						color='slate-600'
 						type='submit'
 						loading={false}

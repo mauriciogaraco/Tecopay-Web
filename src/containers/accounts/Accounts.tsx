@@ -76,39 +76,6 @@ const Accounts = () => {
 		setFinalData([...allAccounts]);
 	}, [allAccounts]);
 
-	function filterProcessor(filter: filterAccounts) {
-
-		let final_data = [...allAccounts]
-	
-		if (filter?.search && (typeof filter?.search === 'string')) {
-			const searchStringLowercase = filter?.search.toLowerCase().replace(/\s/g, '');
-			final_data = final_data.filter((object: any) => {
-				const objectNameLowercase = object.address.toLowerCase().replace(/\s/g, '');
-				return objectNameLowercase.includes(searchStringLowercase);
-			});
-		}
-	
-		if (filter?.entities) {
-			final_data = final_data.filter(objeto => objeto.issueEntity?.id === filter?.entities)
-		}
-
-		if (findNameById(filter?.business)) {
-			final_data = final_data.filter(objeto => objeto.issueEntity?.business?.name === findNameById(filter?.business));
-		}
-
-		if (filter.dateFrom !== undefined && filter.dateTo !== undefined) {
-			final_data = final_data.filter(obj => new Date(obj.createdAt) >= new Date(filter.dateFrom ?? 0) && new Date(obj.createdAt) <= new Date(new Date(filter.dateTo ?? 0)));
-		}
-
-		setFinalData(final_data);
-	}
-
-	const findNameById = (id: number | undefined) => {
-		if (!id) return null;
-		const matchedObject = business?.find((obj: { id: number, name: string }) => obj.id === id);
-		return matchedObject ? matchedObject.name : null;
-	};
-
 	//filter_________________________________________________________________________________________________
 
 	const tableData: DataTableInterface[] = [];

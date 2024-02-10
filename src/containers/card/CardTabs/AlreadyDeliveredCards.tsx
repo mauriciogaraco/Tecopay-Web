@@ -32,10 +32,8 @@ const Card = () => {
 	}>({ state: false, id: 0 });
 
 	useEffect(() => {
-		CRUD.getAllCards({ ...filter });
+		CRUD.getAllCards({ isDelivered: true, ...filter });
 	}, [filter]);
-
-	
 
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [
@@ -56,7 +54,7 @@ const Card = () => {
 				'No. Cuenta': formatCardNumber(item?.account?.address),
 				'Titular': item?.holderName ?? '-',
 				'Categoría': item?.category?.name ?? '-',
-				'Entidad': item?.account.currency,
+				'Entidad': item?.account?.issueEntity?.name ?? '-',
 				'Estado': <StatusForCardRequest currentState={item.request.status} />,
 			},
 		});
@@ -91,7 +89,6 @@ const Card = () => {
 					<EditCardContainer
 						id={requestToPrint.id}
 						allCards={CRUD?.allCards?.items}
-						close={close}
 					/>
 				</Modal>
 			)}
@@ -105,25 +102,13 @@ export default Card;
 interface UserWizzardInterface {
 	id: number;
 	allCards: any;
-	close: Function;
 }
 
 const EditCardContainer = ({
-	id, allCards, close
+	id, allCards
 }: UserWizzardInterface) => {
 
-	const { updateCardStatus } = useServerCardsRequests();
-
 	const desiredObject: any = allCards?.find((item: any) => item.id === id);
-	console.log(desiredObject);
-
-	function goPrint() {
-		updateCardStatus(id, { status: 'PRINTED' }, close);
-	}
-
-	function denied() {
-		updateCardStatus(id, { status: 'DENIED' }, close);
-	}
 
 	return (
 		<>
@@ -132,41 +117,13 @@ const EditCardContainer = ({
 				body={{
 					'No. Tarjeta': formatCardNumber(desiredObject?.address) ?? '-',
 					'Titular': desiredObject?.holderName ?? '-',
-					'Entidad': desiredObject?.issueEntity ?? '-',
+					'Entidad': desiredObject?.account?.issueEntity?.name ?? '-',
 					'Categoría': desiredObject?.category?.name ?? '-',
 					'Fecha de emisión': 'No existe',
 					'Fecha de expiración':
 						formatCalendar(desiredObject?.expiratedAt) ?? '-',
-					'Cuenta': desiredObject.account.address ?? '-',
-					'Monto mínimo sin confirmar':
-						desiredObject?.minAmountWithoutConfirmation ?? '-',
-					Descripción: desiredObject?.description ?? '-',
 				}}
 			></GenericList>
-			{/*
-                desiredObject.request.status == 'ACCEPTED' ? (
-                    <div className='flex justify-end mt-3 transition-all duration-200 ease-in-out rounded-lg gap-4'>
-                        <Button
-                            textColor='red-900'
-                            name='Denegar'
-                            type='button'
-                            iconAfter={<NoSymbolIcon className='h-5 text-red-600' />}
-                            color={'red-200'}
-                            action={() => denied()}
-                        />
-                        <Button
-                            name='Solicitar Impresión'
-                            textColor='gray-900'
-                            type='button'
-                            iconAfter={<FontAwesomeIcon icon={faPrint} />}
-                            color={'green-200'}
-                            action={() => {
-                                goPrint();
-                            }}
-                            outline
-                        />
-                    </div>
-						) : null*/}
 		</>
 	);
 };

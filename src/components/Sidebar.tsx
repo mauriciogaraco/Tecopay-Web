@@ -90,9 +90,11 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 		//},
 		{
 			name: 'Entidades',
-			href: 'entities',
+			//href: 'entities',
+			href: '/',
 			icon: HomeModernIcon,
-			current: mainCurrent === 'entities',
+			//current: mainCurrent === 'entities',
+			current: mainCurrent === '',
 		},
 		{
 			name: 'Cuentas',
@@ -101,25 +103,38 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 			current: mainCurrent === 'accounts',
 		},
 		{
+			name: ' Solicitudes',
+			href: `/requests`,
+			icon: UserGroupIcon,
+			current: mainCurrent === 'requests',
+		},
+		{
 			name: 'Tarjetas',
-			href: 'cards',
+			href: `/cards`,
 			icon: CreditCardIcon,
 			current: mainCurrent === 'cards',
+		}
 
-			children: [
-				{
-					name: ' Solicitudes',
-					href: `/cards/requests`,
-					current: secondaryCurrent === 'requests' && mainCurrent === 'cards',
-				},
-				{
-					name: 'Aceptadas',
-					href: `/cards/all`,
-					current: secondaryCurrent === 'all' && mainCurrent === 'cards',
-				}
-				
-			],
-		},
+		//{
+		//	name: 'Tarjetas',
+		//	href: 'cards',
+		//	icon: CreditCardIcon,
+		//	current: mainCurrent === 'cards',
+		//
+		//	children: [
+		//		{
+		//			name: ' Solicitudes',
+		//			href: `/cards/requests`,
+		//			current: secondaryCurrent === 'requests' && mainCurrent === 'cards',
+		//		},
+		//		{
+		//			name: 'Aceptadas',
+		//			href: `/cards/all`,
+		//			current: secondaryCurrent === 'all' && mainCurrent === 'cards',
+		//		}
+		//		
+		//	],
+		//},
 		//{
 		//	name: 'Usuarios',
 		//	href: 'users',
@@ -311,8 +326,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 				<div className='relative flex min-h-0 flex-1 flex-col bg-tecopay-800'>
 					<div
 						className={`flex flex-grow flex-col  scrollbar-thumb-tecopay-900 border-r border-tecopay-200 bg-tecopay-800 pt-1 pb-4 ${staticBar
-								? 'pr-3 scrollbar-thin'
-								: 'group-hover:pr-3 group-hover:scrollbar-thin'
+							? 'pr-3 scrollbar-thin'
+							: 'group-hover:pr-3 group-hover:scrollbar-thin'
 							}`}
 					>
 						{/* Profile dropdown justify-center group-hover:justify-start*/}
@@ -481,8 +496,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 												{item.block && (
 													<LockClosedIcon
 														className={`${staticBar
-																? 'absolute'
-																: 'hidden group-hover:absolute'
+															? 'absolute'
+															: 'hidden group-hover:absolute'
 															} h-4 right-2`}
 													/>
 												)}
@@ -523,8 +538,8 @@ const SideBar = ({ barState, switchSideBar }: SideBarProps) => {
 															/>
 															<span
 																className={`${staticBar
-																		? 'flex'
-																		: 'hidden group-hover:flex flex-shrink-0'
+																	? 'flex'
+																	: 'hidden group-hover:flex flex-shrink-0'
 																	}`}
 															>
 																{item.name}

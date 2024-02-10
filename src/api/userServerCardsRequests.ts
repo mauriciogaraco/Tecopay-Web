@@ -79,11 +79,11 @@ const useServerCardsRequests = () => {
 			setIsFetching(false);
 	};
 
-	const addSimpleCardRequest = async (data: any, close: Function) => {
+	const addCardRequest = async (data: any, close: Function) => {
 		setIsFetching(true);
 		setIsLoading(true);
 		await query
-			.post('/cardRequest/simple', data)
+			.post('/cardRequest', data)
 			.then((resp) => {
 
 				setAllCardsRequests([...allCardsRequests, resp.data]);
@@ -223,7 +223,7 @@ const useServerCardsRequests = () => {
 		isFetching,
 		cardRequest,
 		getAllCardsRequests,
-		addSimpleCardRequest,
+		addCardRequest,
 		getCardRequest,
 		editCardRequest,
 		deleteCardRequest,

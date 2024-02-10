@@ -134,7 +134,7 @@ const GenericTable = ({
   //----------------------------------------------------------------------------------------------------
 
   //Manage Filter --------------------------------------------------------------------------------------
-  const { control, handleSubmit, unregister, register, watch } = useForm();
+  const { control, handleSubmit, unregister, register, watch, reset } = useForm();
   const [filterActived, setFilterActived] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<BasicNomenclator[]>([]);
   const activeIndex = selectedFilter.map((item) => item.id);
@@ -306,7 +306,10 @@ const GenericTable = ({
               <Button
                 name='Eliminar filtros'
                 color='slate-500'
-                action={() => setSelectedFilter([])}
+                action={() => {
+                    setSelectedFilter([]);
+                    reset();
+                }}
                 textColor='slate-500'
                 outline
               />
