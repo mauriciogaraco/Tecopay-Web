@@ -117,10 +117,10 @@ const useServerAccounts = () => {
   };
 
   // 'account / getAccountOp'
-  const getAccountOperations = async (id: any): Promise<any> => {
+  const getAccountOperations = async (param: Record<string, string | number | boolean | null>): Promise<any> => {
     setIsLoading(true);
     try {
-      const response = await query.get(`/account/${id}/operations`);
+      const response = await query.get(`/accountopp/${generateUrlParams(param)}`);
       const account = response.data;
       setPaginate({
         totalItems: response.data.totalItems,

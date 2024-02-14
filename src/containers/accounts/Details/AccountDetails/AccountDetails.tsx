@@ -57,7 +57,7 @@ const AccountDetail = () => {
 		},
 
 	];
-
+ 	console.log(id);
 	return isLoading ? (
 		<div className='top-20'>
 			<SpinnerLoading />
@@ -162,7 +162,6 @@ const Charge = ({
 					disabled={true}
 				></Input>
 				<Input
-
 					name='amount'
 					label='Cantidad'
 					type='number'

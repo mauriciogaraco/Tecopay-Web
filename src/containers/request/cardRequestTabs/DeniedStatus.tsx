@@ -3,6 +3,7 @@ import {
 } from '@heroicons/react/24/outline';
 import GenericTable, {
 	DataTableInterface,
+	FilterOpts,
 } from '../../../components/misc/GenericTable';
 import Paginate from '../../../components/misc/Paginate';
 import Modal from '../../../components/modals/GenericModal';
@@ -89,6 +90,65 @@ const DeniedStatus = () => {
 		setEditCardRequestModal({ state: true, id });
 	};
 
+		//---------------------------------------------------------------------------------------
+
+		const availableFilters: FilterOpts[] = [
+			{
+				format: "datepicker-range",
+				name: "Rango de fecha",
+				filterCode: "dateRange",
+				datepickerRange: [
+					{
+						isUnitlToday: true,
+						filterCode: "fromDate",
+						name: "Desde",
+					},
+					{
+						isUnitlToday: true,
+						filterCode: "toDate",
+						name: "Hasta",
+					},
+				],
+			},
+			{
+				format: "select",
+				filterCode: "businessId",
+				name: "Negocio",
+				asyncData: {
+					url: "/business",
+					idCode: "id",
+					dataCode: ["name"],
+				},
+			},
+			{
+				format: "select",
+				filterCode: "issueEntityId",
+				name: "Entidad",
+				asyncData: {
+					url: "/entity",
+					idCode: "id",
+					dataCode: ["name"],
+				},
+			},
+			
+			{
+				format: "select",
+				filterCode: "accountId",
+				name: "Cuenta",
+				asyncData: {
+					url: `/account`,
+					idCode: "id",
+					dataCode: ["address"],
+				},
+			},
+		];
+	
+		const filterAction = (data: any) => {
+			data ? setFilter({ ...data ,  status: "DENIED"}) : setFilter({ page: 1 ,  status: "DENIED"});
+		};
+	
+		//---------------------------------------------------------------------------------------
+
 	return (
 		<div className=''>
 			<GenericTable
@@ -96,6 +156,7 @@ const DeniedStatus = () => {
 				tableTitles={tableTitles}
 				loading={CRUD?.isLoading}
 				//searching={searching}
+				filterComponent={{ availableFilters, filterAction }}
 				actions={actions}
 				rowAction={rowAction}
 				paginateComponent={

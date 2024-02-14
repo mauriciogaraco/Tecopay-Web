@@ -3,6 +3,7 @@ import {
 } from '@heroicons/react/24/outline';
 import GenericTable, {
 	DataTableInterface,
+	FilterOpts,
 } from '../../../components/misc/GenericTable';
 import Paginate from '../../../components/misc/Paginate';
 import Modal from '../../../components/modals/GenericModal';
@@ -13,15 +14,7 @@ import { translateCardRequestType } from '../../../utils/translateCardStatus';
 import { formatDate } from '../../../utils/helpersAdmin';
 import BulkCardRequestModal from '../CardRequestModal/BulkCardRequestModal';
 import SimpleCardRequestModal from '../CardRequestModal/SimpleCardRequestModal';
-import { useForm, SubmitHandler } from "react-hook-form";
-import Select from '../../../components/forms/Select';
-import TextArea from '../../../components/forms/TextArea';
 import Button from '../../../components/misc/Button';
-import { TrashIcon, CheckIcon, NoSymbolIcon, } from '@heroicons/react/24/outline';
-import { deleteUndefinedAttr } from '../../../utils/helpers';
-import Input from '../../../components/forms/Input';
-import AlertContainer from '../../../components/misc/AlertContainer';
-import AsyncComboBox from '../../../components/forms/AsyncCombobox';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
 	faPrint,
@@ -102,6 +95,65 @@ const AcceptedStatus = () => {
 		setEditCardRequestModal({ state: true, id });
 	};
 
+	//---------------------------------------------------------------------------------------
+
+	const availableFilters: FilterOpts[] = [
+		{
+			format: "datepicker-range",
+			name: "Rango de fecha",
+			filterCode: "dateRange",
+			datepickerRange: [
+				{
+					isUnitlToday: true,
+					filterCode: "fromDate",
+					name: "Desde",
+				},
+				{
+					isUnitlToday: true,
+					filterCode: "toDate",
+					name: "Hasta",
+				},
+			],
+		},
+		{
+			format: "select",
+			filterCode: "businessId",
+			name: "Negocio",
+			asyncData: {
+				url: "/business",
+				idCode: "id",
+				dataCode: ["name"],
+			},
+		},
+		{
+			format: "select",
+			filterCode: "issueEntityId",
+			name: "Entidad",
+			asyncData: {
+				url: "/entity",
+				idCode: "id",
+				dataCode: ["name"],
+			},
+		},
+		
+		{
+			format: "select",
+			filterCode: "accountId",
+			name: "Cuenta",
+			asyncData: {
+				url: `/account`,
+				idCode: "id",
+				dataCode: ["address"],
+			},
+		},
+	];
+
+	const filterAction = (data: any) => {
+		data ? setFilter({ ...data ,  status: "ACCEPTED" }) : setFilter({ page: 1 ,  status: "ACCEPTED" });
+	};
+
+	//---------------------------------------------------------------------------------------
+
 	return (
 		<div className=''>
 			<GenericTable
@@ -110,6 +162,7 @@ const AcceptedStatus = () => {
 				loading={CRUD?.isLoading}
 				//searching={searching}
 				actions={actions}
+				filterComponent={{ availableFilters, filterAction }}
 				rowAction={rowAction}
 				paginateComponent={
 					<Paginate

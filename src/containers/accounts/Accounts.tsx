@@ -27,7 +27,7 @@ const Accounts = () => {
 	useEffect(() => {
 		dispatch(fetchAccounts(filter));
 	}, [dispatch, filter]);
-	console.log(filter);
+	
 	const { accounts, loading: isLoading } = useAppSelector((state) => state.Account);
 	let allAccounts = accounts?.items;
 
@@ -102,9 +102,6 @@ const Accounts = () => {
 
 	//---------------------------------------------------------------------------------------
 
-	let measureSelectorData = [{ id: 1, name: 'Juan' }, { id: 2, name: 'Pepe' }];
-
-
 	const availableFilters: FilterOpts[] = [
 		{
 			format: "datepicker-range",
@@ -158,7 +155,6 @@ const Accounts = () => {
 
 	const filterAction = (data: filterAccounts) => {
 		data ? setFilter({ ...data }) : setFilter({ page: 1 });
-		//data ? filterProcessor(data) : setFinalData([...allAccounts]);
 	};
 
 	//---------------------------------------------------------------------------------------

@@ -1,11 +1,12 @@
 import GenericTable, {
 	DataTableInterface,
+	FilterOpts,
 } from '../../../components/misc/GenericTable';
 import Paginate from '../../../components/misc/Paginate';
 import Modal from '../../../components/modals/GenericModal';
 import { useState, useEffect } from 'react';
 import { formatCardNumber } from '../../../utils/helpers';
-import StatusForCardRequest from '../../../components/misc/StatusForCardRequest';
+import StatusForCard from '../../../components/misc/StatusForCard';
 import useServerCards from '../../../api/userServerCards';
 import Button from '../../../components/misc/Button';
 import AsyncComboBox from '../../../components/forms/AsyncCombobox';
@@ -13,7 +14,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import Toggle from "../../../components/forms/Toggle";
 import Input from '../../../components/forms/Input';
 import useServerAccounts from '../../../api/userServerAccounts';
-import { deleteUndefinedAttr } from '../../../utils/helpers';
+
 
 const PendingDelivery = () => {
 
@@ -28,8 +29,10 @@ const PendingDelivery = () => {
 	}>({ state: false, id: 0 });
 
 	useEffect(() => {
-		CRUD.getAllCards({ isDelivered: false, ...filter });
+		CRUD.getAllCards({ isDelivered: 'false', ...filter });
 	}, [filter]);
+
+
 
 	//Data for table ------------------------------------------------------------------------
 	const tableTitles = [
@@ -42,9 +45,8 @@ const PendingDelivery = () => {
 	];
 	const tableData: DataTableInterface[] = [];
 
-	let allCardsRequestsFiltered = CRUD.allCards?.items?.filter((objeto: any) => objeto?.request?.status === "PRINTED");
 
-	allCardsRequestsFiltered?.map((item: any) => {
+	CRUD.allCards?.items?.map((item: any) => {
 		tableData.push({
 			rowId: item?.id,
 			payload: {
@@ -53,7 +55,7 @@ const PendingDelivery = () => {
 				'Titular': item?.holderName ?? '-',
 				'Categoría': item?.category?.name ?? '-',
 				'Entidad': item?.account?.issueEntity?.name ?? '-',
-				'Estado': <StatusForCardRequest currentState={item.request.status} />,
+				'Estado': <StatusForCard currentState={item.isDelivered} />,
 			},
 		});
 	});
@@ -62,6 +64,63 @@ const PendingDelivery = () => {
 
 	const rowAction = (id: number) => {
 		setRequestToDeliver({ state: true, id });
+	};
+
+	//---------------------------------------------------------------------------------------
+
+	const availableFilters: FilterOpts[] = [
+		{
+			format: "datepicker-range",
+			name: "Rango de fecha",
+			filterCode: "dateRange",
+			datepickerRange: [
+				{
+					isUnitlToday: true,
+					filterCode: "createdFrom",
+					name: "Desde",
+				},
+				{
+					isUnitlToday: true,
+					filterCode: "createdTo",
+					name: "Hasta",
+				},
+			],
+		},
+		{
+			format: "select",
+			filterCode: "businessId",
+			name: "Negocio",
+			asyncData: {
+				url: "/business",
+				idCode: "id",
+				dataCode: ["name"],
+			},
+		},
+		{
+			format: "select",
+			filterCode: "issueEntityId",
+			name: "Entidad",
+			asyncData: {
+				url: "/entity",
+				idCode: "id",
+				dataCode: ["name"],
+			},
+		},
+		{
+			format: "select",
+			filterCode: "accountId",
+			name: "Cuenta",
+			asyncData: {
+				url: `/account`,
+				idCode: "id",
+				dataCode: ["address"],
+			},
+		},
+
+	];
+
+	const filterAction = (data: any) => {
+		data ? setFilter({ ...data, isDelivered: 'false' }) : setFilter({ page: 1, isDelivered: 'false' });
 	};
 
 	//------------------------------------------------------------------------------------
@@ -73,7 +132,7 @@ const PendingDelivery = () => {
 				tableTitles={tableTitles}
 				loading={CRUD.isLoading}
 				rowAction={rowAction}
-				//filterComponent={{ availableFilters, filterAction }}
+				filterComponent={{ availableFilters, filterAction }}
 				paginateComponent={
 					<Paginate
 						action={(page: number) => setFilter({ ...filter, page })}
@@ -84,7 +143,7 @@ const PendingDelivery = () => {
 
 			{requestToDeliver.state && (
 				<Modal state={requestToDeliver.state} close={close} size='b'>
-					<EditCardContainer
+					<DeliveryCardModal
 						id={requestToDeliver.id}
 						close={close}
 						CRUD={CRUD}
@@ -104,16 +163,11 @@ interface UserWizzardInterface {
 	CRUD: any
 }
 
-const EditCardContainer = ({
+const DeliveryCardModal = ({
 	id, close, CRUD
 }: UserWizzardInterface) => {
-	const { control, handleSubmit, watch } = useForm<Record<string, string | number>>();
 
-	const {
-		isLoading,
-		isFetching,
-		Charge
-	} = useServerAccounts();
+	const { control, handleSubmit, watch } = useForm<Record<string, string | number>>();
 
 	const onSubmit: SubmitHandler<Record<string, string | number | null>> = (dataToSubmit) => {
 		CRUD.deliverCard(id, dataToSubmit, close);
@@ -122,10 +176,8 @@ const EditCardContainer = ({
 		close();
 	};
 
-	let {recharge} = watch();
-
-	console.log(watch())
-
+	let { recharge } = watch();
+	console.log(watch().recharge)
 	return (
 		<>
 			<p className='mb-4 font-semibold text-lg'>
@@ -141,31 +193,34 @@ const EditCardContainer = ({
 						label='Nombre'
 						dataQuery={{ url: '/user' }}
 					></AsyncComboBox>
-					<Toggle
-						name="recharge"
-						control={control}
-						defaultValue={false}
-						title="Recargar cuenta"
-					/>
-					{recharge && (
-						<Input
-							name='amount'
-							label='Cantidad'
-							type='number'
-							placeholder='0.00'
-							rules={{
-								required: 'Campo requerido',
-								validate: (value) => {
-									if (parseInt(value) === 0) {
-										return 'El valor no puede ser cero';
-									}
-									return true;
-								},
-							}}
+					<div>
+						<Toggle
+							name="recharge"
 							control={control}
-						></Input>
-					)}
-					
+							defaultValue={false}
+							title="Recargar cuenta"
+						/>
+						{recharge && (
+							<Input
+								name='amount'
+								label='Cantidad'
+								type='number'
+								placeholder='0.00'
+								rules={{
+									required: 'Campo requerido',
+									validate: (value) => {
+										if (parseInt(value) === 0) {
+											return 'El valor no puede ser cero';
+										}
+										return true;
+									},
+								}}
+								control={control}
+							></Input>
+						)}
+					</div>
+
+
 					<Button
 						name='Entregar'
 						color='slate-600'
