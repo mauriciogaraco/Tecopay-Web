@@ -1,6 +1,4 @@
-import {
-	PlusIcon,
-} from '@heroicons/react/24/outline';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import GenericTable, {
 	DataTableInterface,
 } from '../../components/misc/GenericTable';
@@ -16,9 +14,11 @@ import EditEntityModal from './editEntityModal/EditEntityModal';
 import StatusBadge from '../../components/misc/badges/StatusBadge';
 import NewEntityModal from './newEntityModal/NewEntityModal';
 
+//add documentación
 const Entity = () => {
-
-	const [filter, setFilter] = useState<Record<string, string | number | boolean | null>>({});
+	const [filter, setFilter] = useState<
+		Record<string, string | number | boolean | null>
+	>({});
 	const [addEntityModal, setAddEntityModal] = useState(false);
 	const [editEntityModal, setEditEntityModal] = useState<{
 		state: boolean;
@@ -28,7 +28,7 @@ const Entity = () => {
 	const CRUD_origin = useServerEntity();
 
 	type CRUD = { id?: number } & typeof CRUD_origin;
-	let CRUD:CRUD = CRUD_origin;
+	let CRUD: CRUD = CRUD_origin;
 	CRUD.id = editEntityModal.id;
 
 	useEffect(() => {
@@ -49,14 +49,14 @@ const Entity = () => {
 
 	//Table ------------------------------------------------------------------------------------------
 
-	const tableTitles =
-		['Nombre',
-			'Responsable',
-			'Negocio',
-			'Teléfono',
-			'Dirección',
-			'Estado'
-		];
+	const tableTitles = [
+		'Nombre',
+		'Responsable',
+		'Negocio',
+		'Teléfono',
+		'Dirección',
+		'Estado',
+	];
 
 	const tableData: DataTableInterface[] = [];
 
@@ -67,8 +67,8 @@ const Entity = () => {
 	}, [CRUD.allEntity]);
 
 	function filterProcessor(value: { search: string | undefined }) {
-		let final_data = [...CRUD.allEntity]
-		if (value?.search && (typeof value?.search === 'string')) {
+		let final_data = [...CRUD.allEntity];
+		if (value?.search && typeof value?.search === 'string') {
 			const searchStringLowercase = value?.search.toLowerCase();
 			final_data = final_data.filter((object: any) => {
 				const objectNameLowercase = object.name.toLowerCase();
@@ -82,16 +82,12 @@ const Entity = () => {
 		tableData.push({
 			rowId: item.id,
 			payload: {
-				'Nombre': item?.name,
-				'Responsable': item?.owner?.username ? item?.owner?.username : '-',
-				'Negocio': item?.business?.name,
-				'Teléfono': item.phone,
-				'Estado': (
-					<StatusBadge
-						status={item.status}
-					/>
-				),
-				'Dirección': item.address,
+				Nombre: item?.name,
+				Responsable: item?.owner?.username ? item?.owner?.username : '-',
+				Negocio: item?.business?.name,
+				Teléfono: item.phone,
+				Estado: <StatusBadge status={item.status} />,
+				Dirección: item.address,
 			},
 		});
 	});
@@ -107,7 +103,7 @@ const Entity = () => {
 	const rowAction = (id: number) => {
 		setEditEntityModal({ state: true, id });
 	};
-	console.log(CRUD.paginate)
+	console.log(CRUD.paginate);
 	return (
 		<div>
 			<Breadcrumb
@@ -135,19 +131,32 @@ const Entity = () => {
 
 			{/*New Entity Modal*/}
 			{addEntityModal && (
-				<Modal state={addEntityModal} close={() => setAddEntityModal(false)} size='m'>
-					<div className="min-h-96 overflow-hidden">
-						<NewEntityModal close={() => setAddEntityModal(false)} CRUD={CRUD} />
+				<Modal
+					state={addEntityModal}
+					close={() => setAddEntityModal(false)}
+					size='m'
+				>
+					<div className='min-h-96 overflow-hidden'>
+						<NewEntityModal
+							close={() => setAddEntityModal(false)}
+							CRUD={CRUD}
+						/>
 					</div>
-
 				</Modal>
 			)}
 
 			{/*Modal to Edit Entity*/}
 			{editEntityModal && (
-				<Modal state={editEntityModal.state} close={setEditEntityModal} size='m'>
-					<div className="min-h-96 overflow-hidden">
-						<EditEntityModal close={() => setEditEntityModal({ state: false, id: 0 })} CRUD={CRUD} />
+				<Modal
+					state={editEntityModal.state}
+					close={setEditEntityModal}
+					size='m'
+				>
+					<div className='min-h-96 overflow-hidden'>
+						<EditEntityModal
+							close={() => setEditEntityModal({ state: false, id: 0 })}
+							CRUD={CRUD}
+						/>
 					</div>
 				</Modal>
 			)}
